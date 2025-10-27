@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:read_right_project/providers/recording_provider.dart';
 import 'utils/routes.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => RecordingProvider()),
+        // ChangeNotifierProvider(create: (_) => NotesModel()),
+        // You could add more models here later (e.g., UserModel, ThemeModel).
+      ],
+      child: const MaterialApp(home: MyApp())
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
