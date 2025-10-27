@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:read_right_project/models/record_button.dart';
+import 'package:read_right_project/utils/routes.dart';
 
 class PracticeScreen extends StatelessWidget {
   const PracticeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +17,26 @@ class PracticeScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
-            RecordButton(),
+            ElevatedButton(
+              onPressed: () {
+                print("Button pressed");
+              },
+              child: const Text('Practice a Word'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                print("Button pressed");
+              },
+              child: const Text('Practice a Pair of Words'),
+            ),
+            const SizedBox(height: 20,),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.feedback);
+              },
+              child: const Text('Feedback'),
+            ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
