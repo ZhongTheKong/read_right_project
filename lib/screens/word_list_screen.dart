@@ -15,6 +15,16 @@ class WordListScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
+
+
+            const Text(
+              'Words on this screen will be used on practice screen.',
+              style: TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 20),
+
+
+            
             ElevatedButton(
               onPressed: () {
                 // Navigate back to main screen and clear previous routes

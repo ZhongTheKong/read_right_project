@@ -15,6 +15,16 @@ class TeacherDashboardScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
+
+
+            const Text(
+              'Class overview: averages, attempts, top struggled words.',
+              style: TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 20),
+
+
+
             ElevatedButton(
               onPressed: () {
                 // Navigate back to main screen and clear previous routes

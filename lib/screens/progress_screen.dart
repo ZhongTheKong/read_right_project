@@ -15,6 +15,9 @@ class ProgressScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
+
+
+
             Container(
               height: 100,
               width: 200,
@@ -27,6 +30,9 @@ class ProgressScreen extends StatelessWidget {
               )
             ),
             const SizedBox(height: 20),
+
+
+            
             ElevatedButton(
               onPressed: () {
                 // Navigate back to main screen and clear previous routes

@@ -18,8 +18,12 @@ class PracticeScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
+
+
+            
             RecordButton(),
             const SizedBox(height: 20),
+
             ElevatedButton(
               onPressed: () {
                 print("Button pressed");
@@ -27,6 +31,7 @@ class PracticeScreen extends StatelessWidget {
               child: const Text('Practice a Word'),
             ),
             const SizedBox(height: 20),
+            
             ElevatedButton(
               onPressed: () {
                 print("Button pressed");
@@ -34,6 +39,9 @@ class PracticeScreen extends StatelessWidget {
               child: const Text('Practice a Pair of Words'),
             ),
             const SizedBox(height: 20,),
+
+
+
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, AppRoutes.feedback);
