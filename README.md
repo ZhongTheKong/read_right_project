@@ -4,6 +4,12 @@ architecture, provider choice(s), setup, privacy notes.
 
 read_right_project
 |
+|-assets (non-code files used by other files)
+|   |-seed_words.csv
+|
+|-models (widgets used by screens)
+|   |-record_button
+|
 |-providers (the providers of shared data)
 |   |-recording_provider
 |
