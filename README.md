@@ -8,12 +8,20 @@ read_right_project
 |   |-recording_provider
 |
 |-screens (screens for the app)
-|   |-feedback_screen (the screen for . . . )
-|   |-login_screen (the screen for . . . )
-|   |-practice_screen (the screen for . . . )
-|   |-progress_screen (the screen for . . . )
-|   |-teacher_dashboard_screen (the screen for . . . )
-|   |-word_list_screen (the screen for . . . )
+|   |-feedback_screen (the screen for showing score and feedback)
+|   |-login_screen (the screen for user login)
+|   |-practice_screen (the screen for practicing reading)
+|   |-progress_screen (the screen for displaying user progress in reading)
+|   |-teacher_dashboard_screen (the screen for class scores)
+|   |-word_list_screen (the screen for showing words to be used)
+|
+|-states (placeholder files for states of screens which may be stateful)
+|   |-feedback_state (the state for feedback_screen)
+|   |-login_state (the state for login_screen)
+|   |-practice_state (the state for practice_screen)
+|   |-progress_state (the state for progress_screen)
+|   |-teacher_dashboard_state (the state for teacher_dashboard_screen)
+|   |-word_list_state (the state for word_list_screen)
 |
 |-templates (just stores SoundDemo for future reference)
 |   |-sound_demo (code from sound demo provided on canvas)
