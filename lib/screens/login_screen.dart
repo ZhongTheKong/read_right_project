@@ -16,6 +16,17 @@ class LoginScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
+
+
+
+            const Text(
+              'Select Between Student Or Teacher',
+              style: TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 20),
+
+
+            
             ElevatedButton(
               onPressed: () {
                 // Navigate back to main screen and clear previous routes

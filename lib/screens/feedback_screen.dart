@@ -16,6 +16,24 @@ class FeedbackScreen extends StatelessWidget {
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
+
+
+            const Text(
+              'Score: 0000000000000000000000',
+              style: TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 20),
+
+
+
+            const Text(
+              'Feedback: aaaaaaaaaaaaaaaaaaaa',
+              style: TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 20),
+
+
+
             ElevatedButton(
               onPressed: () {
                 // Navigate back to main screen and clear previous routes
