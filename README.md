@@ -36,3 +36,9 @@ read_right_project
 |   |-routes (page navigation routes)
 |
 |-main (app starter)
+
+Current Progress
+-
+
+Future Goals
+-
