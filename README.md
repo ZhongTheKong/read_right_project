@@ -38,7 +38,13 @@ read_right_project
 |-main (app starter)
 
 Current Progress
--
+-placeholder ccreens
+-placeholder navigation
+-placeholder UI
+-placeholder provider
 
 Future Goals
--
+-implemented pages
+-intuitive navigation
+-functional UI
+-functional provider
