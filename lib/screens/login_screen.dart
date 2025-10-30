@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  @override
   Widget build(BuildContext context) {
+
+    // TextEditingController usernameTextEditingController = TextEditingController();
+    // TextEditingController passwordTextEditingController = TextEditingController();
+
     return Scaffold(
       appBar: AppBar(title: const Text('Login Screen')),
       body: Center(
@@ -22,6 +31,31 @@ class LoginScreen extends StatelessWidget {
             const Text(
               'Select Between Student Or Teacher',
               style: TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 20),
+            
+
+            Row(
+              children: [
+                Text(
+                  "Username: ",
+                ),
+                SizedBox(width: 10.0),
+                // TextField(
+                //   // controller: usernameTextEditingController,
+                //   style: TextStyle(
+                //     fontSize: 18.0,
+                //     color: Colors.black
+                //   ),
+                //   decoration: InputDecoration(
+                //     labelText: '',
+                //     labelStyle: TextStyle(
+                //       fontSize: 18.0,
+                //       color: Colors.black
+                //     ),
+                //   )
+                // ),
+              ],
             ),
             const SizedBox(height: 20),
 
