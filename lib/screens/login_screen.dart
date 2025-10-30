@@ -11,8 +11,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
 
-    // TextEditingController usernameTextEditingController = TextEditingController();
-    // TextEditingController passwordTextEditingController = TextEditingController();
+    TextEditingController usernameTextEditingController = TextEditingController();
+    TextEditingController passwordTextEditingController = TextEditingController();
 
     return Scaffold(
       appBar: AppBar(title: const Text('Login Screen')),
@@ -41,20 +41,86 @@ class _LoginScreenState extends State<LoginScreen> {
                   "Username: ",
                 ),
                 SizedBox(width: 10.0),
-                // TextField(
-                //   // controller: usernameTextEditingController,
-                //   style: TextStyle(
-                //     fontSize: 18.0,
-                //     color: Colors.black
-                //   ),
-                //   decoration: InputDecoration(
-                //     labelText: '',
-                //     labelStyle: TextStyle(
-                //       fontSize: 18.0,
-                //       color: Colors.black
-                //     ),
-                //   )
-                // ),
+                SizedBox(
+                  width: 150.0,
+                  child: TextField(
+                    controller: usernameTextEditingController,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.black
+                    ),
+                    decoration: InputDecoration(
+                      labelText: '',
+                      labelStyle: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black,
+                          width: 1.0
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black,
+                          width: 1.0
+                        ),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.face,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+
+
+
+
+
+            Row(
+              children: [
+                Text(
+                  "Password: ",
+                ),
+                SizedBox(width: 10.0),
+                SizedBox(
+                  width: 150.0,
+                  child: TextField(
+                    controller: passwordTextEditingController,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      color: Colors.black
+                    ),
+                    decoration: InputDecoration(
+                      labelText: '',
+                      labelStyle: TextStyle(
+                        fontSize: 18.0,
+                        color: Colors.black
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black,
+                          width: 1.0
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.black,
+                          width: 1.0
+                        ),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.key,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 20),
