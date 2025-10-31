@@ -1,20 +1,20 @@
-import 'package:flutter/material.dart';
-
 class LoginData {
-  Map<String, String> login_data = {
+  static Map<String, String> loginData = {
     'user1' : 'pass1'
   };
 
-  bool isValidLoginData(String username, String password) {
+  static bool isValidLoginData(String username, String password) {
     // non existent username
-    if (!login_data.containsKey(username)) {
+    if (!loginData.containsKey(username)) {
+      print("Username: $username does not exist");
       return false;
     }
     // password does not match
-    if (login_data[username] != password) {
+    if (loginData[username] != password) {
+      print("Password: $password does not match");
       return false;
     }
     // username exists and password matches
-    return false;
+    return true;
   }
 }

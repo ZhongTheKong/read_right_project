@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:read_right_project/data/login_data.dart';
 import 'package:read_right_project/models/labeled_login_text_field.dart';
 import 'package:read_right_project/models/login_text_field.dart';
 
@@ -47,6 +48,23 @@ class _LoginScreenState extends State<LoginScreen> {
               textEditingController: passwordTextEditingController, 
               fieldIcon: Icons.key, 
               labelText: "Password"
+            ),
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () {
+                // Navigate back to main screen and clear previous routes
+                // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                if (LoginData.isValidLoginData(usernameTextEditingController.text, passwordTextEditingController.text) == true)
+                {
+                  print("successful login");
+                }
+                else
+                {
+                  print("incorrect login");
+                }
+              },
+              child: const Text('LOGIN'),
             ),
             const SizedBox(height: 20),
             
