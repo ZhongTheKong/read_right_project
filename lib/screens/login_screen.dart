@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:read_right_project/models/labeled_login_text_field.dart';
 import 'package:read_right_project/models/login_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -35,40 +36,19 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             const SizedBox(height: 20),
             
-
-            Row(
-              children: [
-                Text(
-                  "Username: ",
-                ),
-                SizedBox(width: 10.0),
-                LoginTextField(
-                  textEditingController: usernameTextEditingController, 
-                  fieldIcon: Icons.face
-                )
-              ],
+            LabelledLoginTextField(
+              textEditingController: usernameTextEditingController, 
+              fieldIcon: Icons.face, 
+              labelText: "Username"
             ),
             const SizedBox(height: 20),
 
-
-
-
-
-            Row(
-              children: [
-                Text(
-                  "Password: ",
-                ),
-                SizedBox(width: 10.0),
-                LoginTextField(
-                  textEditingController: passwordTextEditingController, 
-                  fieldIcon: Icons.key
-                )
-              ],
+            LabelledLoginTextField(
+              textEditingController: passwordTextEditingController, 
+              fieldIcon: Icons.key, 
+              labelText: "Password"
             ),
             const SizedBox(height: 20),
-
-
             
             ElevatedButton(
               onPressed: () {
