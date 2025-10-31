@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:read_right_project/data/login_data.dart';
 import 'package:read_right_project/models/labeled_login_text_field.dart';
@@ -19,6 +21,16 @@ class _LoginScreenState extends State<LoginScreen> {
     return lastUser ?? "";
   }
 
+  void clearLastLoggedInUsername() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove("lastUser");
+  }
+
+  void setLastLoggedInUsername(String newLoggedInUser) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString("lastUser", newLoggedInUser);
+  }
+
   @override
   Widget build(BuildContext context) {
 
@@ -34,11 +46,22 @@ class _LoginScreenState extends State<LoginScreen> {
           return Text('Error: ${snapshot.error}');
         } else {
           final String lastLoggedInUsername = snapshot.data ?? '';
-          if (lastLoggedInUsername == '') {
+          if (lastLoggedInUsername != '') {
             return Scaffold(
               appBar: AppBar(title: const Text('Login Screen')),
               body: Center(
-                child: Text("Welcome back: $lastLoggedInUsername"),
+                child: Column(
+                  children: [
+                    Text("Welcome back: $lastLoggedInUsername"),
+                    SizedBox(height: 20.0,),
+                    ElevatedButton(
+                      onPressed: () {
+                        clearLastLoggedInUsername();
+                      },
+                      child: const Text('CLEAR LAST LOGIN DATA'),
+                    ),
+                  ],
+                ),
               )
             );
           }
@@ -84,6 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         if (LoginData.isValidLoginData(usernameTextEditingController.text, passwordTextEditingController.text) == true)
                         {
                           print("successful login");
+                          setLastLoggedInUsername(usernameTextEditingController.text);
                         }
                         else
                         {
@@ -98,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         // Navigate back to main screen and clear previous routes
                         Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                        
                       },
                       child: const Text('Back to Main Screen'),
                     ),
