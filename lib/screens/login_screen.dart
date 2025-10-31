@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:read_right_project/models/login_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -41,39 +42,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   "Username: ",
                 ),
                 SizedBox(width: 10.0),
-                SizedBox(
-                  width: 150.0,
-                  child: TextField(
-                    controller: usernameTextEditingController,
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.black
-                    ),
-                    decoration: InputDecoration(
-                      labelText: '',
-                      labelStyle: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.black
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.black,
-                          width: 1.0
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.black,
-                          width: 1.0
-                        ),
-                      ),
-                      prefixIcon: Icon(
-                        Icons.face,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
+                LoginTextField(
+                  textEditingController: usernameTextEditingController, 
+                  fieldIcon: Icons.face
+                )
               ],
             ),
             const SizedBox(height: 20),
@@ -88,39 +60,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   "Password: ",
                 ),
                 SizedBox(width: 10.0),
-                SizedBox(
-                  width: 150.0,
-                  child: TextField(
-                    controller: passwordTextEditingController,
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      color: Colors.black
-                    ),
-                    decoration: InputDecoration(
-                      labelText: '',
-                      labelStyle: TextStyle(
-                        fontSize: 18.0,
-                        color: Colors.black
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.black,
-                          width: 1.0
-                        ),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.black,
-                          width: 1.0
-                        ),
-                      ),
-                      prefixIcon: Icon(
-                        Icons.key,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                ),
+                LoginTextField(
+                  textEditingController: passwordTextEditingController, 
+                  fieldIcon: Icons.key
+                )
               ],
             ),
             const SizedBox(height: 20),
