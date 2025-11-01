@@ -48,14 +48,17 @@ class RecordingProvider extends ChangeNotifier {
     recorderReady = true;
     notifyListeners();
   }
-
+  
+  // Generates string for next path for audio file
   Future<String> _nextPath() async {
     final dir = await getApplicationDocumentsDirectory();
     final ts = DateTime.now().millisecondsSinceEpoch;
     return '${dir.path}/readright_${words[index]}_$ts.m4a';
   }
 
+  // Starts recording if possible
   Future<void> startRecording(bool mounted) async {
+    print("Recording Started");
 
     // final recordingProvider = context.read<RecordingProvider>(); // 👈 watch
 
@@ -93,6 +96,7 @@ class RecordingProvider extends ChangeNotifier {
   }
 
   Future<void> stopRecording(bool mounted) async {
+    print("Recording Ended");
     // IF NOT RECORDING, CAN'T STOP RECORDING SO RETURN
     if (!isRecording) return;
 
