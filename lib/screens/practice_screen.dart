@@ -34,7 +34,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
   @override
   Widget build(BuildContext context) {
     final recordingProvider = context.watch<RecordingProvider>(); // 👈 watch
-    double recording_progress = recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs;
+    double recordingProgress = recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs;
 
     return Scaffold(
       appBar: AppBar(
@@ -84,13 +84,28 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 20),
 
-
+            Container(
+              width: 400,
+              height: 10,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: LinearProgressIndicator(
+                  value: recordingProgress >= 0.99 ? 1.0 : recordingProgress,
+                  minHeight: 10,
+                  backgroundColor: Colors.grey[300],
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
+                ),
+              ),
+            ),
             
-            // StartRecordButton(),
-            // const SizedBox(height: 20),
+            const SizedBox(height: 20),
 
             Container(
               color: Colors.blue,
@@ -114,87 +129,66 @@ class _PracticeScreenState extends State<PracticeScreen> {
                     label: const Text('Stop'),
                   ),
                   const SizedBox(width: 20),
-              
-                  // ElevatedButton.icon(
-                  //   onPressed: () {
-                  //     recordingProvider.play(recordingProvider.attempts[recordingProvider.index].filePath, mounted);
-                  //   },
-                  //   icon: const Icon(Icons.play_arrow),
-                  //   label: const Text('Play'),
-                  // ),
-              
-                  
-                  
                 ],
               ),
             ),
 
             const SizedBox(height: 20),
 
-            Container(
-              width: 400, // set your desired width
-              height: 10, // set your desired height
-              decoration: BoxDecoration(
-                color: Colors.grey[300],          // background color
-                borderRadius: BorderRadius.circular(10), // rounded edges
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(10), // round the progress bar itself
-                child: LinearProgressIndicator(
-                  value: recording_progress >= 0.99 ? 1.0 : recording_progress,
-                  minHeight: 10,
-                  backgroundColor: Colors.grey[300],
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
-                ),
-              ),
-            ),
-
-
-            const SizedBox(height: 20),
-
             Expanded(
-            child: recordingProvider.attempts.isEmpty
-                ? const Center(
-                    child: Text('No attempts yet. Record your first try!'))
-                : ListView.separated(
-                    itemCount: recordingProvider.attempts.length,
-                    separatorBuilder: (_, __) => const SizedBox(height: 8),
-                    itemBuilder: (context, i) {
+              child: recordingProvider.attempts.isEmpty
+              ? const Center(
+                  child: Text('No attempts yet. Record your first try!')
+              )
+              : ListView.separated(
+                  itemCount: recordingProvider.attempts.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (context, i) {
 
 
-                      final a = recordingProvider.attempts[i];
-                      final exists = File(a.filePath).existsSync();
+                    final iterAttempt = recordingProvider.attempts[i];
+                    final exists = File(iterAttempt.filePath).existsSync();
 
 
-                      return ListTile(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                          side: const BorderSide(width: 0.5),
-                        ),
-                        title: Text(a.word),
-                        subtitle: Text(
-                            'Date: ${a.createdAt.toLocal()}\nDuration: ~${(a.durationMs / 1000).toStringAsFixed(1)}s'),
-                        trailing:
-                            Row(mainAxisSize: MainAxisSize.min, children: [
+                    return ListTile(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: const BorderSide(width: 0.5),
+                      ),
+                      title: Text(iterAttempt.word),
+
+                      subtitle: Text(
+                          'Date: ${iterAttempt.createdAt.toLocal()}\nDuration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s'),
+
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min, 
+                        children: [
                           IconButton(
                             tooltip: 'Play',
                             onPressed: (!exists || recordingProvider.isPlaying)
                                 ? null
-                                : () => recordingProvider.play(a.filePath, mounted),
+                                : () => recordingProvider.play(iterAttempt.filePath, mounted),
                             icon: const Icon(Icons.play_arrow),
                           ),
+                          
                           IconButton(
                             tooltip: 'Stop',
+
+                            // TODO: CREATE A BETTER PLAY ATTEMPT BUTTON CALLBACK
                             onPressed: recordingProvider.isPlaying
                                 ? () => recordingProvider.player.stop().then(
                                     (_) => setState(() => recordingProvider.isPlaying = false))
                                 : null,
+
                             icon: const Icon(Icons.stop),
                           ),
-                        ]),
-                      );
-                    },
-                  ),
+                        ]
+                      ),
+                    );
+
+                    
+                  },
+              ),
             ),
 
             const SizedBox(height: 20),
