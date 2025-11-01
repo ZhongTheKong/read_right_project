@@ -8,14 +8,25 @@ class PracticeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Practice Screen')),
+      appBar: AppBar(
+        title: Center(
+          child: const Text(
+            'PRACTICE'
+          )
+        )
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Hello, World! This is the Practice Screen.',
+              'Pronounce this word/phrase',
               style: TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 5),
+            const Text(
+              'DOOR',
+              style: TextStyle(fontSize: 30),
             ),
             const SizedBox(height: 20),
 
@@ -24,24 +35,7 @@ class PracticeScreen extends StatelessWidget {
             RecordButton(),
             const SizedBox(height: 20),
 
-            ElevatedButton(
-              onPressed: () {
-                print("Button pressed");
-              },
-              child: const Text('Practice a Word'),
-            ),
-            const SizedBox(height: 20),
             
-            ElevatedButton(
-              onPressed: () {
-                print("Button pressed");
-              },
-              child: const Text('Practice a Pair of Words'),
-            ),
-            const SizedBox(height: 20,),
-
-
-
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, AppRoutes.feedback);
