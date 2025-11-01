@@ -42,9 +42,13 @@ Current Progress
 -placeholder navigation
 -placeholder UI
 -placeholder provider
+-Login screen meets Milestone 1 specifications
 
 Future Goals
--implemented pages
--intuitive navigation
--functional UI
--functional provider
+-Finish the Speech recording functionality
+-Write STT function for interpreting use scores
+-Implement STT into feedback
+-Save feedback using local storage
+-Link feedback to progress screen with Provider
+-Display progress in the progress screen
+-Touch up UI and naviagation
