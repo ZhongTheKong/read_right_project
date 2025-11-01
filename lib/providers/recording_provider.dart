@@ -141,4 +141,26 @@ class RecordingProvider extends ChangeNotifier {
       // _snack('Failed to stop recording: $e');
     }
   }
+
+  Future<void> play(String path, bool mounted) async {
+    if (isPlaying) return;
+    try {
+      await player.setFilePath(path);
+      await player.play();
+      // setState(() => isPlaying = true);
+      isPlaying = true;
+      notifyListeners();
+
+      player.playerStateStream.listen((s) {
+        if (s.processingState == ProcessingState.completed ||
+            s.playing == false) {
+          // if (mounted) setState(() => _isPlaying = false);
+          isPlaying = false;
+          notifyListeners();
+        }
+      });
+    } catch (e) {
+      // _snack('Playback failed: $e');
+    }
+  }
 }
