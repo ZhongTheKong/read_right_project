@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:read_right_project/models/record_button.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
 
