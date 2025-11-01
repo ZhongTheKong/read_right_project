@@ -4,6 +4,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:record/record.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
@@ -17,54 +19,19 @@ class RecordButton extends StatefulWidget {
 
 class _RecordButtonState extends State<RecordButton> {
 
-  final _recorder = AudioRecorder();
-  final _player = AudioPlayer();
-
-  bool _recorderReady = false;
-  bool _isRecording = false;
-  bool _isPlaying = false;
-
-  final List<String> _words = const [
-    'the',
-    'and',
-    'to',
-    'said',
-    'little',
-    'look',
-    'come',
-    'here',
-    'where'
-  ];
-  int _index = 0;
-
-  final List<Attempt> _attempts = [];
-  static const int kMaxRecordMs = 7000;
-  Timer? _recordTimer;
-
   @override
   void initState() {
     super.initState();
-    _initAudio();
-  }
-
-  Future<void> _initAudio() async {
-    // Ask for permission; on macOS this triggers the system prompt if not yet granted.
-    final hasPerm = await _recorder.hasPermission();
-    if (!hasPerm) {
-      final granted = await _recorder
-          .hasPermission(); // record doesn't expose a request; system will prompt on start()
-      if (!granted && mounted) {
-        // _snack('Microphone permission is required.');
-        return;
-      }
-    }
-    setState(() => _recorderReady = true);
+    final recordingProvider = context.read<RecordingProvider>();
+    recordingProvider.initAudio(mounted);
   }
 
   Future<void> _startRecording() async {
 
+    final recordingProvider = context.read<RecordingProvider>(); // 👈 watch
+
     // IF RECORDER IS NOT READY OR RECORDER IS ALREADY RECORDING, DON'T START RECORDING
-    if (!_recorderReady || _isRecording) return;
+    if (!recordingProvider.recorderReady || recordingProvider.isRecording) return;
     final path = await _nextPath();
 
 
@@ -78,62 +45,19 @@ class _RecordButtonState extends State<RecordButton> {
       );
 
       // RECORD
-      await _recorder.start(config, path: path);
-      setState(() => _isRecording = true);
+      await recordingProvider.recorder.start(config, path: path);
+      setState(() => recordingProvider.isRecording = true);
 
       // CANCEL EXISTING TIMER
-      _recordTimer?.cancel();
+      recordingProvider.recordTimer?.cancel();
 
       // START NEW TIMER
       // IF TIMER EXPIRES, STOP RECORDING
-      _recordTimer =
-          Timer(const Duration(milliseconds: kMaxRecordMs), _stopRecording);
+      recordingProvider.recordTimer =
+          Timer(const Duration(milliseconds: RecordingProvider.kMaxRecordMs), recordingProvider.stopRecording);
 
     } catch (e) {
       // _snack('Failed to start recording: $e');
-    }
-  }
-
-  Future<void> _stopRecording() async {
-    // IF NOT RECORDING, CAN'T STOP RECORDING SO RETURN
-    if (!_isRecording) return;
-
-    // IF RECORD TIMER EXISTS, CANCEL IT
-    _recordTimer?.cancel();
-
-    try {
-
-      // STOP RECORDER
-      final path = await _recorder.stop();
-      setState(() => _isRecording = false);
-
-      // IF RECORDING FAILED, RETURN
-      if (path == null) return;
-
-      // just_audio can probe duration if we load the file
-      Duration? dur;
-      try {
-        await _player.setFilePath(path);
-        dur = _player.duration;
-        await _player.stop();
-      } catch (_) {}
-
-      // CREATE NEW ATTEMPT AND STORE
-      _attempts.insert(
-        0,
-        Attempt(
-          word: _words[_index],
-          filePath: path,
-          durationMs: (dur ?? Duration.zero).inMilliseconds,
-        ),
-      );
-
-      // UPDATE UI IF RECORD BUTTON IS ON SCREEN
-      if (mounted) setState(() {});
-
-      // _snack('Saved attempt for "${_words[_index]}"');
-    } catch (e) {
-      // _snack('Failed to stop recording: $e');
     }
   }
 
@@ -153,6 +77,8 @@ class _RecordButtonState extends State<RecordButton> {
 
   @override
   Widget build(BuildContext context) {
+    final recordingProvider = context.watch<RecordingProvider>(); // 👈 watch
+
     return ElevatedButton.icon(
       onPressed: () {
         // print("Record Button Pressed");
@@ -165,20 +91,6 @@ class _RecordButtonState extends State<RecordButton> {
       label: const Text('Record'),
     );
   }
-}
-
-class Attempt {
-  Attempt({
-    required this.word,
-    required this.filePath,
-    required this.durationMs,
-    DateTime? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now();
-
-  final String word;
-  final String filePath;
-  final int durationMs;
-  final DateTime createdAt;
 }
 
 /*
