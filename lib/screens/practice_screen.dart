@@ -34,6 +34,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
   @override
   Widget build(BuildContext context) {
     final recordingProvider = context.watch<RecordingProvider>(); // 👈 watch
+    double recording_progress = recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs;
 
     return Scaffold(
       appBar: AppBar(
@@ -130,12 +131,24 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
             const SizedBox(height: 20),
 
-            LinearProgressIndicator(
-              value: recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
-              minHeight: 10,
-              backgroundColor: Colors.grey[300],
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
+            Container(
+              width: 400, // set your desired width
+              height: 10, // set your desired height
+              decoration: BoxDecoration(
+                color: Colors.grey[300],          // background color
+                borderRadius: BorderRadius.circular(10), // rounded edges
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10), // round the progress bar itself
+                child: LinearProgressIndicator(
+                  value: recording_progress >= 0.99 ? 1.0 : recording_progress,
+                  minHeight: 10,
+                  backgroundColor: Colors.grey[300],
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
+                ),
+              ),
             ),
+
 
             const SizedBox(height: 20),
 
