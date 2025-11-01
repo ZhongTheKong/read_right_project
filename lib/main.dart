@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'utils/routes.dart';
 import 'package:audio_session/audio_session.dart';
 

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:read_right_project/utils/attempt.dart';
 import 'package:record/record.dart';
 
@@ -48,7 +49,50 @@ class RecordingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> stopRecording() async {
+  Future<String> _nextPath() async {
+    final dir = await getApplicationDocumentsDirectory();
+    final ts = DateTime.now().millisecondsSinceEpoch;
+    return '${dir.path}/readright_${words[index]}_$ts.m4a';
+  }
+
+  Future<void> startRecording(bool mounted) async {
+
+    // final recordingProvider = context.read<RecordingProvider>(); // 👈 watch
+
+    // IF RECORDER IS NOT READY OR RECORDER IS ALREADY RECORDING, DON'T START RECORDING
+    if (!recorderReady || isRecording) return;
+    final path = await _nextPath();
+
+
+    try {
+
+      // CREATE RECORIDNG CONFIGURATION
+      final config = RecordConfig(
+        encoder: AudioEncoder.aacLc, // -> .m4a
+        sampleRate: 44100,
+        bitRate: 128000,
+      );
+
+      // RECORD
+      await recorder.start(config, path: path);
+      // setState(() => isRecording = true);
+      isRecording = true;
+      notifyListeners();
+
+      // CANCEL EXISTING TIMER
+      recordTimer?.cancel();
+
+      // START NEW TIMER
+      // IF TIMER EXPIRES, STOP RECORDING
+      recordTimer =
+          Timer(const Duration(milliseconds: kMaxRecordMs), () => stopRecording(mounted));
+
+    } catch (e) {
+      // _snack('Failed to start recording: $e');
+    }
+  }
+
+  Future<void> stopRecording(bool mounted) async {
     // IF NOT RECORDING, CAN'T STOP RECORDING SO RETURN
     if (!isRecording) return;
 
@@ -86,6 +130,7 @@ class RecordingProvider extends ChangeNotifier {
 
       // UPDATE UI IF RECORD BUTTON IS ON SCREEN
       // if (mounted) setState(() {});
+      if (mounted) notifyListeners();
 
       // _snack('Saved attempt for "${_words[_index]}"');
     } catch (e) {

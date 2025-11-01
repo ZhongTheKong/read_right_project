@@ -1,9 +1,6 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:read_right_project/data/login_data.dart';
 import 'package:read_right_project/models/labeled_login_text_field.dart';
-import 'package:read_right_project/models/login_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {

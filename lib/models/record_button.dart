@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'dart:async';
-import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
-import 'package:record/record.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:path_provider/path_provider.dart';
 
 class RecordButton extends StatefulWidget {
   const RecordButton({super.key});
@@ -26,41 +19,6 @@ class _RecordButtonState extends State<RecordButton> {
     recordingProvider.initAudio(mounted);
   }
 
-  Future<void> _startRecording() async {
-
-    final recordingProvider = context.read<RecordingProvider>(); // 👈 watch
-
-    // IF RECORDER IS NOT READY OR RECORDER IS ALREADY RECORDING, DON'T START RECORDING
-    if (!recordingProvider.recorderReady || recordingProvider.isRecording) return;
-    final path = await _nextPath();
-
-
-    try {
-
-      // CREATE RECORIDNG CONFIGURATION
-      final config = RecordConfig(
-        encoder: AudioEncoder.aacLc, // -> .m4a
-        sampleRate: 44100,
-        bitRate: 128000,
-      );
-
-      // RECORD
-      await recordingProvider.recorder.start(config, path: path);
-      setState(() => recordingProvider.isRecording = true);
-
-      // CANCEL EXISTING TIMER
-      recordingProvider.recordTimer?.cancel();
-
-      // START NEW TIMER
-      // IF TIMER EXPIRES, STOP RECORDING
-      recordingProvider.recordTimer =
-          Timer(const Duration(milliseconds: RecordingProvider.kMaxRecordMs), recordingProvider.stopRecording);
-
-    } catch (e) {
-      // _snack('Failed to start recording: $e');
-    }
-  }
-
   // @override
   // void dispose() {
   //   _recordTimer?.cancel();
@@ -69,11 +27,6 @@ class _RecordButtonState extends State<RecordButton> {
   //   super.dispose();
   // }
 
-  Future<String> _nextPath() async {
-    final dir = await getApplicationDocumentsDirectory();
-    final ts = DateTime.now().millisecondsSinceEpoch;
-    return '${dir.path}/readright_${_words[_index]}_$ts.m4a';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +35,7 @@ class _RecordButtonState extends State<RecordButton> {
     return ElevatedButton.icon(
       onPressed: () {
         // print("Record Button Pressed");
-        _startRecording();
+        recordingProvider.startRecording(mounted);
       },
       // onPressed: (!_recorderReady || _isRecording)
       //     ? null
