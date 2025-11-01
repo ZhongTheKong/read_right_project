@@ -53,7 +53,8 @@ class RecordingProvider extends ChangeNotifier {
   Future<String> _nextPath() async {
     final dir = await getApplicationDocumentsDirectory();
     final ts = DateTime.now().millisecondsSinceEpoch;
-    return '${dir.path}/readright_${words[index]}_$ts.m4a';
+    // return '${dir.path}/readright_${words[index]}_$ts.m4a';
+    return '${dir.path}/readright_${words[index]}_$ts.wav';
   }
 
   // Starts recording if possible
@@ -71,7 +72,8 @@ class RecordingProvider extends ChangeNotifier {
 
       // CREATE RECORIDNG CONFIGURATION
       final config = RecordConfig(
-        encoder: AudioEncoder.aacLc, // -> .m4a
+        // encoder: AudioEncoder.aacLc, // -> .m4a
+        encoder: AudioEncoder.wav, // -> .wav
         sampleRate: 44100,
         bitRate: 128000,
       );
