@@ -3,30 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
 
-class RecordButton extends StatefulWidget {
-  const RecordButton({super.key});
+class StartRecordButton extends StatefulWidget {
+  const StartRecordButton({super.key});
 
   @override
-  State<RecordButton> createState() => _RecordButtonState();
+  State<StartRecordButton> createState() => _StartRecordButtonState();
 }
 
-class _RecordButtonState extends State<RecordButton> {
-
-  @override
-  void initState() {
-    super.initState();
-    final recordingProvider = context.read<RecordingProvider>();
-    recordingProvider.initAudio(mounted);
-  }
-
-  // @override
-  // void dispose() {
-  //   _recordTimer?.cancel();
-  //   _player.dispose();
-  //   _recorder.cancel();
-  //   super.dispose();
-  // }
-
+class _StartRecordButtonState extends State<StartRecordButton> {
 
   @override
   Widget build(BuildContext context) {
