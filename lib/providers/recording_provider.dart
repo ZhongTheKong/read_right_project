@@ -165,4 +165,21 @@ class RecordingProvider extends ChangeNotifier {
       // _snack('Playback failed: $e');
     }
   }
+
+  void incrementIndex(int increment)
+  {
+    if (isRecording) return;
+    index = (index + increment) % words.length;
+    notifyListeners();
+  }
+
+  // void prevWord() {
+  //   if (isRecording) return;
+  //   setState(() => index = (index - 1) < 0 ? words.length - 1 : index - 1);
+  // }
+
+  // void nextWord() {
+  //   if (isRecording) return;
+  //   setState(() => index = (index + 1) % words.length);
+  // }
 }
