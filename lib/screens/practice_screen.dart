@@ -19,14 +19,15 @@ class _PracticeScreenState extends State<PracticeScreen> {
     recordingProvider.initAudio(mounted);
   }
 
-  @override
-  void dispose() {
-    final recordingProvider = context.read<RecordingProvider>();
-    recordingProvider.recordTimer?.cancel();
-    recordingProvider.player.dispose();
-    recordingProvider.recorder.cancel();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  // THIS CREATES AN ISSUE. TRYING TO LOOK THROUGH CONTEXT WHILE DISPOSING
+  //   final recordingProvider = context.read<RecordingProvider>();
+  //   recordingProvider.recordTimer?.cancel();
+  //   recordingProvider.player.dispose();
+  //   recordingProvider.recorder.cancel();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -44,15 +45,23 @@ class _PracticeScreenState extends State<PracticeScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Pronounce this word/phrase',
-              style: TextStyle(fontSize: 18),
+            Container(
+              color: Colors.red,
+              child: Column(
+                children: [
+                  const Text(
+                    'Pronounce this word/phrase',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  const SizedBox(height: 5),
+                  const Text(
+                    'DOOR',
+                    style: TextStyle(fontSize: 30),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 5),
-            const Text(
-              'DOOR',
-              style: TextStyle(fontSize: 30),
-            ),
+            
             const SizedBox(height: 20),
 
 
@@ -60,48 +69,54 @@ class _PracticeScreenState extends State<PracticeScreen> {
             // StartRecordButton(),
             // const SizedBox(height: 20),
 
-            ElevatedButton.icon(
-              onPressed: () {
-                recordingProvider.startRecording(mounted);
-              },
-              icon: const Icon(Icons.mic),
-              label: const Text('Start'),
+            Container(
+              color: Colors.blue,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      recordingProvider.startRecording(mounted);
+                    },
+                    icon: const Icon(Icons.mic),
+                    label: const Text('Start'),
+                  ),
+                  const SizedBox(width: 20),
+              
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      recordingProvider.stopRecording(mounted);
+                    },
+                    icon: const Icon(Icons.stop_circle_outlined),
+                    label: const Text('Stop'),
+                  ),
+                  const SizedBox(width: 20),
+              
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      recordingProvider.play(recordingProvider.attempts[recordingProvider.index].filePath, mounted);
+                    },
+                    icon: const Icon(Icons.play_arrow),
+                    label: const Text('Play'),
+                  ),
+              
+                  
+                  
+                ],
+              ),
             ),
+
             const SizedBox(height: 20),
 
-            ElevatedButton.icon(
-              onPressed: () {
-                recordingProvider.stopRecording(mounted);
-              },
-              icon: const Icon(Icons.stop_circle_outlined),
-              label: const Text('Stop'),
-            ),
-            const SizedBox(height: 20),
 
-            ElevatedButton.icon(
-              onPressed: () {
-                recordingProvider.play(recordingProvider.attempts[recordingProvider.index].filePath, mounted);
-              },
-              icon: const Icon(Icons.play_arrow),
-              label: const Text('Play'),
-            ),
-            const SizedBox(height: 20),
-
-            
             ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, AppRoutes.feedback);
               },
               child: const Text('Feedback'),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Navigate back to main screen and clear previous routes
-                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-              },
-              child: const Text('Back to Main Screen'),
-            ),
+            
+
           ],
         ),
       ),
