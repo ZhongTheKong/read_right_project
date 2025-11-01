@@ -16,6 +16,22 @@ class WordListScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
+            ElevatedButton(
+              onPressed: () {
+                print("Button pressed");
+              },
+              child: const Text('Practice a Word'),
+            ),
+            const SizedBox(height: 20),
+            
+            ElevatedButton(
+              onPressed: () {
+                print("Button pressed");
+              },
+              child: const Text('Practice a Pair of Words'),
+            ),
+            const SizedBox(height: 20),
+
 
             const Text(
               'Words on this screen will be used on practice screen.',
