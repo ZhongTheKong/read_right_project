@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'utils/routes.dart';
+import 'package:audio_session/audio_session.dart';
+
 
 void main() {
   runApp(
@@ -37,9 +39,24 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-class MainScreen extends StatelessWidget {
+class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
+
+  @override
+  State<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends State<MainScreen> {
+  Future<void> _configureAudioSession() async {
+    final session = await AudioSession.instance;
+    await session.configure(const AudioSessionConfiguration.speech());
+  }
+  
+  @override
+  void initState() {
+    super.initState();
+    _configureAudioSession();
+  }
 
   @override
   Widget build(BuildContext context) {
