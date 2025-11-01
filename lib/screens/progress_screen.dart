@@ -11,28 +11,32 @@ class ProgressScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Hello, World! This is the Progress Screen.',
+              'This is the Progress Screen. Here, you can see how well you are doing with your practice',
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
-
-
 
             Container(
               height: 100,
               width: 200,
               child: Column(
                 children: [
-                  const Text('Progress Chart Placeholder'),
-                  const SizedBox(height: 20),
-                  Icon(Icons.show_chart, size: 50, color: Theme.of(context).primaryColor)
+                  const Text('Username: '), /// Fill in once STT stores attempts for users
+                  const Text('Number of Attempts: '),
+                  const Text('Average Score: '),
                 ],
               )
             ),
             const SizedBox(height: 20),
 
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/practice');
+              },
+              child: const Text('Practice'),
+            ),
+            const SizedBox(height: 20),
 
-            
             ElevatedButton(
               onPressed: () {
                 // Navigate back to main screen and clear previous routes
