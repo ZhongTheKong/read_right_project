@@ -31,6 +31,9 @@ class RecordingProvider extends ChangeNotifier {
   final List<Attempt> attempts = [];
   static const int kMaxRecordMs = 7000;
   Timer? recordTimer;
+  int elapsedMs = 0;
+
+  static const int intervalMs = 50;    // update every 0.1s
 
   Future<void> initAudio(bool mounted) async {
     // Ask for permission; on macOS this triggers the system prompt if not yet granted.
@@ -91,6 +94,18 @@ class RecordingProvider extends ChangeNotifier {
       // IF TIMER EXPIRES, STOP RECORDING
       recordTimer =
           Timer(const Duration(milliseconds: kMaxRecordMs), () => stopRecording(mounted));
+
+      recordTimer = Timer.periodic(
+        const Duration(milliseconds: intervalMs), 
+        (timer) {
+          elapsedMs = timer.tick * intervalMs;
+          if (elapsedMs >= kMaxRecordMs) {
+            elapsedMs = kMaxRecordMs;
+            recordTimer?.cancel();
+          }
+          notifyListeners();
+        }
+      );
 
     } catch (e) {
       // _snack('Failed to start recording: $e');

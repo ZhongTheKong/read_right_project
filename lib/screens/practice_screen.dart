@@ -130,12 +130,12 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
             const SizedBox(height: 20),
 
-            // LinearProgressIndicator(
-            //   value: recordingProvider.recordTimer.,
-            //   minHeight: 10,
-            //   backgroundColor: Colors.grey[300],
-            //   valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
-            // ),
+            LinearProgressIndicator(
+              value: recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
+              minHeight: 10,
+              backgroundColor: Colors.grey[300],
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
+            ),
 
             const SizedBox(height: 20),
 
