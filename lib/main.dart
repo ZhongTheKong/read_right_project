@@ -7,14 +7,15 @@ import 'package:audio_session/audio_session.dart';
 
 void main() {
   runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => RecordingProvider()),
-        // ChangeNotifierProvider(create: (_) => NotesModel()),
-        // You could add more models here later (e.g., UserModel, ThemeModel).
-      ],
-      child: const MaterialApp(home: MyApp())
-    ),
+    const MaterialApp(home: MyApp())
+    // MultiProvider(
+    //   providers: [
+    //     ChangeNotifierProvider(create: (_) => RecordingProvider()),
+    //     // ChangeNotifierProvider(create: (_) => NotesModel()),
+    //     // You could add more models here later (e.g., UserModel, ThemeModel).
+    //   ],
+    //   child: const MaterialApp(home: MyApp())
+    // ),
   );
 }
 
