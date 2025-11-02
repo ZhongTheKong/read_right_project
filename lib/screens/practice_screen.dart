@@ -21,16 +21,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
     recordingProvider.initAudio(mounted);
   }
 
-  // @override
-  // void dispose() {
-  // THIS CREATES AN ISSUE. TRYING TO LOOK THROUGH CONTEXT WHILE DISPOSING
-  //   final recordingProvider = context.read<RecordingProvider>();
-  //   recordingProvider.recordTimer?.cancel();
-  //   recordingProvider.player.dispose();
-  //   recordingProvider.recorder.cancel();
-  //   super.dispose();
-  // }
-
   @override
   Widget build(BuildContext context) {
     final recordingProvider = context.watch<RecordingProvider>(); // 👈 watch
@@ -69,7 +59,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        recordingProvider.words[recordingProvider.index],
+                        recordingProvider.word_list[recordingProvider.index],
                         style: TextStyle(fontSize: 30),
                       ),
                     ],
@@ -114,7 +104,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 children: [
                   ElevatedButton.icon(
                     onPressed: () {
-                      recordingProvider.startRecording(mounted);
+                      recordingProvider.startRecording();
                     },
                     icon: const Icon(Icons.mic),
                     label: const Text('Start'),
@@ -123,7 +113,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
               
                   ElevatedButton.icon(
                     onPressed: () {
-                      recordingProvider.stopRecording(mounted);
+                      recordingProvider.stopRecording();
                     },
                     icon: const Icon(Icons.stop_circle_outlined),
                     label: const Text('Stop'),
@@ -167,7 +157,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                             tooltip: 'Play',
                             onPressed: (!exists || recordingProvider.isPlaying)
                                 ? null
-                                : () => recordingProvider.play(iterAttempt.filePath, mounted),
+                                : () => recordingProvider.play(iterAttempt.filePath),
                             icon: const Icon(Icons.play_arrow),
                           ),
                           

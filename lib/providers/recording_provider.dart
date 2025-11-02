@@ -15,7 +15,7 @@ class RecordingProvider extends ChangeNotifier {
   bool isRecording = false;
   bool isPlaying = false;
 
-  final List<String> words = const [
+  final List<String> word_list = const [
     'the',
     'and',
     'to',
@@ -51,21 +51,25 @@ class RecordingProvider extends ChangeNotifier {
     recorderReady = true;
     notifyListeners();
   }
+
+    @override
+  void dispose() {
+    recordTimer?.cancel();
+    player.dispose();
+    recorder.cancel();
+    super.dispose();
+  }
   
-  // Generates string for next path for audio file
+  /// Generates string for next path for audio file
   Future<String> _nextPath() async {
     final dir = await getApplicationDocumentsDirectory();
     final ts = DateTime.now().millisecondsSinceEpoch;
-    // return '${dir.path}/readright_${words[index]}_$ts.m4a';
-    return '${dir.path}/readright_${words[index]}_$ts.wav';
+    // return '${dir.path}/readright_${word_list[index]}_$ts.m4a';
+    return '${dir.path}/readright_${word_list[index]}_$ts.wav';
   }
 
-  // Starts recording if possible
-  Future<void> startRecording(bool mounted) async {
-    print("Recording Started");
-
-    // final recordingProvider = context.read<RecordingProvider>(); // 👈 watch
-
+  /// Starts recording if possible
+  Future<void> startRecording() async {
     // IF RECORDER IS NOT READY OR RECORDER IS ALREADY RECORDING, DON'T START RECORDING
     if (!recorderReady || isRecording) return;
     final path = await _nextPath();
@@ -93,7 +97,7 @@ class RecordingProvider extends ChangeNotifier {
       // START NEW TIMER
       // IF TIMER EXPIRES, STOP RECORDING
       recordTimer =
-          Timer(const Duration(milliseconds: kMaxRecordMs), () => stopRecording(mounted));
+          Timer(const Duration(milliseconds: kMaxRecordMs), () => stopRecording());
 
       recordTimer = Timer.periodic(
         const Duration(milliseconds: intervalMs), 
@@ -112,7 +116,9 @@ class RecordingProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> stopRecording(bool mounted) async {
+  /// Stops recording if possible
+  /// Saves attempt
+  Future<void> stopRecording() async {
     print("Recording Ended");
     // IF NOT RECORDING, CAN'T STOP RECORDING SO RETURN
     if (!isRecording) return;
@@ -143,7 +149,7 @@ class RecordingProvider extends ChangeNotifier {
       attempts.insert(
         0,
         Attempt(
-          word: words[index],
+          word: word_list[index],
           filePath: path,
           durationMs: (dur ?? Duration.zero).inMilliseconds,
         ),
@@ -151,15 +157,17 @@ class RecordingProvider extends ChangeNotifier {
 
       // UPDATE UI IF RECORD BUTTON IS ON SCREEN
       // if (mounted) setState(() {});
-      if (mounted) notifyListeners();
+      // if (mounted) notifyListeners();
+      notifyListeners();
 
-      // _snack('Saved attempt for "${_words[_index]}"');
+      // _snack('Saved attempt for "${_word_list[_index]}"');
     } catch (e) {
       // _snack('Failed to stop recording: $e');
     }
   }
 
-  Future<void> play(String path, bool mounted) async {
+  /// Plays audio file at path
+  Future<void> play(String path) async {
     if (isPlaying) return;
     try {
       await player.setFilePath(path);
@@ -181,20 +189,11 @@ class RecordingProvider extends ChangeNotifier {
     }
   }
 
+  /// Changes the current index of word list
   void incrementIndex(int increment)
   {
     if (isRecording) return;
-    index = (index + increment) % words.length;
+    index = (index + increment) % word_list.length;
     notifyListeners();
   }
-
-  // void prevWord() {
-  //   if (isRecording) return;
-  //   setState(() => index = (index - 1) < 0 ? words.length - 1 : index - 1);
-  // }
-
-  // void nextWord() {
-  //   if (isRecording) return;
-  //   setState(() => index = (index + 1) % words.length);
-  // }
 }
