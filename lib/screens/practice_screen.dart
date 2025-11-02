@@ -29,11 +29,11 @@ class _PracticeScreenState extends State<PracticeScreen> {
     return ChangeNotifierProvider.value(
       value: recordingProvider,
       child: Scaffold(
+        backgroundColor: Colors.blue[800],
         appBar: AppBar(
-          title: Center(
-            child: const Text(
-              'PRACTICE'
-            )
+          centerTitle: true,
+          title: const Text(
+            'PRACTICE'
           )
         ),
         body: Center(
@@ -43,12 +43,12 @@ class _PracticeScreenState extends State<PracticeScreen> {
               Container(
                 color: Colors.red,
                 child: Consumer<RecordingProvider>(
-                  builder: (context, RecordingProvider recordingProviderReference, child) => Row(
+                  builder: (context, RecordingProvider recorder, child) => Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                         
                       IconButton(
-                        onPressed: () => recordingProviderReference.incrementIndex(-1), 
+                        onPressed: () => recorder.incrementIndex(-1), 
                         icon: Icon(
                           Icons.arrow_left
                         ),
@@ -57,19 +57,19 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       Column(
                         children: [
                           Text(
-                            'Word #${recordingProviderReference.index + 1}',
+                            'Word #${recorder.index + 1}',
                             style: TextStyle(fontSize: 18),
                           ),
                           const SizedBox(height: 5),
                           Text(
-                            recordingProviderReference.word_list[recordingProviderReference.index],
+                            recorder.word_list[recorder.index],
                             style: TextStyle(fontSize: 30),
                           ),
                         ],
                       ),
                         
                       IconButton(
-                        onPressed: () => recordingProviderReference.incrementIndex(1), 
+                        onPressed: () => recorder.incrementIndex(1), 
                         icon: Icon(
                           Icons.arrow_right
                         ),
@@ -91,10 +91,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Consumer<RecordingProvider>(
-                    builder: (BuildContext context, RecordingProvider recordingProviderReference, Widget? child) => LinearProgressIndicator(
-                      value: recordingProviderReference.elapsedMs / RecordingProvider.kMaxRecordMs >= 0.99 
+                    builder: (BuildContext context, RecordingProvider recorder, Widget? child) => LinearProgressIndicator(
+                      value: recorder.elapsedMs / RecordingProvider.kMaxRecordMs >= 0.99 
                             ? 1.0 
-                            : recordingProviderReference.elapsedMs / RecordingProvider.kMaxRecordMs,
+                            : recorder.elapsedMs / RecordingProvider.kMaxRecordMs,
                       minHeight: 10,
                       backgroundColor: Colors.grey[300],
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
@@ -108,12 +108,12 @@ class _PracticeScreenState extends State<PracticeScreen> {
               Container(
                 color: Colors.blue,
                 child: Consumer<RecordingProvider>(
-                  builder: (BuildContext context, RecordingProvider recordingProviderReference, Widget? child) => Row(
+                  builder: (BuildContext context, RecordingProvider recorder, Widget? child) => Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton.icon(
                         onPressed: () {
-                          recordingProviderReference.startRecording();
+                          recorder.startRecording();
                         },
                         icon: const Icon(Icons.mic),
                         label: const Text('Start'),
@@ -122,7 +122,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   
                       ElevatedButton.icon(
                         onPressed: () {
-                          recordingProviderReference.stopRecording();
+                          recorder.stopRecording();
                         },
                         icon: const Icon(Icons.stop_circle_outlined),
                         label: const Text('Stop'),
@@ -135,60 +135,68 @@ class _PracticeScreenState extends State<PracticeScreen> {
       
               const SizedBox(height: 20),
       
-              Consumer<RecordingProvider>(
-                builder: (BuildContext context, RecordingProvider recordingProviderReference, Widget? child) => Expanded(
-                  child: recordingProviderReference.attempts.isEmpty
-                  ? const Center(
-                      child: Text('No attempts yet. Record your first try!')
-                  )
-                  : ListView.separated(
-                      itemCount: recordingProviderReference.attempts.length,
-                      separatorBuilder: (_, __) => const SizedBox(height: 8),
-                      itemBuilder: (context, i) {
-                      
-                      
-                        final iterAttempt = recordingProviderReference.attempts[i];
-                        final exists = File(iterAttempt.filePath).existsSync();
-                      
-                      
-                        return ListTile(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                            side: const BorderSide(width: 0.5),
-                          ),
-                          title: Text(iterAttempt.word),
-                      
-                          subtitle: Text(
-                              'Date: ${iterAttempt.createdAt.toLocal()}\nDuration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s'),
-                      
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min, 
-                            children: [
-                              IconButton(
-                                tooltip: 'Play',
-                                onPressed: (!exists || recordingProviderReference.isPlaying)
-                                    ? null
-                                    : () => recordingProviderReference.play(iterAttempt.filePath),
-                                icon: const Icon(Icons.play_arrow),
+              Expanded(
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.blue, width: 3),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Consumer<RecordingProvider>(
+                    builder: (BuildContext context, RecordingProvider recorder, Widget? child) => Expanded(
+                      child: recorder.attempts.isEmpty
+                      ? const Center(
+                          child: Text('No attempts yet. Record your first try!')
+                      )
+                      : ListView.separated(
+                          itemCount: recorder.attempts.length,
+                          separatorBuilder: (_, __) => const SizedBox(height: 8),
+                          itemBuilder: (context, i) {
+                          
+                          
+                            final iterAttempt = recorder.attempts[i];
+                            final exists = File(iterAttempt.filePath).existsSync();
+                          
+                          
+                            return ListTile(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: const BorderSide(width: 0.5),
                               ),
-                              
-                              IconButton(
-                                tooltip: 'Stop',
-                      
-                                // TODO: CREATE A BETTER PLAY ATTEMPT BUTTON CALLBACK
-                                onPressed: recordingProviderReference.isPlaying
-                                    ? () => recordingProviderReference.player.stop().then(
-                                        (_) => setState(() => recordingProviderReference.isPlaying = false))
-                                    : null,
-                      
-                                icon: const Icon(Icons.stop),
+                              title: Text(iterAttempt.word),
+                          
+                              subtitle: Text(
+                                  'Date: ${iterAttempt.createdAt.toLocal()}\nDuration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s'),
+                          
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min, 
+                                children: [
+                                  IconButton(
+                                    tooltip: 'Play',
+                                    onPressed: (!exists || recorder.isPlaying)
+                                        ? null
+                                        : () => recorder.play(iterAttempt.filePath),
+                                    icon: const Icon(Icons.play_arrow),
+                                  ),
+                                  
+                                  IconButton(
+                                    tooltip: 'Stop',
+                          
+                                    // TODO: CREATE A BETTER PLAY ATTEMPT BUTTON CALLBACK
+                                    onPressed: recorder.isPlaying
+                                        ? () => recorder.player.stop().then(
+                                            (_) => setState(() => recorder.isPlaying = false))
+                                        : null,
+                          
+                                    icon: const Icon(Icons.stop),
+                                  ),
+                                ]
                               ),
-                            ]
-                          ),
-                        );
-                      
-                        
-                      },
+                            );
+                          
+                            
+                          },
+                      ),
+                    ),
                   ),
                 ),
               ),
