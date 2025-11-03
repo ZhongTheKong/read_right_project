@@ -46,7 +46,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 child: Container(
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: Colors.red,
+                    color: Colors.blue[300],
                     border: Border.all(color: Colors.blue, width: 2), // outline color & width
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -77,14 +77,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
                           children: [
                             Text(
                               'Word #${recorder.index + 1}',
-                              style: TextStyle(fontSize: 18),
+                              style: TextStyle(fontSize: 30),
                             ),
                             const SizedBox(height: 5),
                             Row(
                               children: [
                                 Text(
                                   recorder.word_list[recorder.index],
-                                  style: TextStyle(fontSize: 30),
+                                  style: TextStyle(fontSize: 150),
                                 ),
                               ],
                             ),
@@ -113,10 +113,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   ),
                 ),
               ),
+
+              const SizedBox(height: 10),
       
-              const SizedBox(height: 20),
-
-
               // LINEAR PROGRESS INDICATOR
               Container(
                 width: 400,
@@ -140,10 +139,16 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 ),
               ),
               
-              const SizedBox(height: 20),
-      
               Container(
-                color: Colors.blue,
+                width: 450,
+                padding: EdgeInsets.all(10),
+                margin: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.blue[300],
+                  border: Border.all(color: Colors.blue, width: 2), // outline color & width
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                // color: Colors.blue,
                 child: Consumer<RecordingProvider>(
                   builder: (BuildContext context, RecordingProvider recorder, Widget? child) => Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -160,94 +165,125 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       ElevatedButton.icon(
                         onPressed: () {
                           recorder.stopRecording();
+                          Navigator.pushNamed(context, AppRoutes.feedback);
                         },
                         icon: const Icon(Icons.stop_circle_outlined),
                         label: const Text('Stop'),
                       ),
                       const SizedBox(width: 20),
+
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          recorder.play(recorder.attempts[recorder.index].filePath);
+                        },
+                        icon: const Icon(Icons.play_arrow),
+                        label: const Text('Playback'),
+                      ),
                     ],
                   ),
                 ),
               ),
       
-              Expanded(
-                child: Container(
-                  margin: EdgeInsets.all(20),
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blue, width: 3),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Consumer<RecordingProvider>(
-                    builder: (BuildContext context, RecordingProvider recorder, Widget? child) => recorder.attempts.isEmpty
-                      ? const Center(
-                          child: Text('No attempts yet. Record your first try!')
-                      )
-                      : ClipRRect(
-                        borderRadius: BorderRadiusGeometry.circular(8),
-                        child: ListView.separated(
-                            itemCount: recorder.attempts.length,
-                            separatorBuilder: (_, __) => const SizedBox(height: 8),
-                            itemBuilder: (context, i) {
+              // Expanded(
+              //   child: Container(
+              //     margin: EdgeInsets.all(20),
+              //     padding: EdgeInsets.all(5),
+              //     decoration: BoxDecoration(
+              //       border: Border.all(color: Colors.blue, width: 3),
+              //       borderRadius: BorderRadius.circular(8),
+              //     ),
+              //     child: Consumer<RecordingProvider>(
+              //       builder: (BuildContext context, RecordingProvider recorder, Widget? child) => recorder.attempts.isEmpty
+              //         ? const Center(
+              //             child: Text('No attempts yet. Record your first try!')
+              //         )
+              //         : ClipRRect(
+              //           borderRadius: BorderRadiusGeometry.circular(8),
+              //           child: ListView.separated(
+              //               itemCount: recorder.attempts.length,
+              //               separatorBuilder: (_, __) => const SizedBox(height: 8),
+              //               itemBuilder: (context, i) {
                             
-                              final iterAttempt = recorder.attempts[i];
-                              final exists = File(iterAttempt.filePath).existsSync();
+              //                 final iterAttempt = recorder.attempts[i];
+              //                 final exists = File(iterAttempt.filePath).existsSync();
                             
-                              return Material(
-                                color: Colors.transparent,
-                                child: ListTile(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    side: const BorderSide(width: 1),
-                                  ),
-                                  title: Text(iterAttempt.word),
+              //                 return Material(
+              //                   color: Colors.transparent,
+              //                   child: ListTile(
+              //                     shape: RoundedRectangleBorder(
+              //                       borderRadius: BorderRadius.circular(12),
+              //                       side: const BorderSide(width: 1),
+              //                     ),
+              //                     title: Text(iterAttempt.word),
                                                             
-                                  subtitle: Text(
-                                      'Attempt ${recorder.attempts.length - i}\nDate: ${iterAttempt.createdAt.toLocal()}\nDuration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s'),
+              //                     subtitle: Text(
+              //                         'Attempt ${recorder.attempts.length - i}\nDate: ${iterAttempt.createdAt.toLocal()}\nDuration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s'),
                                                             
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min, 
-                                    children: [
-                                      IconButton(
-                                        tooltip: 'Play',
-                                        onPressed: (!exists || recorder.isPlaying)
-                                            ? null
-                                            : () => recorder.play(iterAttempt.filePath),
-                                        icon: const Icon(Icons.play_arrow),
-                                      ),
+              //                     trailing: Row(
+              //                       mainAxisSize: MainAxisSize.min, 
+              //                       children: [
+              //                         IconButton(
+              //                           tooltip: 'Play',
+              //                           onPressed: (!exists || recorder.isPlaying)
+              //                               ? null
+              //                               : () => recorder.play(iterAttempt.filePath),
+              //                           icon: const Icon(Icons.play_arrow),
+              //                         ),
                                       
-                                      IconButton(
-                                        tooltip: 'Stop',
+              //                         IconButton(
+              //                           tooltip: 'Stop',
                                                             
-                                        // TODO: CREATE A BETTER PLAY ATTEMPT BUTTON CALLBACK
-                                        onPressed: recorder.isPlaying
-                                            ? () => recorder.player.stop().then(
-                                                (_) => setState(() => recorder.isPlaying = false))
-                                            : null,
+              //                           // TODO: CREATE A BETTER PLAY ATTEMPT BUTTON CALLBACK
+              //                           onPressed: recorder.isPlaying
+              //                               ? () => recorder.player.stop().then(
+              //                                   (_) => setState(() => recorder.isPlaying = false))
+              //                               : null,
                                                             
-                                        icon: const Icon(Icons.stop),
-                                      ),
+              //                           icon: const Icon(Icons.stop),
+              //                         ),
                                                         
-                                      IconButton(onPressed: (){}, icon: Icon(Icons.feedback))
-                                    ]
-                                  ),
-                                ),
-                              );
+              //                         IconButton(onPressed: (){}, icon: Icon(Icons.feedback))
+              //                       ]
+              //                     ),
+              //                   ),
+              //                 );
                             
                               
-                            },
-                          ),
-                      ),
-                  ),
+              //               },
+              //             ),
+              //         ),
+              //     ),
+              //   ),
+              // ),
+      
+              Container(
+                width: 400,
+                padding: EdgeInsets.all(10),
+                margin: EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.blue[300],
+                  border: Border.all(color: Colors.blue, width: 2), // outline color & width
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.feedback);
+                      },
+                      child: const Text('Review Feedback'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.feedback);
+                      },
+                      child: const Text('View Progress'),
+                    ),
+                  ],
                 ),
               ),
-      
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.feedback);
-                },
-                child: const Text('Feedback'),
-              ),
+              
               
       
             ],
