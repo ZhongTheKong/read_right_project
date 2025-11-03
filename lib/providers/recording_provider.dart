@@ -5,6 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:read_right_project/utils/attempt.dart';
 import 'package:record/record.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RecordingProvider extends ChangeNotifier {
   final recorder = AudioRecorder();
@@ -33,8 +34,20 @@ class RecordingProvider extends ChangeNotifier {
   static const int kMaxRecordMs = 7000;
   Timer? recordTimer;
   int elapsedMs = 0;
+  // To keep track of the current logged in user
+  String username = 'Guest';
+
 
   static const int intervalMs = 50;
+
+  // Calculate average score
+  double get averageScore {
+    if (attempts.isEmpty) return 0.0;
+    final totalScore = attempts.fold(0.0, (sum, attempt) => sum + attempt.score);
+    return totalScore / attempts.length;
+  }
+
+  int get numberOfAttempts => attempts.length;
 
   Future<void> initAudio(bool mounted) async {
     final hasPerm = await recorder.hasPermission();
@@ -46,6 +59,15 @@ class RecordingProvider extends ChangeNotifier {
 
     _speech = stt.SpeechToText();
 
+    await _loadUsername();
+
+    notifyListeners();
+  }
+
+  // Load the username from local storage
+  Future<void> _loadUsername() async {
+    final prefs = await SharedPreferences.getInstance();
+    username = prefs.getString('username') ?? 'Guest';
     notifyListeners();
   }
 
@@ -119,6 +141,7 @@ class RecordingProvider extends ChangeNotifier {
         0,
         Attempt(
           word: word_list[index],
+          score: elapsedMs / kMaxRecordMs, // Placeholder for score
           filePath: path,
           durationMs: (dur ?? Duration.zero).inMilliseconds,
         ),
@@ -170,6 +193,8 @@ class RecordingProvider extends ChangeNotifier {
       await _speech.listen(
         onResult: (result) {
           print('Transcription: ${result.recognizedWords}');
+          /// Compare result.recognizedWords with the word_list[index]
+
         },
         listenFor: Duration(seconds: 10),
       );
