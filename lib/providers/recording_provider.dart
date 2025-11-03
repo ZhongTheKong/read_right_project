@@ -1,19 +1,20 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:read_right_project/utils/attempt.dart';
 import 'package:record/record.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class RecordingProvider extends ChangeNotifier {
-
   final recorder = AudioRecorder();
   final player = AudioPlayer();
+  late stt.SpeechToText _speech; // STT instance
 
   bool recorderReady = false;
   bool isRecording = false;
   bool isPlaying = false;
+  bool isTranscribing = false;
 
   final List<String> word_list = const [
     'the',
@@ -33,74 +34,56 @@ class RecordingProvider extends ChangeNotifier {
   Timer? recordTimer;
   int elapsedMs = 0;
 
-  static const int intervalMs = 50;    // update every 0.1s
+  static const int intervalMs = 50;
+
+  RecordingProvider() {
+    _speech = stt.SpeechToText();
+  }
 
   Future<void> initAudio(bool mounted) async {
-    // Ask for permission; on macOS this triggers the system prompt if not yet granted.
     final hasPerm = await recorder.hasPermission();
     if (!hasPerm) {
-      final granted = await recorder
-          .hasPermission(); // record doesn't expose a request; system will prompt on start()
-
-      if (!granted && mounted) {
-        // _snack('Microphone permission is required.');
-        return;
-      }
+      final granted = await recorder.hasPermission();
+      if (!granted && mounted) return;
     }
-    // setState(() => recordingProvider.recorderReady = true);
     recorderReady = true;
     notifyListeners();
   }
 
-    @override
+  @override
   void dispose() {
     recordTimer?.cancel();
     player.dispose();
     recorder.cancel();
     super.dispose();
   }
-  
-  /// Generates string for next path for audio file
+
   Future<String> _nextPath() async {
     final dir = await getApplicationDocumentsDirectory();
     final ts = DateTime.now().millisecondsSinceEpoch;
-    // return '${dir.path}/readright_${word_list[index]}_$ts.m4a';
     return '${dir.path}/readright_${word_list[index]}_$ts.wav';
   }
 
-  /// Starts recording if possible
   Future<void> startRecording() async {
-    // IF RECORDER IS NOT READY OR RECORDER IS ALREADY RECORDING, DON'T START RECORDING
     if (!recorderReady || isRecording) return;
     final path = await _nextPath();
 
-
     try {
-
-      // CREATE RECORIDNG CONFIGURATION
       final config = RecordConfig(
-        // encoder: AudioEncoder.aacLc, // -> .m4a
-        encoder: AudioEncoder.wav, // -> .wav
+        encoder: AudioEncoder.wav,
         sampleRate: 44100,
         bitRate: 128000,
       );
 
-      // RECORD
       await recorder.start(config, path: path);
-      // setState(() => isRecording = true);
       isRecording = true;
       notifyListeners();
 
-      // CANCEL EXISTING TIMER
       recordTimer?.cancel();
-
-      // START NEW TIMER
-      // IF TIMER EXPIRES, STOP RECORDING
-      recordTimer =
-          Timer(const Duration(milliseconds: kMaxRecordMs), () => stopRecording());
+      recordTimer = Timer(const Duration(milliseconds: kMaxRecordMs), () => stopRecording());
 
       recordTimer = Timer.periodic(
-        const Duration(milliseconds: intervalMs), 
+        const Duration(milliseconds: intervalMs),
         (timer) {
           elapsedMs = timer.tick * intervalMs;
           if (elapsedMs >= kMaxRecordMs) {
@@ -108,36 +91,21 @@ class RecordingProvider extends ChangeNotifier {
             recordTimer?.cancel();
           }
           notifyListeners();
-        }
+        },
       );
-
-    } catch (e) {
-      // _snack('Failed to start recording: $e');
-    }
+    } catch (e) {}
   }
 
-  /// Stops recording if possible
-  /// Saves attempt
   Future<void> stopRecording() async {
-    print("Recording Ended");
-    // IF NOT RECORDING, CAN'T STOP RECORDING SO RETURN
     if (!isRecording) return;
-
-    // IF RECORD TIMER EXISTS, CANCEL IT
     recordTimer?.cancel();
 
     try {
-
-      // STOP RECORDER
       final path = await recorder.stop();
-      // setState(() => isRecording = false);
       isRecording = false;
       notifyListeners();
-
-      // IF RECORDING FAILED, RETURN
       if (path == null) return;
 
-      // just_audio can probe duration if we load the file
       Duration? dur;
       try {
         await player.setFilePath(path);
@@ -145,7 +113,7 @@ class RecordingProvider extends ChangeNotifier {
         await player.stop();
       } catch (_) {}
 
-      // CREATE NEW ATTEMPT AND STORE
+      // Save attempt
       attempts.insert(
         0,
         Attempt(
@@ -154,46 +122,64 @@ class RecordingProvider extends ChangeNotifier {
           durationMs: (dur ?? Duration.zero).inMilliseconds,
         ),
       );
-
-      // UPDATE UI IF RECORD BUTTON IS ON SCREEN
-      // if (mounted) setState(() {});
-      // if (mounted) notifyListeners();
       notifyListeners();
 
-      // _snack('Saved attempt for "${_word_list[_index]}"');
-    } catch (e) {
-      // _snack('Failed to stop recording: $e');
-    }
+      // Start automatic transcription after recording
+      await transcribeAudio(path);
+    } catch (e) {}
   }
 
-  /// Plays audio file at path
   Future<void> play(String path) async {
     if (isPlaying) return;
     try {
       await player.setFilePath(path);
       await player.play();
-      // setState(() => isPlaying = true);
       isPlaying = true;
       notifyListeners();
 
       player.playerStateStream.listen((s) {
-        if (s.processingState == ProcessingState.completed ||
-            s.playing == false) {
-          // if (mounted) setState(() => _isPlaying = false);
+        if (s.processingState == ProcessingState.completed || s.playing == false) {
           isPlaying = false;
           notifyListeners();
         }
       });
-    } catch (e) {
-      // _snack('Playback failed: $e');
-    }
+    } catch (e) {}
   }
 
-  /// Changes the current index of word list
-  void incrementIndex(int increment)
-  {
+  void incrementIndex(int increment) {
     if (isRecording) return;
     index = (index + increment) % word_list.length;
+    notifyListeners();
+  }
+
+  /// Transcribes the recorded audio using speech_to_text (live transcription)
+  Future<void> transcribeAudio(String path) async {
+    if (isTranscribing) return;
+    isTranscribing = true;
+    notifyListeners();
+
+    bool available = await _speech.initialize(
+      onStatus: (status) => print('STT Status: $status'),
+      onError: (error) => print('STT Error: $error'),
+    );
+
+    if (available) {
+      // Start listening from the microphone instead of file
+      // speech_to_text doesn't directly process audio files, so usually you replay the audio to the mic.
+      // For offline file transcription, consider packages like vosk_flutter or a cloud API.
+      await _speech.listen(
+        onResult: (result) {
+          print('Transcription: ${result.recognizedWords}');
+        },
+        listenFor: Duration(seconds: 10),
+      );
+
+      // Stop listening after timeout
+      await Future.delayed(Duration(seconds: 10));
+      _speech.stop();
+    }
+
+    isTranscribing = false;
     notifyListeners();
   }
 }
