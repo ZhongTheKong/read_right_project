@@ -27,7 +27,6 @@ class TeacherDashboardScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
 
-                  // Transcription status
                   Text(
                     provider.isTranscribing
                         ? 'Transcribing...'
