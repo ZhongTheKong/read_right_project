@@ -49,7 +49,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                             style: const TextStyle(fontSize: 18),
                         ),
                         Text(
-                            'Number of Attempts: ${recordingProvider.attempts.length}',
+                            'Number of Attempts: ${recordingProvider.numberOfAttempts}',
                             style: const TextStyle(fontSize: 18),
                         ),
                         Text(
