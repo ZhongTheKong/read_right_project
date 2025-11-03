@@ -1,9 +1,18 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/recording_provider.dart';
 
-class ProgressScreen extends StatelessWidget {
+class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
+
+  @override
+  State<ProgressScreen> createState() => _ProgressScreenState();
+}
+
+class _ProgressScreenState extends State<ProgressScreen> {
+
   @override
   Widget build(BuildContext context) {
     return Consumer<RecordingProvider>(
@@ -43,6 +52,78 @@ class ProgressScreen extends StatelessWidget {
                     )
                 ),
                 const SizedBox(height: 20),
+
+                Expanded(
+                child: Container(
+                  margin: EdgeInsets.all(20),
+                  padding: EdgeInsets.all(5),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.blue, width: 3),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Consumer<RecordingProvider>(
+                    builder: (BuildContext context, RecordingProvider recorder, Widget? child) => recorder.attempts.isEmpty
+                      ? const Center(
+                          child: Text('No attempts yet')
+                      )
+                      : ClipRRect(
+                        borderRadius: BorderRadiusGeometry.circular(8),
+                        child: ListView.separated(
+                            itemCount: recorder.attempts.length,
+                            separatorBuilder: (_, __) => const SizedBox(height: 8),
+                            itemBuilder: (context, i) {
+                            
+                              final iterAttempt = recorder.attempts[i];
+                              final exists = File(iterAttempt.filePath).existsSync();
+                            
+                              return Material(
+                                color: Colors.transparent,
+                                child: ListTile(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    side: const BorderSide(width: 1),
+                                  ),
+                                  title: Text(iterAttempt.word),
+                                                            
+                                  subtitle: Text(
+                                      'Attempt ${recorder.attempts.length - i}\nDate: ${iterAttempt.createdAt.toLocal()}\nDuration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s'),
+                                                            
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min, 
+                                    children: [
+                                      IconButton(
+                                        tooltip: 'Play',
+                                        onPressed: (!exists || recorder.isPlaying)
+                                            ? null
+                                            : () => recorder.play(iterAttempt.filePath),
+                                        icon: const Icon(Icons.play_arrow),
+                                      ),
+                                      
+                                      IconButton(
+                                        tooltip: 'Stop',
+                                                            
+                                        // TODO: CREATE A BETTER PLAY ATTEMPT BUTTON CALLBACK
+                                        onPressed: recorder.isPlaying
+                                            ? () => recorder.player.stop().then(
+                                                (_) => setState(() => recorder.isPlaying = false))
+                                            : null,
+                                                            
+                                        icon: const Icon(Icons.stop),
+                                      ),
+                                                        
+                                      IconButton(onPressed: (){}, icon: Icon(Icons.feedback))
+                                    ]
+                                  ),
+                                ),
+                              );
+                            
+                              
+                            },
+                          ),
+                      ),
+                  ),
+                ),
+              ),
 
                 ElevatedButton(
                   onPressed: () {
