@@ -85,6 +85,7 @@ class RecordingProvider extends ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     _username = prefs.getString('username') ?? 'Guest';
     notifyListeners();
+
   }
 
   // Save the username to local storage
@@ -111,6 +112,7 @@ class RecordingProvider extends ChangeNotifier {
 
   Future<void> startRecording() async {
     if (!recorderReady || isRecording) return;
+    
     final path = await _nextPath();
 
     try {

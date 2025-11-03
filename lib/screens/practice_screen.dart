@@ -26,6 +26,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
   @override
   Widget build(BuildContext context) {
 
+  // RecordingProvider r = context.read<RecordingProvider>();
+
     return ChangeNotifierProvider.value(
       value: recordingProvider,
       child: Scaffold(
@@ -40,6 +42,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              
+              // WORD DISPLAY
               SizedBox(
                 // color: Colors.red,
                 width: 500,
@@ -139,6 +143,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 ),
               ),
               
+              // RECORDING CONTROLS
               Container(
                 width: 450,
                 padding: EdgeInsets.all(10),
@@ -183,79 +188,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   ),
                 ),
               ),
-      
-              // Expanded(
-              //   child: Container(
-              //     margin: EdgeInsets.all(20),
-              //     padding: EdgeInsets.all(5),
-              //     decoration: BoxDecoration(
-              //       border: Border.all(color: Colors.blue, width: 3),
-              //       borderRadius: BorderRadius.circular(8),
-              //     ),
-              //     child: Consumer<RecordingProvider>(
-              //       builder: (BuildContext context, RecordingProvider recorder, Widget? child) => recorder.attempts.isEmpty
-              //         ? const Center(
-              //             child: Text('No attempts yet. Record your first try!')
-              //         )
-              //         : ClipRRect(
-              //           borderRadius: BorderRadiusGeometry.circular(8),
-              //           child: ListView.separated(
-              //               itemCount: recorder.attempts.length,
-              //               separatorBuilder: (_, __) => const SizedBox(height: 8),
-              //               itemBuilder: (context, i) {
-                            
-              //                 final iterAttempt = recorder.attempts[i];
-              //                 final exists = File(iterAttempt.filePath).existsSync();
-                            
-              //                 return Material(
-              //                   color: Colors.transparent,
-              //                   child: ListTile(
-              //                     shape: RoundedRectangleBorder(
-              //                       borderRadius: BorderRadius.circular(12),
-              //                       side: const BorderSide(width: 1),
-              //                     ),
-              //                     title: Text(iterAttempt.word),
-                                                            
-              //                     subtitle: Text(
-              //                         'Attempt ${recorder.attempts.length - i}\nDate: ${iterAttempt.createdAt.toLocal()}\nDuration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s'),
-                                                            
-              //                     trailing: Row(
-              //                       mainAxisSize: MainAxisSize.min, 
-              //                       children: [
-              //                         IconButton(
-              //                           tooltip: 'Play',
-              //                           onPressed: (!exists || recorder.isPlaying)
-              //                               ? null
-              //                               : () => recorder.play(iterAttempt.filePath),
-              //                           icon: const Icon(Icons.play_arrow),
-              //                         ),
-                                      
-              //                         IconButton(
-              //                           tooltip: 'Stop',
-                                                            
-              //                           // TODO: CREATE A BETTER PLAY ATTEMPT BUTTON CALLBACK
-              //                           onPressed: recorder.isPlaying
-              //                               ? () => recorder.player.stop().then(
-              //                                   (_) => setState(() => recorder.isPlaying = false))
-              //                               : null,
-                                                            
-              //                           icon: const Icon(Icons.stop),
-              //                         ),
-                                                        
-              //                         IconButton(onPressed: (){}, icon: Icon(Icons.feedback))
-              //                       ]
-              //                     ),
-              //                   ),
-              //                 );
-                            
-                              
-              //               },
-              //             ),
-              //         ),
-              //     ),
-              //   ),
-              // ),
-      
+
+              // FEEDBACK CONTROLS
               Container(
                 width: 400,
                 padding: EdgeInsets.all(10),
@@ -276,7 +210,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.feedback);
+                        Navigator.pushNamed(context, AppRoutes.progress);
                       },
                       child: const Text('View Progress'),
                     ),
@@ -284,8 +218,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 ),
               ),
               
-              
-      
             ],
           ),
         ),

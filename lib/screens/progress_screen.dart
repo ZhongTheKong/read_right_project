@@ -13,10 +13,17 @@ class ProgressScreen extends StatefulWidget {
 
 class _ProgressScreenState extends State<ProgressScreen> {
 
+
   @override
   Widget build(BuildContext context) {
+
+    // RecordingProvider recordingProvider = context.watch<RecordingProvider>();
+
+
     return Consumer<RecordingProvider>(
       builder: (context, recordingProvider, child) {
+
+
         return Scaffold(
           appBar: AppBar(title: const Text('Progress Screen')),
           body: Center(
@@ -144,7 +151,11 @@ class _ProgressScreenState extends State<ProgressScreen> {
             ),
           ),
         );
+
+
       },
     );
+
+
   }
 }
