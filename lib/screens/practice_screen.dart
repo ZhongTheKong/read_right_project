@@ -14,23 +14,24 @@ class PracticeScreen extends StatefulWidget {
 
 class _PracticeScreenState extends State<PracticeScreen> {
 
-  late final RecordingProvider recordingProvider;
+  // late final RecordingProvider recordingProvider;
 
   @override
   void initState() {
     super.initState();
-    recordingProvider = RecordingProvider();
+    RecordingProvider recordingProvider = context.read<RecordingProvider>();
+    // recordingProvider = RecordingProvider();
     recordingProvider.initAudio(mounted);
   }
 
   @override
   Widget build(BuildContext context) {
+    RecordingProvider recordingProvider = context.watch<RecordingProvider>();
 
-  // RecordingProvider r = context.read<RecordingProvider>();
-
-    return ChangeNotifierProvider.value(
-      value: recordingProvider,
-      child: Scaffold(
+    // return ChangeNotifierProvider.value(
+      // value: recordingProvider,
+      // child: Scaffold(
+      return Scaffold(
         backgroundColor: Colors.blue[800],
         appBar: AppBar(
           centerTitle: true,
@@ -54,8 +55,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
                     border: Border.all(color: Colors.blue, width: 2), // outline color & width
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Consumer<RecordingProvider>(
-                    builder: (context, RecordingProvider recorder, child) => Row(
+                  // child: Consumer<RecordingProvider>(
+                    // builder: (context, RecordingProvider recordingProvider, child) => Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                           
@@ -68,7 +70,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                 border: Border.all(color: Colors.blue, width: 2), // outline color & width
                               ),
                               child: IconButton(
-                                onPressed: () => recorder.incrementIndex(-1), 
+                                onPressed: () => recordingProvider.incrementIndex(-1), 
                                 icon: Icon(
                                   Icons.arrow_left
                                 ),
@@ -80,14 +82,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         Column(
                           children: [
                             Text(
-                              'Word #${recorder.index + 1}',
+                              'Word #${recordingProvider.index + 1}',
                               style: TextStyle(fontSize: 30),
                             ),
                             const SizedBox(height: 5),
                             Row(
                               children: [
                                 Text(
-                                  recorder.word_list[recorder.index],
+                                  recordingProvider.word_list[recordingProvider.index],
                                   style: TextStyle(fontSize: 150),
                                 ),
                               ],
@@ -104,7 +106,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                 border: Border.all(color: Colors.blue, width: 2), // outline color & width
                               ),
                               child: IconButton(
-                                onPressed: () => recorder.incrementIndex(1), 
+                                onPressed: () => recordingProvider.incrementIndex(1), 
                                 icon: Icon(
                                   Icons.arrow_right
                                 ),
@@ -114,7 +116,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         )
                       ],
                     ),
-                  ),
+                  // ),
                 ),
               ),
 
@@ -130,16 +132,17 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: Consumer<RecordingProvider>(
-                    builder: (BuildContext context, RecordingProvider recorder, Widget? child) => LinearProgressIndicator(
-                      value: recorder.elapsedMs / RecordingProvider.kMaxRecordMs >= 0.99 
+                  // child: Consumer<RecordingProvider>(
+                    // builder: (BuildContext context, RecordingProvider recordingProvider, Widget? child) => LinearProgressIndicator(
+                    child: LinearProgressIndicator(
+                      value: recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs >= 0.99 
                             ? 1.0 
-                            : recorder.elapsedMs / RecordingProvider.kMaxRecordMs,
+                            : recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
                       minHeight: 10,
                       backgroundColor: Colors.grey[300],
                       valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
                     ),
-                  ),
+                  // ),
                 ),
               ),
               
@@ -154,13 +157,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 // color: Colors.blue,
-                child: Consumer<RecordingProvider>(
-                  builder: (BuildContext context, RecordingProvider recorder, Widget? child) => Row(
+                // child: Consumer<RecordingProvider>(
+                  // builder: (BuildContext context, RecordingProvider recordingProvider, Widget? child) => Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       ElevatedButton.icon(
                         onPressed: () {
-                          recorder.startRecording();
+                          recordingProvider.startRecording();
                         },
                         icon: const Icon(Icons.mic),
                         label: const Text('Record'),
@@ -169,7 +173,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   
                       ElevatedButton.icon(
                         onPressed: () {
-                          recorder.stopRecording();
+                          recordingProvider.stopRecording();
                           Navigator.pushNamed(context, AppRoutes.feedback);
                         },
                         icon: const Icon(Icons.stop_circle_outlined),
@@ -179,14 +183,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
                       ElevatedButton.icon(
                         onPressed: () {
-                          recorder.play(recorder.attempts[recorder.index].filePath);
+                          recordingProvider.play(recordingProvider.attempts[recordingProvider.index].filePath);
                         },
                         icon: const Icon(Icons.play_arrow),
                         label: const Text('Playback'),
                       ),
                     ],
                   ),
-                ),
+                // ),
               ),
 
               // FEEDBACK CONTROLS
@@ -221,7 +225,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
             ],
           ),
         ),
-      ),
-    );
+      );
+    // );
   }
 }
