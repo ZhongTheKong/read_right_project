@@ -192,6 +192,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
+                      recordingProvider.selectedIndex = recordingProvider.index;
                       Navigator.pushNamed(context, AppRoutes.feedback);
                     },
                     child: const Text('Review Feedback'),

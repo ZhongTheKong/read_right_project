@@ -29,6 +29,7 @@ class RecordingProvider extends ChangeNotifier {
     'where'
   ];
   int index = 0;
+  int selectedIndex = 0;
 
   final List<Attempt> attempts = [];
   static const int kMaxRecordMs = 7000;

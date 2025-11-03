@@ -40,7 +40,7 @@ class FeedbackScreen extends StatelessWidget {
                                   
                         Text(
                           recordingProvider.attempts.isNotEmpty 
-                            ? recordingProvider.attempts[recordingProvider.index].word
+                            ? recordingProvider.attempts[recordingProvider.selectedIndex].word
                             : '???',
                           style: TextStyle(fontSize: 18),
                         ),
@@ -64,7 +64,7 @@ class FeedbackScreen extends StatelessWidget {
                                   
                         Text(
                           recordingProvider.attempts.isNotEmpty 
-                            ? '${recordingProvider.attempts[recordingProvider.index].createdAt.toLocal()}'
+                            ? '${recordingProvider.attempts[recordingProvider.selectedIndex].createdAt.toLocal()}'
                             : '???',
                           style: TextStyle(fontSize: 18),
                         ),
@@ -82,7 +82,7 @@ class FeedbackScreen extends StatelessWidget {
 
             Text(
               recordingProvider.attempts.isNotEmpty 
-                ? 'Score: ${recordingProvider.attempts[recordingProvider.index].score}' 
+                ? 'Score: ${recordingProvider.attempts[recordingProvider.selectedIndex].score}' 
                 : 'Score: ???',
               style: TextStyle(fontSize: 18),
             ),
@@ -92,7 +92,7 @@ class FeedbackScreen extends StatelessWidget {
 
             Text(
               recordingProvider.attempts.isNotEmpty 
-                ? 'Feedback: ${recordingProvider.attempts[recordingProvider.index].score}' 
+                ? 'Feedback: ${recordingProvider.attempts[recordingProvider.selectedIndex].score}' 
                 : 'Feedback: ???',
               style: TextStyle(fontSize: 18),
             ),

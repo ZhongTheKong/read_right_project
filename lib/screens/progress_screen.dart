@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:read_right_project/utils/routes.dart';
 import '../providers/recording_provider.dart';
 
 class ProgressScreen extends StatefulWidget {
@@ -118,7 +119,13 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                         icon: const Icon(Icons.stop),
                                       ),
                                                         
-                                      IconButton(onPressed: (){}, icon: Icon(Icons.feedback))
+                                      IconButton(
+                                        onPressed: () {
+                                          recorder.selectedIndex = i;
+                                          Navigator.pushNamed(context, AppRoutes.feedback);
+                                        }, 
+                                        icon: Icon(Icons.feedback)
+                                      )
                                     ]
                                   ),
                                 ),
