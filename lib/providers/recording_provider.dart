@@ -73,6 +73,14 @@ class RecordingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Save the username to local storage
+  Future<void> saveUsername(String username) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('username', username);
+    _username = username;
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     recordTimer?.cancel();

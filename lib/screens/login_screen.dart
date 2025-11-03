@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:read_right_project/data/login_data.dart';
 import 'package:read_right_project/models/labeled_login_text_field.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
+import '../providers/recording_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -54,6 +56,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     ElevatedButton(
                       onPressed: () {
                         clearLastLoggedInUsername();
+                        /// Improve the flow of navigation
+                        Provider.of<RecordingProvider>(context, listen: false).saveUsername('Guest');
+                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                       },
                       child: const Text('CLEAR LAST LOGIN DATA'),
                     ),
@@ -99,12 +104,17 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     ElevatedButton(
                       onPressed: () {
+                        final username = usernameTextEditingController.text;
+                        final password = passwordTextEditingController.text;
                         // Navigate back to main screen and clear previous routes
                         // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-                        if (LoginData.isValidLoginData(usernameTextEditingController.text, passwordTextEditingController.text) == true)
+                        if (LoginData.isValidLoginData(username, password) == true)
                         {
                           print("successful login");
-                          setLastLoggedInUsername(usernameTextEditingController.text);
+                          setLastLoggedInUsername(username);
+                          /// Share data with provider
+                          Provider.of<RecordingProvider>(context, listen: false).saveUsername(username);
+                          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                         }
                         else
                         {
