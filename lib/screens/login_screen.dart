@@ -103,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 20),
 
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         final username = usernameTextEditingController.text;
                         final password = passwordTextEditingController.text;
                         // Navigate back to main screen and clear previous routes

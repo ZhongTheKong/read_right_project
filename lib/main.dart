@@ -3,9 +3,6 @@ import 'utils/routes.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:provider/provider.dart';
 import 'providers/recording_provider.dart';
-import 'screens/login_screen.dart';
-import 'screens/progress_screen.dart';
-import 'screens/practice_screen.dart';
 
 void main() {
   runApp(

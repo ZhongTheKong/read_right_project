@@ -51,6 +51,20 @@ class RecordingProvider extends ChangeNotifier {
 
   String get currentUser => _username;
 
+  /// Currently needed to get progress screen to persist
+  RecordingProvider() {
+    _loadUsernameOnStartup();
+  }
+
+  // 3. CREATE THE METHOD TO LOAD THE USERNAME
+  Future<void> _loadUsernameOnStartup() async {
+    final prefs = await SharedPreferences.getInstance();
+    // Load the username from storage. If it doesn't exist, it will remain 'Guest'.
+    // Make sure the key 'lastUser' is the same one you use when logging in.
+    _username = prefs.getString("lastUser") ?? "Guest";
+    notifyListeners();
+  }
+
   Future<void> initAudio(bool mounted) async {
     final hasPerm = await recorder.hasPermission();
     if (!hasPerm) {

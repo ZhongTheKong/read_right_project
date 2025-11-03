@@ -27,9 +27,18 @@ class ProgressScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Display the user's data from the provider
-                        Text('Username: ${recordingProvider.currentUser}'),
-                        Text('Number of Attempts: ${recordingProvider.attempts.length}'),
-                        Text('Average Score: ${recordingProvider.averageScore.toStringAsFixed(2)}'),
+                        Text(
+                            'Username: ${recordingProvider.currentUser}',
+                            style: const TextStyle(fontSize: 18),
+                        ),
+                        Text(
+                            'Number of Attempts: ${recordingProvider.attempts.length}',
+                            style: const TextStyle(fontSize: 18),
+                        ),
+                        Text(
+                            'Average Score: ${recordingProvider.averageScore.toStringAsFixed(2)}',
+                            style: const TextStyle(fontSize: 18),
+                        ),
                       ],
                     )
                 ),
