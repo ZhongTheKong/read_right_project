@@ -1,19 +1,23 @@
 import 'package:flutter/material.dart';
 import 'utils/routes.dart';
 import 'package:audio_session/audio_session.dart';
-
+import 'package:provider/provider.dart';
+import 'providers/recording_provider.dart';
+import 'screens/login_screen.dart';
+import 'screens/progress_screen.dart';
+import 'screens/practice_screen.dart';
 
 void main() {
   runApp(
-    const MaterialApp(home: MyApp())
-    // MultiProvider(
-    //   providers: [
-    //     ChangeNotifierProvider(create: (_) => RecordingProvider()),
-    //     // ChangeNotifierProvider(create: (_) => NotesModel()),
-    //     // You could add more models here later (e.g., UserModel, ThemeModel).
-    //   ],
-    //   child: const MaterialApp(home: MyApp())
-    // ),
+    //const MaterialApp(home: MyApp())
+     MultiProvider(
+       providers: [
+         ChangeNotifierProvider(create: (_) => RecordingProvider()),
+         // ChangeNotifierProvider(create: (_) => NotesModel()),
+         // You could add more models here later (e.g., UserModel, ThemeModel).
+       ],
+       child: const MaterialApp(home: MyApp())
+     ),
   );
 }
 

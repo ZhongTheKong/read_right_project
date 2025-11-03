@@ -35,7 +35,7 @@ class RecordingProvider extends ChangeNotifier {
   Timer? recordTimer;
   int elapsedMs = 0;
   // To keep track of the current logged in user
-  String username = 'Guest';
+  String _username = 'Guest';
 
 
   static const int intervalMs = 50;
@@ -48,6 +48,8 @@ class RecordingProvider extends ChangeNotifier {
   }
 
   int get numberOfAttempts => attempts.length;
+
+  String get currentUser => _username;
 
   Future<void> initAudio(bool mounted) async {
     final hasPerm = await recorder.hasPermission();
@@ -67,7 +69,7 @@ class RecordingProvider extends ChangeNotifier {
   // Load the username from local storage
   Future<void> _loadUsername() async {
     final prefs = await SharedPreferences.getInstance();
-    username = prefs.getString('username') ?? 'Guest';
+    _username = prefs.getString('username') ?? 'Guest';
     notifyListeners();
   }
 
