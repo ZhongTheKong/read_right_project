@@ -40,11 +40,12 @@ class TeacherDashboardScreen extends StatelessWidget {
                     icon: Icon(provider.isRecording ? Icons.stop : Icons.mic),
                     label: Text(provider.isRecording ? 'Stop Recording' : 'Start Recording'),
                     onPressed: () {
-                      if (provider.isRecording) {
-                        provider.stopRecording();
-                      } else {
-                        provider.startRecording();
-                      }
+                      provider.transcribeAudio('');
+                      // if (provider.isRecording) {
+                      //   provider.stopRecording();
+                      // } else {
+                      //   provider.startRecording();
+                      // }
                     },
                   ),
                   const SizedBox(height: 20),

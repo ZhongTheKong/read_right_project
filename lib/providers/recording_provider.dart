@@ -36,10 +36,6 @@ class RecordingProvider extends ChangeNotifier {
 
   static const int intervalMs = 50;
 
-  RecordingProvider() {
-    _speech = stt.SpeechToText();
-  }
-
   Future<void> initAudio(bool mounted) async {
     final hasPerm = await recorder.hasPermission();
     if (!hasPerm) {
@@ -47,6 +43,9 @@ class RecordingProvider extends ChangeNotifier {
       if (!granted && mounted) return;
     }
     recorderReady = true;
+
+    _speech = stt.SpeechToText();
+
     notifyListeners();
   }
 
@@ -77,6 +76,8 @@ class RecordingProvider extends ChangeNotifier {
 
       await recorder.start(config, path: path);
       isRecording = true;
+      // Start automatic transcription after recording
+      // await transcribeAudio(path);
       notifyListeners();
 
       recordTimer?.cancel();
@@ -124,8 +125,7 @@ class RecordingProvider extends ChangeNotifier {
       );
       notifyListeners();
 
-      // Start automatic transcription after recording
-      await transcribeAudio(path);
+
     } catch (e) {}
   }
 

@@ -16,7 +16,7 @@ class ProgressScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
-            Container(
+            SizedBox(
               height: 100,
               width: 200,
               child: Column(
