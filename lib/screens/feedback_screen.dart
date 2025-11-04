@@ -9,6 +9,19 @@ class FeedbackScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     RecordingProvider recordingProvider = context.read<RecordingProvider>();
+    double score = recordingProvider.attempts[recordingProvider.selectedIndex].score;
+    String feedback;
+    if (score == 100) {
+      feedback = "Perfect!";
+    } else if (90 < score && score < 100) {
+      feedback = "Excellent!";
+    } else if (80 < score && score <= 90) {
+      feedback = "Good!";
+    } else if (70 < score && score <= 80) {
+      feedback = "Ok";
+    } else {
+      feedback = "Needs work";
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -40,7 +53,7 @@ class FeedbackScreen extends StatelessWidget {
                                   
                         Text(
                           recordingProvider.attempts.isNotEmpty 
-                            ? recordingProvider.attempts[recordingProvider.selectedIndex].word
+                            ? feedback
                             : '???',
                           style: TextStyle(fontSize: 18),
                         ),

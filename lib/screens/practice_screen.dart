@@ -159,7 +159,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   ElevatedButton.icon(
                     onPressed: () {
                       recordingProvider.stopRecording();
-                      Navigator.pushNamed(context, AppRoutes.feedback);
+                      recordingProvider.selectedIndex = recordingProvider.index;
+                      // Navigator.pushNamed(context, AppRoutes.feedback);
                     },
                     icon: const Icon(Icons.stop_circle_outlined),
                     label: const Text('Stop'),
