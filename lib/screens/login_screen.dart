@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
           return Text('Error: ${snapshot.error}');
         } else {
           final String lastLoggedInUsername = snapshot.data ?? '';
-          if (lastLoggedInUsername != '') {
+          if (lastLoggedInUsername != '' && lastLoggedInUsername != 'Guest') {
             return Scaffold(
               appBar: AppBar(title: const Text('Login Screen')),
               body: Center(
