@@ -37,12 +37,22 @@ read_right_project
 |
 |-main (app starter)
 
-Current Progress
+Milestone 0 Progress
 -placeholder ccreens
 -placeholder navigation
 -placeholder UI
 -placeholder provider
 -Login screen meets Milestone 1 specifications
+
+Milestone 1 Progress
+-Recording provider used throughout
+-Recording functionality (start, stop, play)
+-Practice screen components
+-Feedback screen components
+-Progress screen components
+-Score to feedback
+-Seed word lists
+-Placeholder STT
 
 Future Goals
 -Finish the Speech recording functionality
