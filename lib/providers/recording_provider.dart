@@ -234,6 +234,13 @@ class RecordingProvider extends ChangeNotifier {
   void selectWord(String word) {
     selectedIndex = 0;
     selectedWord = word;
+    notifyListeners();
+  }
+
+  void changeSentence() {
+    if(selectedIndex == 0) {selectedIndex = 1;}
+    else {selectedIndex = 0;}
+    notifyListeners();
   }
 
   /// Transcribes the recorded audio using speech_to_text (live transcription)
