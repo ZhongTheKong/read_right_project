@@ -32,6 +32,7 @@ class RecordingProvider extends ChangeNotifier {
   ];
   int index = 0;
   int selectedIndex = 0;
+  String selectedWord = '';
 
   /// Placeholder for CSV file parsing
   final Map<String, String> sentence_list = const {
@@ -228,6 +229,11 @@ class RecordingProvider extends ChangeNotifier {
     if (isRecording) return;
     index = (index + increment) % word_list.length;
     notifyListeners();
+  }
+
+  void selectWord(String word) {
+    selectedIndex = 0;
+    selectedWord = word;
   }
 
   /// Transcribes the recorded audio using speech_to_text (live transcription)
