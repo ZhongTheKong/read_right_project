@@ -18,18 +18,25 @@ class RecordingProvider extends ChangeNotifier {
   bool isTranscribing = false;
 
   final List<String> word_list = const [
-    'the',
-    'and',
-    'to',
-    'said',
-    'little',
-    'look',
-    'come',
-    'here',
-    'where'
+    'round',
+    'small',
+    'grow',
+    'sleep',
+    'again',
+    'fly',
+    'because',
+    'must',
+    'always',
+    'saw',
+    'keep',
   ];
   int index = 0;
   int selectedIndex = 0;
+
+  final Map<String, String> sentence_list = const {
+    'round1': 'The circle is round',
+    'round2': 'Time for round two',
+  };
 
   final List<Attempt> attempts = [];
   static const int kMaxRecordMs = 7000;

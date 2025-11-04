@@ -154,6 +154,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   },
                   child: const Text('Back to Main Screen'),
                 ),
+                const SizedBox(height: 12),
               ],
             ),
           ),
