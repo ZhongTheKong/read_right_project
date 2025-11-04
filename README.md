@@ -47,18 +47,20 @@ Milestone 0 Progress
 Milestone 1 Progress
 -Recording provider used throughout
 -Recording functionality (start, stop, play)
--Practice screen components
--Feedback screen components
--Progress screen components
 -Score to feedback
 -Seed word lists
 -Placeholder STT
+-Progress Screen Functionality Done
+-Feedback Screen Functionality Done
+-Practice Screen Done excluding STT
+-Data successfully shared via provider
+-Improved CSV file
 
 Future Goals
--Finish the Speech recording functionality
--Write STT function for interpreting use scores
+-Find a way to get STT to work on Windows Android Emulator
 -Implement STT into feedback
 -Save feedback using local storage
--Link feedback to progress screen with Provider
--Display progress in the progress screen
+-Save attempts list locally
+-Allow sorting via username for attempts
+-Allow importing word lists directly from CSV files into code
 -Touch up UI and naviagation
