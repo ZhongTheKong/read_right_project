@@ -33,9 +33,30 @@ class RecordingProvider extends ChangeNotifier {
   int index = 0;
   int selectedIndex = 0;
 
+  /// Placeholder for CSV file parsing
   final Map<String, String> sentence_list = const {
     'round1': 'The circle is round',
     'round2': 'Time for round two',
+    'small1': 'The dog is small',
+    'small2': 'Bugs are small',
+    'grow1': 'You can grow by drinking milk',
+    'grow2': 'Kids grow up fast',
+    'sleep1': 'Sleep for eight hours',
+    'sleep2': 'You should sleep when it is night',
+    'again1': 'Do it again',
+    'again2': 'Mom baked cookies again',
+    'fly1': 'Birds fly',
+    'fly2': 'People cannot fly',
+    'because1': 'You eat fruits because they are good for you',
+    'because2': 'You do not talk to strangers because they are dangerous',
+    'must1': 'You must look both ways before crossing the street',
+    'must2': 'You must wash your hands after using the bathroom',
+    'always1': 'Always brush your teeth',
+    'always2': 'You always know what to say',
+    'saw1': 'Dad cut some wood with a saw',
+    'saw2': 'I saw a shooting star',
+    'keep1': 'Keep trying and you will succeed',
+    'keep2': 'Keep up the good work',
   };
 
   final List<Attempt> attempts = [];
