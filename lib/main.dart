@@ -66,7 +66,7 @@ class _MainScreenState extends State<MainScreen> {
       {'title': 'Teacher Dashboard', 'route': AppRoutes.teacherDashboard, 'icon': Icons.dashboard},
       {'title': 'Word List', 'route': AppRoutes.wordList, 'icon': Icons.list},
       /// Removed from main page until bug is fixed
-      //{'title': 'Feedback', 'route': AppRoutes.feedback, 'icon': Icons.feedback},
+      {'title': 'Feedback', 'route': AppRoutes.feedback, 'icon': Icons.feedback},
     ];
 
     return Scaffold(

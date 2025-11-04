@@ -9,6 +9,32 @@ class FeedbackScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     RecordingProvider recordingProvider = context.read<RecordingProvider>();
+
+    /// Catch empty attempts list
+    if (recordingProvider.attempts.isEmpty) {
+      return Scaffold(
+        body: Center(
+          child: Column (
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                'No attempts yet. Go practice first!',
+                style: TextStyle(fontSize: 18),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  // Navigate back to main screen and clear previous routes
+                  Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                },
+                child: const Text('Back to Main Screen'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
     double score = recordingProvider.attempts[recordingProvider.selectedIndex].score;
     String feedback;
     if (score == 100) {
@@ -25,8 +51,8 @@ class FeedbackScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Feedback')
+          centerTitle: true,
+          title: const Text('Feedback')
       ),
       body: Center(
         child: Column(
@@ -34,89 +60,88 @@ class FeedbackScreen extends StatelessWidget {
           children: [
 
             // Container(
-              // width: 500,
-              // color: Colors.blue[50],
-              // child: Row(
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    color: Colors.green[50],
-                    padding: EdgeInsets.all(15),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Word',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        const SizedBox(height: 20),
-                                  
-                        Text(
-                          recordingProvider.attempts.isNotEmpty 
+            // width: 500,
+            // color: Colors.blue[50],
+            // child: Row(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  color: Colors.green[50],
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Word',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const SizedBox(height: 20),
+
+                      Text(
+                        recordingProvider.attempts.isNotEmpty
                             ? feedback
                             : '???',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        
-                      ],
-                    ),
+                        style: TextStyle(fontSize: 18),
+                      ),
+
+                    ],
                   ),
-              
-                  const SizedBox(width: 20),
-              
-                  Container(
-                    color: Colors.orange[50],
-                    padding: EdgeInsets.all(15),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Date',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                        const SizedBox(height: 20),
-                                  
-                        Text(
-                          recordingProvider.attempts.isNotEmpty 
-                            ? '${recordingProvider.attempts[recordingProvider.selectedIndex].createdAt.toLocal()}'
+                ),
+
+                const SizedBox(width: 20),
+
+                Container(
+                  color: Colors.orange[50],
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Date',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      const SizedBox(height: 20),
+
+                      Text(
+                        recordingProvider.attempts.isNotEmpty
+                            ? '${recordingProvider.attempts[recordingProvider
+                            .selectedIndex].createdAt.toLocal()}'
                             : '???',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ],
-                    ),
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ],
                   ),
-                  
-                ],
-              ),
+                ),
+
+              ],
+            ),
             // ),
-            
-
-            
 
 
             Text(
-              recordingProvider.attempts.isNotEmpty 
-                ? 'Score: ${recordingProvider.attempts[recordingProvider.selectedIndex].score}' 
-                : 'Score: ???',
+              recordingProvider.attempts.isNotEmpty
+                  ? 'Score: ${recordingProvider.attempts[recordingProvider
+                  .selectedIndex].score}'
+                  : 'Score: ???',
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
 
 
-
             Text(
-              recordingProvider.attempts.isNotEmpty 
-                ? 'Feedback: ${recordingProvider.attempts[recordingProvider.selectedIndex].score}' 
-                : 'Feedback: ???',
+              recordingProvider.attempts.isNotEmpty
+                  ? 'Feedback: ${recordingProvider.attempts[recordingProvider
+                  .selectedIndex].score}'
+                  : 'Feedback: ???',
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
-
 
 
             ElevatedButton(
               onPressed: () {
                 // Navigate back to main screen and clear previous routes
-                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                Navigator.pushNamedAndRemoveUntil(
+                    context, '/', (route) => false);
               },
               child: const Text('Back to Main Screen'),
             ),
@@ -124,6 +149,6 @@ class FeedbackScreen extends StatelessWidget {
         ),
       ),
     );
-  }
+   }
 }
 
