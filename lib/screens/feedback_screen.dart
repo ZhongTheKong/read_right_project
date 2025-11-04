@@ -8,7 +8,7 @@ class FeedbackScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    RecordingProvider recordingProvider = context.read<RecordingProvider>();
+    RecordingProvider recordingProvider = context.watch<RecordingProvider>();
 
     /// Catch empty attempts list
     if (recordingProvider.attempts.isEmpty) {
@@ -35,6 +35,11 @@ class FeedbackScreen extends StatelessWidget {
       );
     }
 
+    if(recordingProvider.selectedIndex == null ||
+        recordingProvider.selectedIndex < 0 ||
+        recordingProvider.selectedIndex >= recordingProvider.attempts.length) {
+      context.watch<RecordingProvider>().selectedIndex = 0;
+    }
     double score = recordingProvider.attempts[recordingProvider.selectedIndex].score;
     String feedback;
     if (score == 100) {

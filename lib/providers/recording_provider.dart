@@ -29,6 +29,17 @@ class RecordingProvider extends ChangeNotifier {
     'always',
     'saw',
     'keep',
+    'bake_cake',
+    'car_tar',
+    'bat_back',
+    'date_gate',
+    'sink_think',
+    'reed_weed',
+    'sit_sick',
+    'fan_van',
+    'free_three',
+    'goo_glue',
+    'see_seed'
   ];
   int index = 0;
   int selectedIndex = 0;
@@ -60,6 +71,28 @@ class RecordingProvider extends ChangeNotifier {
     'saw2': 'I saw a shooting star',
     'keep1': 'Keep trying and you will succeed',
     'keep2': 'Keep up the good work',
+    'bake_cake1': 'Bake the cake in the oven',
+    'bake_cake2': 'Bake at high temperature to get a cake',
+    'car_tar1': 'Drive your car and stay out of tar',
+    'car_tar2': 'Tar is bad for your car',
+    'bat_back1': 'Take the bat around back',
+    'bat_back2': 'The back of a bat is brown',
+    'date_gate1': 'Open the gate on the right date',
+    'date_gate2': 'On this date they will build the gate',
+    'sink_think1': 'Think in the sink',
+    'sink_think2': 'You will sink if you don\'t think',
+    'reed_weed1': 'A reed is a weed',
+    'reed_weed2': 'Not every weed is a reed',
+    'sit_sick1': 'You must sit and rest when you are sick',
+    'sit_sick2': 'Sick days mean you sit at home',
+    'fan_van1': 'A van gets hot without a fan',
+    'fan_van2': 'There is a fan in the van',
+    'free_three1': 'Buy one get three free',
+    'free_three2': 'Three free birds',
+    'goo_glue1': 'Glue is a kind of goo',
+    'goo_glue2': 'Not all goo is glue',
+    'see_seed1': 'See the seed grow',
+    'see_seed2': 'The seed cannot see you',
   };
 
   final List<Attempt> attempts = [];
@@ -85,16 +118,7 @@ class RecordingProvider extends ChangeNotifier {
 
   /// Currently needed to get progress screen to persist
   RecordingProvider() {
-    _loadUsernameOnStartup();
-  }
-
-  // 3. CREATE THE METHOD TO LOAD THE USERNAME
-  Future<void> _loadUsernameOnStartup() async {
-    final prefs = await SharedPreferences.getInstance();
-    // Load the username from storage. If it doesn't exist, it will remain 'Guest'.
-    // Make sure the key 'lastUser' is the same one you use when logging in.
-    _username = prefs.getString("lastUser") ?? "Guest";
-    notifyListeners();
+    _loadUsername();
   }
 
   Future<void> initAudio(bool mounted) async {
@@ -115,7 +139,7 @@ class RecordingProvider extends ChangeNotifier {
   // Load the username from local storage
   Future<void> _loadUsername() async {
     final prefs = await SharedPreferences.getInstance();
-    _username = prefs.getString('username') ?? 'Guest';
+    _username = prefs.getString('lastUser') ?? 'Guest';
     notifyListeners();
 
   }
@@ -123,7 +147,7 @@ class RecordingProvider extends ChangeNotifier {
   // Save the username to local storage
   Future<void> saveUsername(String username) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('username', username);
+    await prefs.setString('lastUser', username);
     _username = username;
     notifyListeners();
   }
