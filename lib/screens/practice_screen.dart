@@ -62,7 +62,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                             border: Border.all(color: Colors.blue, width: 2), // outline color & width
                           ),
                           child: IconButton(
-                            onPressed: () => recordingProvider.incrementIndex(-1), 
+                            onPressed: () => recordingProvider.changeSentence(),
                             icon: Icon(
                               Icons.arrow_left
                             ),
@@ -74,15 +74,17 @@ class _PracticeScreenState extends State<PracticeScreen> {
                     Column(
                       children: [
                         Text(
-                          'Word #${recordingProvider.index + 1}',
-                          style: TextStyle(fontSize: 30),
+                          'Sentence #${recordingProvider.sentenceIndex + 1} for '
+                              '"${recordingProvider.word_list[recordingProvider.index]}"',
+                          style: TextStyle(fontSize: 20),
                         ),
                         const SizedBox(height: 5),
                         Row(
                           children: [
                             Text(
-                              recordingProvider.word_list[recordingProvider.index],
-                              style: TextStyle(fontSize: 150),
+                              recordingProvider.sentence_list[recordingProvider.word_list[recordingProvider.index] +
+                                  (recordingProvider.sentenceIndex + 1).toString()]!,
+                              style: TextStyle(fontSize: 40),
                             ),
                           ],
                         ),
@@ -98,7 +100,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                             border: Border.all(color: Colors.blue, width: 2), // outline color & width
                           ),
                           child: IconButton(
-                            onPressed: () => recordingProvider.incrementIndex(1), 
+                            onPressed: () => recordingProvider.changeSentence(),
                             icon: Icon(
                               Icons.arrow_right
                             ),
@@ -180,7 +182,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
             // FEEDBACK CONTROLS
             Container(
-              width: 400,
+              width: 500,
               padding: EdgeInsets.all(10),
               margin: EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -193,10 +195,16 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      recordingProvider.selectedIndex = recordingProvider.index;
+                      //recordingProvider.selectedIndex = recordingProvider.index;
                       Navigator.pushNamed(context, AppRoutes.feedback);
                     },
                     child: const Text('Review Feedback'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRoutes.wordList);
+                    },
+                    child: const Text('Go to Word List')
                   ),
                   ElevatedButton(
                     onPressed: () {

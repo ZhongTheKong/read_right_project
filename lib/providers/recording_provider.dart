@@ -32,6 +32,8 @@ class RecordingProvider extends ChangeNotifier {
   ];
   int index = 0;
   int selectedIndex = 0;
+
+  int sentenceIndex = 0;
   String selectedWord = '';
 
   /// Placeholder for CSV file parsing
@@ -232,14 +234,14 @@ class RecordingProvider extends ChangeNotifier {
   }
 
   void selectWord(String word) {
-    selectedIndex = 0;
+    sentenceIndex = 0;
     selectedWord = word;
     notifyListeners();
   }
 
   void changeSentence() {
-    if(selectedIndex == 0) {selectedIndex = 1;}
-    else {selectedIndex = 0;}
+    if(sentenceIndex == 0) {sentenceIndex = 1;}
+    else {sentenceIndex = 0;}
     notifyListeners();
   }
 
