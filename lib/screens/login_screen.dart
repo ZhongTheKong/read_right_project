@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           setLastLoggedInUsername(username);
                           /// Share data with provider
                           Provider.of<RecordingProvider>(context, listen: false).saveUsername(username);
-                          Navigator.pushNamed(context, AppRoutes.practice);
+                          Navigator.pushNamedAndRemoveUntil(context, AppRoutes.practice, (route) => false);
                           // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                         }
                         else
