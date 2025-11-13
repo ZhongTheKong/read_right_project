@@ -77,35 +77,47 @@ class _MainScreenState extends State<MainScreen> {
       body: Row(
           children: [
             Expanded(
-
-              
-              child: Container(
-                color: Colors.red,
+              child: ElevatedButton(
+                onPressed: () { 
+                  print("hello"); 
+                  Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  shape: LinearBorder()
+                ),
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        Icons.school,
+                        Icons.child_care,
                         size: 60,
+                        color: Colors.black,
                       ),
                       Text(
                         "Student",
                         style: TextStyle(
                           fontSize: 60,
-                          fontWeight: FontWeight.bold
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-
-
             ),
             Expanded(
-              child: Container(
-                color: Colors.blue,
+              child: ElevatedButton(
+                onPressed: () { 
+                  print("hello"); 
+                  Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue,
+                  shape: LinearBorder()
+                ),
                 child: Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -113,19 +125,21 @@ class _MainScreenState extends State<MainScreen> {
                       Icon(
                         Icons.school,
                         size: 60,
+                        color: Colors.black
                       ),
                       Text(
                         "Teacher",
                         style: TextStyle(
                           fontSize: 60,
-                          fontWeight: FontWeight.bold
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
 
