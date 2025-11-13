@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:read_right_project/data/login_data.dart';
 import 'package:read_right_project/models/labeled_login_text_field.dart';
+import 'package:read_right_project/utils/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import '../providers/recording_provider.dart';
@@ -58,7 +59,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         clearLastLoggedInUsername();
                         /// Improve the flow of navigation
                         Provider.of<RecordingProvider>(context, listen: false).saveUsername('Guest');
-                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                        setState(() {
+                          
+                        });
+                        // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                       },
                       child: const Text('CLEAR LAST LOGIN DATA'),
                     ),
@@ -114,7 +118,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           setLastLoggedInUsername(username);
                           /// Share data with provider
                           Provider.of<RecordingProvider>(context, listen: false).saveUsername(username);
-                          Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                          Navigator.pushNamed(context, AppRoutes.practice);
+                          // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                         }
                         else
                         {
@@ -125,14 +130,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 20),
                     
-                    ElevatedButton(
-                      onPressed: () {
-                        // Navigate back to main screen and clear previous routes
-                        Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                    // ElevatedButton(
+                    //   onPressed: () {
+                    //     // Navigate back to main screen and clear previous routes
+                    //     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                         
-                      },
-                      child: const Text('Back to Main Screen'),
-                    ),
+                    //   },
+                    //   child: const Text('Back to Main Screen'),
+                    // ),
+
                   ],
                 ),
               ),
