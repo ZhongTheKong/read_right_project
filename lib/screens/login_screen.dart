@@ -48,6 +48,11 @@ class _LoginScreenState extends State<LoginScreen> {
           return Text('Error: ${snapshot.error}');
         } else {
           final String lastLoggedInUsername = snapshot.data ?? '';
+
+
+
+
+
           if (lastLoggedInUsername != '' && lastLoggedInUsername != 'Guest') {
             return Scaffold(
               appBar: AppBar(title: const Text('Login Screen')),
@@ -59,7 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ElevatedButton(
                       onPressed: () {
                         sessionProvider.clearUsername();
-                        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.practice, (route) => false);
+                        // Navigator.pushNamedAndRemoveUntil(context, AppRoutes.practice, (route) => false);
+                        Navigator.pushReplacementNamed(context, AppRoutes.practice);
                         /// Improve the flow of navigation
                         Provider.of<SessionProvider>(context, listen: false).saveUsername('Guest');
                         setState(() {
@@ -86,6 +92,11 @@ class _LoginScreenState extends State<LoginScreen> {
               )
             );
           }
+
+
+
+
+
           else {
             return Scaffold(
               appBar: AppBar(title: const Text('Login Screen')),
@@ -95,14 +106,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     const Text(
                       'Hello, World! This is the Login Screen.',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    const SizedBox(height: 20),
-
-
-
-                    const Text(
-                      'Select Between Student Or Teacher',
                       style: TextStyle(fontSize: 18),
                     ),
                     const SizedBox(height: 20),
@@ -133,7 +136,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           sessionProvider.saveUsername(username);
                           /// Share data with provider
                           // Provider.of<SessionProvider>(context, listen: false).saveUsername(username);
-                          Navigator.pushNamedAndRemoveUntil(context, AppRoutes.practice, (route) => false);
+                          // Navigator.pushNamedAndRemoveUntil(context, AppRoutes.practice, (route) => false);
+                          Navigator.pushReplacementNamed(context, AppRoutes.practice);
                           // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                         }
                         else
