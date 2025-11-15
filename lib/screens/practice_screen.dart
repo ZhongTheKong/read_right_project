@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:read_right_project/models/recording_manager.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/providers/recording_provider_2.dart';
 import 'package:read_right_project/utils/routes.dart';
@@ -19,14 +18,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
   @override
   void initState() {
     super.initState();
-    RecordingProvider recordingProvider = context.read<RecordingProvider>();
+    SessionProvider recordingProvider = context.read<SessionProvider>();
     recordingProvider.initAudio(mounted);
   }
 
   @override
   Widget build(BuildContext context) {
     
-    RecordingProvider recordingProvider = context.watch<RecordingProvider>();
+    SessionProvider recordingProvider = context.watch<SessionProvider>();
     // RecordingManager recordingManager = RecordingManager();
     // recordingManager.initAudio(mounted);
 

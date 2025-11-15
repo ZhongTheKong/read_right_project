@@ -11,9 +11,9 @@ void main() {
      MultiProvider(
        providers: [
         ChangeNotifierProvider(
-          create: (_) => RecordingProvider(),
+          create: (_) => SessionProvider(),
         ),
-        ChangeNotifierProxyProvider<RecordingProvider, RecordingProvider2>(
+        ChangeNotifierProxyProvider<SessionProvider, RecordingProvider2>(
           create: (_) => RecordingProvider2(null), 
           update: (_, generalProvider, previous) {
             previous!.updateStudent(generalProvider);

@@ -8,8 +8,8 @@ class TeacherDashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => RecordingProvider()..initAudio(true),
-      child: Consumer<RecordingProvider>(
+      create: (_) => SessionProvider()..initAudio(true),
+      child: Consumer<SessionProvider>(
         builder: (context, provider, child) {
           return Scaffold(
             appBar: AppBar(title: const Text('Teacher Screen')),

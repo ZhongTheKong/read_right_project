@@ -18,10 +18,10 @@ class _ProgressScreenState extends State<ProgressScreen> {
   @override
   Widget build(BuildContext context) {
 
-    // RecordingProvider recordingProvider = context.watch<RecordingProvider>();
+    // SessionProvider recordingProvider = context.watch<RecordingProvider>();
 
 
-    return Consumer<RecordingProvider>(
+    return Consumer<SessionProvider>(
       builder: (context, recordingProvider, child) {
 
 
@@ -69,8 +69,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
                     border: Border.all(color: Colors.blue, width: 3),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Consumer<RecordingProvider>(
-                    builder: (BuildContext context, RecordingProvider recorder, Widget? child) => recorder.attempts.isEmpty
+                  child: Consumer<SessionProvider>(
+                    builder: (BuildContext context, SessionProvider recorder, Widget? child) => recorder.attempts.isEmpty
                       ? const Center(
                           child: Text('No attempts yet')
                       )

@@ -7,7 +7,7 @@ import 'package:record/record.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:shared_preferences/shared_preferences.dart';
 
-class RecordingProvider extends ChangeNotifier {
+class SessionProvider extends ChangeNotifier {
   final recorder = AudioRecorder();
   final player = AudioPlayer();
   late stt.SpeechToText _speech; // STT instance
@@ -117,7 +117,7 @@ class RecordingProvider extends ChangeNotifier {
   String get currentUser => _username;
 
   /// Currently needed to get progress screen to persist
-  RecordingProvider() {
+  SessionProvider() {
     _loadUsername();
   }
 

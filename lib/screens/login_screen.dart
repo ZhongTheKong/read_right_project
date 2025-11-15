@@ -58,7 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () {
                         clearLastLoggedInUsername();
                         /// Improve the flow of navigation
-                        Provider.of<RecordingProvider>(context, listen: false).saveUsername('Guest');
+                        Provider.of<SessionProvider>(context, listen: false).saveUsername('Guest');
                         setState(() {
                           
                         });
@@ -117,7 +117,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           print("successful login");
                           setLastLoggedInUsername(username);
                           /// Share data with provider
-                          Provider.of<RecordingProvider>(context, listen: false).saveUsername(username);
+                          Provider.of<SessionProvider>(context, listen: false).saveUsername(username);
                           Navigator.pushNamedAndRemoveUntil(context, AppRoutes.practice, (route) => false);
                           // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                         }

@@ -18,7 +18,7 @@ class _WordListScreenState extends State<WordListScreen> {
   Widget build(BuildContext context) {
     // Use context.watch<RecordingProvider>() to get the provider
     // This will make the widget rebuild whenever notifyListeners() is called.
-    final recorder = context.watch<RecordingProvider>();
+    final recorder = context.watch<SessionProvider>();
 
     return Scaffold(
       backgroundColor: Colors.blue[800],
@@ -56,7 +56,7 @@ class _WordListScreenState extends State<WordListScreen> {
                             border: Border.all(color: Colors.blue, width: 2), // outline color & width
                           ),
                           child: IconButton(
-                            onPressed: () => context.read<RecordingProvider>().incrementIndex(-1),
+                            onPressed: () => context.read<SessionProvider>().incrementIndex(-1),
                             icon: const Icon(
                                 Icons.arrow_left
                             ),
@@ -88,7 +88,7 @@ class _WordListScreenState extends State<WordListScreen> {
                         const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: () {
-                            context.read<RecordingProvider>().
+                            context.read<SessionProvider>().
                             selectWord(recorder.word_list[recorder.index]);
                             Navigator.pushNamed(context, AppRoutes.practice);
                           },
@@ -107,7 +107,7 @@ class _WordListScreenState extends State<WordListScreen> {
                           ),
                           child: IconButton(
                             // Use context.read() to call the function.
-                            onPressed: () => context.read<RecordingProvider>().incrementIndex(1),
+                            onPressed: () => context.read<SessionProvider>().incrementIndex(1),
                             icon: const Icon(
                                 Icons.arrow_right
                             ),

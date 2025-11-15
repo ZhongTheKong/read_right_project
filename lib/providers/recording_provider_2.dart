@@ -9,7 +9,7 @@ import 'package:record/record.dart';
 
 class RecordingProvider2 extends ChangeNotifier {
 
-  RecordingProvider? generalProvider;
+  SessionProvider? generalProvider;
 
   RecordingProvider2(this.generalProvider);
 
@@ -31,7 +31,7 @@ class RecordingProvider2 extends ChangeNotifier {
 
   static const int intervalMs = 50;
 
-  void updateStudent(RecordingProvider newGeneralProvider) {
+  void updateStudent(SessionProvider newGeneralProvider) {
     generalProvider = newGeneralProvider;
   }
 
