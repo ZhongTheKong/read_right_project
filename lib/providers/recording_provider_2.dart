@@ -7,11 +7,11 @@ import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/utils/attempt.dart';
 import 'package:record/record.dart';
 
-class RecordingProvider2 extends ChangeNotifier {
+class RecordingProvider extends ChangeNotifier {
 
   SessionProvider? generalProvider;
 
-  RecordingProvider2(this.generalProvider);
+  RecordingProvider(this.generalProvider);
 
   final recorder = AudioRecorder();
   final player = AudioPlayer();

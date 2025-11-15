@@ -18,19 +18,19 @@ class _PracticeScreenState extends State<PracticeScreen> {
   @override
   void initState() {
     super.initState();
-    SessionProvider recordingProvider = context.read<SessionProvider>();
-    recordingProvider.initAudio(mounted);
+    SessionProvider sessionProvider = context.read<SessionProvider>();
+    sessionProvider.initAudio(mounted);
   }
 
   @override
   Widget build(BuildContext context) {
     
-    SessionProvider recordingProvider = context.watch<SessionProvider>();
+    SessionProvider sessionProvider = context.watch<SessionProvider>();
     // RecordingManager recordingManager = RecordingManager();
     // recordingManager.initAudio(mounted);
 
-    RecordingProvider2 recordingProvider2 = context.watch<RecordingProvider2>();
-    recordingProvider2.initAudio(mounted);
+    RecordingProvider recordingProvider = context.watch<RecordingProvider>();
+    recordingProvider.initAudio(mounted);
 
     return Scaffold(
       backgroundColor: Colors.blue[800],
@@ -68,7 +68,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                             border: Border.all(color: Colors.blue, width: 2), // outline color & width
                           ),
                           child: IconButton(
-                            onPressed: () => recordingProvider.changeSentence(),
+                            onPressed: () => sessionProvider.changeSentence(),
                             icon: Icon(
                               Icons.arrow_left
                             ),
@@ -80,16 +80,16 @@ class _PracticeScreenState extends State<PracticeScreen> {
                     Column(
                       children: [
                         Text(
-                          'Sentence #${recordingProvider.sentenceIndex + 1} for '
-                              '"${recordingProvider.word_list[recordingProvider.index]}"',
+                          'Sentence #${sessionProvider.sentenceIndex + 1} for '
+                              '"${sessionProvider.word_list[sessionProvider.index]}"',
                           style: TextStyle(fontSize: 20),
                         ),
                         const SizedBox(height: 5),
                         Row(
                           children: [
                             Text(
-                              recordingProvider.sentence_list[recordingProvider.word_list[recordingProvider.index] +
-                                  (recordingProvider.sentenceIndex + 1).toString()]!,
+                              sessionProvider.sentence_list[sessionProvider.word_list[sessionProvider.index] +
+                                  (sessionProvider.sentenceIndex + 1).toString()]!,
                               style: TextStyle(fontSize: 40),
                             ),
                           ],
@@ -106,7 +106,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                             border: Border.all(color: Colors.blue, width: 2), // outline color & width
                           ),
                           child: IconButton(
-                            onPressed: () => recordingProvider.changeSentence(),
+                            onPressed: () => sessionProvider.changeSentence(),
                             icon: Icon(
                               Icons.arrow_right
                             ),
@@ -132,15 +132,15 @@ class _PracticeScreenState extends State<PracticeScreen> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                   child: LinearProgressIndicator(
-                    value: recordingProvider2.elapsedMs / RecordingProvider2.kMaxRecordMs >= 0.99 
+                    value: recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs >= 0.99 
                           ? 1.0 
-                          : recordingProvider2.elapsedMs / RecordingProvider2.kMaxRecordMs,
+                          : recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
                     // value: recordingManager.elapsedMs / RecordingManager.kMaxRecordMs >= 0.99 
                     //       ? 1.0 
                     //       : recordingManager.elapsedMs / RecordingManager.kMaxRecordMs,
-                    // value: recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs >= 0.99 
+                    // value: sessionProvider.elapsedMs / RecordingProvider.kMaxRecordMs >= 0.99 
                     //       ? 1.0 
-                    //       : recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
+                    //       : sessionProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
                     minHeight: 10,
                     backgroundColor: Colors.grey[300],
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
@@ -164,20 +164,20 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   ElevatedButton.icon(
                     onPressed: () {
                       print("Recording button pressed");
-                      // recordingProvider.startRecording();
+                      // sessionProvider.startRecording();
 
                       // recordingManager.startRecording(
-                      //   recordingProvider.word_list[recordingManager.index], 
-                      //   recordingProvider.attempts, 
+                      //   sessionProvider.word_list[recordingManager.index], 
+                      //   sessionProvider.attempts, 
                       //   () { setState(() {}); } 
                       // );
                       // setState(() {
                         
                       // });
 
-                      recordingProvider2.startRecording(
-                        recordingProvider.word_list[recordingProvider2.index], 
-                        recordingProvider.attempts
+                      recordingProvider.startRecording(
+                        sessionProvider.word_list[recordingProvider.index], 
+                        sessionProvider.attempts
                       );
                     },
                     icon: const Icon(Icons.mic),
@@ -188,19 +188,19 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   ElevatedButton.icon(
                     onPressed: () {
                       print("stop button pushed");
-                      // recordingProvider.stopRecording();
+                      // sessionProvider.stopRecording();
 
                       // recordingManager.stopRecording(
-                      //   recordingProvider.word_list[recordingManager.index], 
-                      //   recordingProvider.attempts
+                      //   sessionProvider.word_list[recordingManager.index], 
+                      //   sessionProvider.attempts
                       // );
-                      // recordingProvider.selectedIndex = recordingManager.index;
+                      // sessionProvider.selectedIndex = recordingManager.index;
 
-                      recordingProvider2.stopRecording(
-                        recordingProvider.word_list[recordingProvider2.index], 
-                        recordingProvider.attempts
+                      recordingProvider.stopRecording(
+                        sessionProvider.word_list[recordingProvider.index], 
+                        sessionProvider.attempts
                       );
-                      recordingProvider.selectedIndex = recordingProvider2.index;
+                      sessionProvider.selectedIndex = recordingProvider.index;
 
                       setState(() {
                         
@@ -214,9 +214,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
                   ElevatedButton.icon(
                     onPressed: () {
-                      // recordingProvider.play(recordingProvider.attempts[recordingProvider.index].filePath);
-                      // recordingManager.play(recordingProvider.attempts[recordingProvider.index].filePath);
-                      recordingProvider2.play(recordingProvider.attempts[recordingProvider.index].filePath);
+                      // sessionProvider.play(sessionProvider.attempts[sessionProvider.index].filePath);
+                      // recordingManager.play(sessionProvider.attempts[sessionProvider.index].filePath);
+                      recordingProvider.play(sessionProvider.attempts[sessionProvider.index].filePath);
 
                     },
                     icon: const Icon(Icons.play_arrow),
@@ -241,7 +241,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: () {
-                      //recordingProvider.selectedIndex = recordingProvider.index;
+                      //sessionProvider.selectedIndex = sessionProvider.index;
                       Navigator.pushNamed(context, AppRoutes.feedback);
                     },
                     child: const Text('Review Feedback'),

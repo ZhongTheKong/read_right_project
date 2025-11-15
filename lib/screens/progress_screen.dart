@@ -18,11 +18,11 @@ class _ProgressScreenState extends State<ProgressScreen> {
   @override
   Widget build(BuildContext context) {
 
-    // SessionProvider recordingProvider = context.watch<RecordingProvider>();
+    // SessionProvider sessionProvider = context.watch<RecordingProvider>();
 
 
     return Consumer<SessionProvider>(
-      builder: (context, recordingProvider, child) {
+      builder: (context, sessionProvider, child) {
 
 
         return Scaffold(
@@ -45,15 +45,15 @@ class _ProgressScreenState extends State<ProgressScreen> {
                       children: [
                         // Display the user's data from the provider
                         Text(
-                            'Username: ${recordingProvider.currentUser}',
+                            'Username: ${sessionProvider.currentUser}',
                             style: const TextStyle(fontSize: 18),
                         ),
                         Text(
-                            'Number of Attempts: ${recordingProvider.numberOfAttempts}',
+                            'Number of Attempts: ${sessionProvider.numberOfAttempts}',
                             style: const TextStyle(fontSize: 18),
                         ),
                         Text(
-                            'Average Score: ${recordingProvider.averageScore.toStringAsFixed(2)}',
+                            'Average Score: ${sessionProvider.averageScore.toStringAsFixed(2)}',
                             style: const TextStyle(fontSize: 18),
                         ),
                       ],

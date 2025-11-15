@@ -8,10 +8,10 @@ class FeedbackScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    SessionProvider recordingProvider = context.watch<SessionProvider>();
+    SessionProvider sessionProvider = context.watch<SessionProvider>();
 
     /// Catch empty attempts list
-    if (recordingProvider.attempts.isEmpty) {
+    if (sessionProvider.attempts.isEmpty) {
       return Scaffold(
         body: Center(
           child: Column (
@@ -35,12 +35,12 @@ class FeedbackScreen extends StatelessWidget {
       );
     }
 
-    if(recordingProvider.selectedIndex == null ||
-        recordingProvider.selectedIndex < 0 ||
-        recordingProvider.selectedIndex >= recordingProvider.attempts.length) {
+    if(sessionProvider.selectedIndex == null ||
+        sessionProvider.selectedIndex < 0 ||
+        sessionProvider.selectedIndex >= sessionProvider.attempts.length) {
       context.watch<SessionProvider>().selectedIndex = 0;
     }
-    double score = recordingProvider.attempts[recordingProvider.selectedIndex].score;
+    double score = sessionProvider.attempts[sessionProvider.selectedIndex].score;
     String feedback;
     if (score == 100) {
       feedback = "Perfect!";
@@ -83,7 +83,7 @@ class FeedbackScreen extends StatelessWidget {
                       const SizedBox(height: 20),
 
                       Text(
-                        recordingProvider.attempts.isNotEmpty
+                        sessionProvider.attempts.isNotEmpty
                             ? feedback
                             : '???',
                         style: TextStyle(fontSize: 18),
@@ -107,8 +107,8 @@ class FeedbackScreen extends StatelessWidget {
                       const SizedBox(height: 20),
 
                       Text(
-                        recordingProvider.attempts.isNotEmpty
-                            ? '${recordingProvider.attempts[recordingProvider
+                        sessionProvider.attempts.isNotEmpty
+                            ? '${sessionProvider.attempts[sessionProvider
                             .selectedIndex].createdAt.toLocal()}'
                             : '???',
                         style: TextStyle(fontSize: 18),
@@ -123,8 +123,8 @@ class FeedbackScreen extends StatelessWidget {
 
 
             Text(
-              recordingProvider.attempts.isNotEmpty
-                  ? 'Score: ${recordingProvider.attempts[recordingProvider
+              sessionProvider.attempts.isNotEmpty
+                  ? 'Score: ${sessionProvider.attempts[sessionProvider
                   .selectedIndex].score}'
                   : 'Score: ???',
               style: TextStyle(fontSize: 18),
@@ -133,8 +133,8 @@ class FeedbackScreen extends StatelessWidget {
 
 
             Text(
-              recordingProvider.attempts.isNotEmpty
-                  ? 'Feedback: ${recordingProvider.attempts[recordingProvider
+              sessionProvider.attempts.isNotEmpty
+                  ? 'Feedback: ${sessionProvider.attempts[sessionProvider
                   .selectedIndex].score}'
                   : 'Feedback: ???',
               style: TextStyle(fontSize: 18),

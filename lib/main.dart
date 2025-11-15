@@ -13,11 +13,11 @@ void main() {
         ChangeNotifierProvider(
           create: (_) => SessionProvider(),
         ),
-        ChangeNotifierProxyProvider<SessionProvider, RecordingProvider2>(
-          create: (_) => RecordingProvider2(null), 
+        ChangeNotifierProxyProvider<SessionProvider, RecordingProvider>(
+          create: (_) => RecordingProvider(null), 
           update: (_, generalProvider, previous) {
             previous!.updateStudent(generalProvider);
-            return RecordingProvider2(generalProvider);
+            return RecordingProvider(generalProvider);
           }
         )
          // ChangeNotifierProvider(create: (_) => NotesModel()),
