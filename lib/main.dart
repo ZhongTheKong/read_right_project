@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:read_right_project/providers/recording_provider_2.dart';
 import 'utils/routes.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:provider/provider.dart';
@@ -9,7 +10,16 @@ void main() {
     //const MaterialApp(home: MyApp())
      MultiProvider(
        providers: [
-         ChangeNotifierProvider(create: (_) => RecordingProvider()),
+        ChangeNotifierProvider(
+          create: (_) => RecordingProvider(),
+        ),
+        ChangeNotifierProxyProvider<RecordingProvider, RecordingProvider2>(
+          create: (_) => RecordingProvider2(null), 
+          update: (_, generalProvider, previous) {
+            previous!.updateStudent(generalProvider);
+            return RecordingProvider2(generalProvider);
+          }
+        )
          // ChangeNotifierProvider(create: (_) => NotesModel()),
          // You could add more models here later (e.g., UserModel, ThemeModel).
        ],
@@ -17,6 +27,7 @@ void main() {
      ),
   );
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

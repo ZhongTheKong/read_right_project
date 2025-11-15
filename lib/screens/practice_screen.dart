@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:read_right_project/models/recording_manager.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
+import 'package:read_right_project/providers/recording_provider_2.dart';
 import 'package:read_right_project/utils/routes.dart';
 
 class PracticeScreen extends StatefulWidget {
@@ -25,6 +27,11 @@ class _PracticeScreenState extends State<PracticeScreen> {
   Widget build(BuildContext context) {
     
     RecordingProvider recordingProvider = context.watch<RecordingProvider>();
+    // RecordingManager recordingManager = RecordingManager();
+    // recordingManager.initAudio(mounted);
+
+    RecordingProvider2 recordingProvider2 = context.watch<RecordingProvider2>();
+    recordingProvider2.initAudio(mounted);
 
     return Scaffold(
       backgroundColor: Colors.blue[800],
@@ -126,9 +133,15 @@ class _PracticeScreenState extends State<PracticeScreen> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                   child: LinearProgressIndicator(
-                    value: recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs >= 0.99 
+                    value: recordingProvider2.elapsedMs / RecordingProvider2.kMaxRecordMs >= 0.99 
                           ? 1.0 
-                          : recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
+                          : recordingProvider2.elapsedMs / RecordingProvider2.kMaxRecordMs,
+                    // value: recordingManager.elapsedMs / RecordingManager.kMaxRecordMs >= 0.99 
+                    //       ? 1.0 
+                    //       : recordingManager.elapsedMs / RecordingManager.kMaxRecordMs,
+                    // value: recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs >= 0.99 
+                    //       ? 1.0 
+                    //       : recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
                     minHeight: 10,
                     backgroundColor: Colors.grey[300],
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),
@@ -151,7 +164,22 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 children: [
                   ElevatedButton.icon(
                     onPressed: () {
-                      recordingProvider.startRecording();
+                      print("Recording button pressed");
+                      // recordingProvider.startRecording();
+
+                      // recordingManager.startRecording(
+                      //   recordingProvider.word_list[recordingManager.index], 
+                      //   recordingProvider.attempts, 
+                      //   () { setState(() {}); } 
+                      // );
+                      // setState(() {
+                        
+                      // });
+
+                      recordingProvider2.startRecording(
+                        recordingProvider.word_list[recordingProvider2.index], 
+                        recordingProvider.attempts
+                      );
                     },
                     icon: const Icon(Icons.mic),
                     label: const Text('Record'),
@@ -160,8 +188,24 @@ class _PracticeScreenState extends State<PracticeScreen> {
               
                   ElevatedButton.icon(
                     onPressed: () {
-                      recordingProvider.stopRecording();
-                      recordingProvider.selectedIndex = recordingProvider.index;
+                      print("stop button pushed");
+                      // recordingProvider.stopRecording();
+
+                      // recordingManager.stopRecording(
+                      //   recordingProvider.word_list[recordingManager.index], 
+                      //   recordingProvider.attempts
+                      // );
+                      // recordingProvider.selectedIndex = recordingManager.index;
+
+                      recordingProvider2.stopRecording(
+                        recordingProvider.word_list[recordingProvider2.index], 
+                        recordingProvider.attempts
+                      );
+                      recordingProvider.selectedIndex = recordingProvider2.index;
+
+                      setState(() {
+                        
+                      });
                       // Navigator.pushNamed(context, AppRoutes.feedback);
                     },
                     icon: const Icon(Icons.stop_circle_outlined),
@@ -171,7 +215,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
                   ElevatedButton.icon(
                     onPressed: () {
-                      recordingProvider.play(recordingProvider.attempts[recordingProvider.index].filePath);
+                      // recordingProvider.play(recordingProvider.attempts[recordingProvider.index].filePath);
+                      // recordingManager.play(recordingProvider.attempts[recordingProvider.index].filePath);
+                      recordingProvider2.play(recordingProvider.attempts[recordingProvider.index].filePath);
+
                     },
                     icon: const Icon(Icons.play_arrow),
                     label: const Text('Playback'),
