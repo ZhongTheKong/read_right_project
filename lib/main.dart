@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:read_right_project/providers/recording_provider_2.dart';
+import 'package:read_right_project/providers/recording_provider.dart';
 import 'utils/routes.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:provider/provider.dart';
-import 'providers/recording_provider.dart';
+import 'providers/session_provider.dart';
 
 void main() {
   runApp(

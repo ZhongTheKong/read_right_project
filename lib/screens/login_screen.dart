@@ -4,7 +4,7 @@ import 'package:read_right_project/models/labeled_login_text_field.dart';
 import 'package:read_right_project/utils/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
-import '../providers/recording_provider.dart';
+import '../providers/session_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});

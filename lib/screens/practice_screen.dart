@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
-import 'package:read_right_project/providers/recording_provider_2.dart';
 import 'package:read_right_project/utils/routes.dart';
 
 class PracticeScreen extends StatefulWidget {
