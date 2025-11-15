@@ -8,6 +8,7 @@ import '../providers/session_provider.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+  
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -99,7 +100,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
           else {
             return Scaffold(
-              appBar: AppBar(title: const Text('Login Screen')),
+              appBar: AppBar(
+                title: sessionProvider.isTeacher ? const Text('Teacher Login Screen') : const Text('Student Login Screen')
+              ),
               body: Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -17,6 +17,8 @@ class SessionProvider extends ChangeNotifier {
   // bool isPlaying = false;
   bool isTranscribing = false;
 
+  bool isTeacher = false;
+
   final List<String> word_list = const [
     'round',
     'small',

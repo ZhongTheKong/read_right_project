@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:provider/provider.dart';
+import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
 
 class RoleSelectionScreen extends StatefulWidget {
@@ -26,18 +26,16 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
   @override
   Widget build(BuildContext context) {
 
+    SessionProvider sessionProvider = context.read<SessionProvider>();
+
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('Main Menu'),
-      //   centerTitle: true,
-      // ),
       body: Row(
           children: [
             Expanded(
               child: ElevatedButton(
                 onPressed: () { 
-                  print("hello"); 
-                  Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
+                  sessionProvider.isTeacher = false;
+                  Navigator.pushReplacementNamed(context, AppRoutes.login);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
@@ -68,8 +66,8 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
             Expanded(
               child: ElevatedButton(
                 onPressed: () { 
-                  print("hello"); 
-                  Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
+                  sessionProvider.isTeacher = true;
+                  Navigator.pushReplacementNamed(context, AppRoutes.login);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
