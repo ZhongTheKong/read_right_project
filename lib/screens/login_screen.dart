@@ -15,21 +15,21 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
 
-  Future<String> getLastLoggedInUsername() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? lastUser = prefs.getString("lastUser");
-    return lastUser ?? "";
-  }
+  // Future<String> getLastLoggedInUsername() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   String? lastUser = prefs.getString("lastUser");
+  //   return lastUser ?? "";
+  // }
 
-  void clearLastLoggedInUsername() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove("lastUser");
-  }
+  // void clearLastLoggedInUsername() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   prefs.remove("lastUser");
+  // }
 
-  void setLastLoggedInUsername(String newLoggedInUser) async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setString("lastUser", newLoggedInUser);
-  }
+  // void setLastLoggedInUsername(String newLoggedInUser) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   prefs.setString("lastUser", newLoggedInUser);
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +37,10 @@ class _LoginScreenState extends State<LoginScreen> {
     TextEditingController usernameTextEditingController = TextEditingController();
     TextEditingController passwordTextEditingController = TextEditingController();
 
+    SessionProvider sessionProvider = context.read<SessionProvider>();
+
     return FutureBuilder<String?>(
-      future: getLastLoggedInUsername(),
+      future: sessionProvider.loadUsername(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
@@ -56,7 +58,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(height: 20.0,),
                     ElevatedButton(
                       onPressed: () {
-                        clearLastLoggedInUsername();
+                        sessionProvider.clearUsername();
+                        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.practice, (route) => false);
+                        /// Improve the flow of navigation
+                        Provider.of<SessionProvider>(context, listen: false).saveUsername('Guest');
+                        setState(() {
+                          
+                        });
+                        // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                      },
+                      child: const Text('Continue to practice screen'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        sessionProvider.clearUsername();
                         /// Improve the flow of navigation
                         Provider.of<SessionProvider>(context, listen: false).saveUsername('Guest');
                         setState(() {
@@ -115,9 +130,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         if (LoginData.isValidLoginData(username, password) == true)
                         {
                           print("successful login");
-                          setLastLoggedInUsername(username);
+                          sessionProvider.saveUsername(username);
                           /// Share data with provider
-                          Provider.of<SessionProvider>(context, listen: false).saveUsername(username);
+                          // Provider.of<SessionProvider>(context, listen: false).saveUsername(username);
                           Navigator.pushNamedAndRemoveUntil(context, AppRoutes.practice, (route) => false);
                           // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                         }

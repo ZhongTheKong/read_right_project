@@ -8,13 +8,13 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SessionProvider extends ChangeNotifier {
-  final recorder = AudioRecorder();
-  final player = AudioPlayer();
+  // final recorder = AudioRecorder();
+  // final player = AudioPlayer();
   late stt.SpeechToText _speech; // STT instance
 
-  bool recorderReady = false;
-  bool isRecording = false;
-  bool isPlaying = false;
+  // bool recorderReady = false;
+  // bool isRecording = false;
+  // bool isPlaying = false;
   bool isTranscribing = false;
 
   final List<String> word_list = const [
@@ -96,14 +96,14 @@ class SessionProvider extends ChangeNotifier {
   };
 
   final List<Attempt> attempts = [];
-  static const int kMaxRecordMs = 7000;
-  Timer? recordTimer;
-  int elapsedMs = 0;
+  // static const int kMaxRecordMs = 7000;
+  // Timer? recordTimer;
+  // int elapsedMs = 0;
   // To keep track of the current logged in user
   String _username = 'Guest';
 
 
-  static const int intervalMs = 50;
+  // static const int intervalMs = 50;
 
   // Calculate average score
   double get averageScore {
@@ -118,9 +118,10 @@ class SessionProvider extends ChangeNotifier {
 
   /// Currently needed to get progress screen to persist
   SessionProvider() {
-    _loadUsername();
+    loadUsername();
   }
 
+  // TODO: loadUsername and ready speech to text need to be initialized somewhere else
   // Future<void> initAudio(bool mounted) async {
   //   final hasPerm = await recorder.hasPermission();
   //   if (!hasPerm) {
@@ -137,11 +138,17 @@ class SessionProvider extends ChangeNotifier {
   // }
 
   // Load the username from local storage
-  Future<void> _loadUsername() async {
+  Future<String> loadUsername() async {
     final prefs = await SharedPreferences.getInstance();
     _username = prefs.getString('lastUser') ?? 'Guest';
     notifyListeners();
+    return _username;
+  }
 
+  void clearUsername() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.remove("lastUser");
+    notifyListeners();
   }
 
   // Save the username to local storage
@@ -152,13 +159,13 @@ class SessionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  @override
-  void dispose() {
-    recordTimer?.cancel();
-    player.dispose();
-    recorder.cancel();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   recordTimer?.cancel();
+  //   player.dispose();
+  //   recorder.cancel();
+  //   super.dispose();
+  // }
 
   Future<String> _nextPath() async {
     final dir = await getApplicationDocumentsDirectory();
@@ -166,93 +173,8 @@ class SessionProvider extends ChangeNotifier {
     return '${dir.path}/readright_${word_list[index]}_$ts.wav';
   }
 
-  // Future<void> startRecording() async {
-  //   if (!recorderReady || isRecording) return;
-    
-  //   final path = await _nextPath();
-
-  //   try {
-  //     final config = RecordConfig(
-  //       encoder: AudioEncoder.wav,
-  //       sampleRate: 44100,
-  //       bitRate: 128000,
-  //     );
-
-  //     await recorder.start(config, path: path);
-  //     isRecording = true;
-  //     // Start automatic transcription after recording
-  //     // await transcribeAudio(path);
-  //     notifyListeners();
-
-  //     recordTimer?.cancel();
-  //     recordTimer = Timer(const Duration(milliseconds: kMaxRecordMs), () => stopRecording());
-
-  //     recordTimer = Timer.periodic(
-  //       const Duration(milliseconds: intervalMs),
-  //       (timer) {
-  //         elapsedMs = timer.tick * intervalMs;
-  //         if (elapsedMs >= kMaxRecordMs) {
-  //           elapsedMs = kMaxRecordMs;
-  //           recordTimer?.cancel();
-  //         }
-  //         notifyListeners();
-  //       },
-  //     );
-  //   } catch (e) {}
-  // }
-
-  // Future<void> stopRecording() async {
-  //   if (!isRecording) return;
-  //   recordTimer?.cancel();
-
-  //   try {
-  //     final path = await recorder.stop();
-  //     isRecording = false;
-  //     notifyListeners();
-  //     if (path == null) return;
-
-  //     Duration? dur;
-  //     try {
-  //       await player.setFilePath(path);
-  //       dur = player.duration;
-  //       await player.stop();
-  //     } catch (_) {}
-
-  //     // Save attempt
-  //     attempts.insert(
-  //       0,
-  //       Attempt(
-  //         word: word_list[index],
-  //         score: elapsedMs / kMaxRecordMs, // Placeholder for score
-  //         filePath: path,
-  //         durationMs: (dur ?? Duration.zero).inMilliseconds,
-  //       ),
-  //     );
-  //     notifyListeners();
-
-
-  //   } catch (e) {}
-  // }
-
-  // Future<void> play(String path) async {
-  //   if (isPlaying) return;
-  //   try {
-  //     await player.setFilePath(path);
-  //     await player.play();
-  //     isPlaying = true;
-  //     notifyListeners();
-
-  //     player.playerStateStream.listen((s) {
-  //       if (s.processingState == ProcessingState.completed || s.playing == false) {
-  //         isPlaying = false;
-  //         notifyListeners();
-  //       }
-  //     });
-  //   } catch (e) {}
-  // }
-
   void incrementIndex(int increment) {
-    if (isRecording) return;
+    // if (isRecording) return;
     index = (index + increment) % word_list.length;
     notifyListeners();
   }
