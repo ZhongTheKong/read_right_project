@@ -121,20 +121,20 @@ class SessionProvider extends ChangeNotifier {
     _loadUsername();
   }
 
-  Future<void> initAudio(bool mounted) async {
-    final hasPerm = await recorder.hasPermission();
-    if (!hasPerm) {
-      final granted = await recorder.hasPermission();
-      if (!granted && mounted) return;
-    }
-    recorderReady = true;
+  // Future<void> initAudio(bool mounted) async {
+  //   final hasPerm = await recorder.hasPermission();
+  //   if (!hasPerm) {
+  //     final granted = await recorder.hasPermission();
+  //     if (!granted && mounted) return;
+  //   }
+  //   recorderReady = true;
 
-    _speech = stt.SpeechToText();
+  //   _speech = stt.SpeechToText();
 
-    await _loadUsername();
+  //   await _loadUsername();
 
-    notifyListeners();
-  }
+  //   notifyListeners();
+  // }
 
   // Load the username from local storage
   Future<void> _loadUsername() async {
@@ -166,90 +166,90 @@ class SessionProvider extends ChangeNotifier {
     return '${dir.path}/readright_${word_list[index]}_$ts.wav';
   }
 
-  Future<void> startRecording() async {
-    if (!recorderReady || isRecording) return;
+  // Future<void> startRecording() async {
+  //   if (!recorderReady || isRecording) return;
     
-    final path = await _nextPath();
+  //   final path = await _nextPath();
 
-    try {
-      final config = RecordConfig(
-        encoder: AudioEncoder.wav,
-        sampleRate: 44100,
-        bitRate: 128000,
-      );
+  //   try {
+  //     final config = RecordConfig(
+  //       encoder: AudioEncoder.wav,
+  //       sampleRate: 44100,
+  //       bitRate: 128000,
+  //     );
 
-      await recorder.start(config, path: path);
-      isRecording = true;
-      // Start automatic transcription after recording
-      // await transcribeAudio(path);
-      notifyListeners();
+  //     await recorder.start(config, path: path);
+  //     isRecording = true;
+  //     // Start automatic transcription after recording
+  //     // await transcribeAudio(path);
+  //     notifyListeners();
 
-      recordTimer?.cancel();
-      recordTimer = Timer(const Duration(milliseconds: kMaxRecordMs), () => stopRecording());
+  //     recordTimer?.cancel();
+  //     recordTimer = Timer(const Duration(milliseconds: kMaxRecordMs), () => stopRecording());
 
-      recordTimer = Timer.periodic(
-        const Duration(milliseconds: intervalMs),
-        (timer) {
-          elapsedMs = timer.tick * intervalMs;
-          if (elapsedMs >= kMaxRecordMs) {
-            elapsedMs = kMaxRecordMs;
-            recordTimer?.cancel();
-          }
-          notifyListeners();
-        },
-      );
-    } catch (e) {}
-  }
+  //     recordTimer = Timer.periodic(
+  //       const Duration(milliseconds: intervalMs),
+  //       (timer) {
+  //         elapsedMs = timer.tick * intervalMs;
+  //         if (elapsedMs >= kMaxRecordMs) {
+  //           elapsedMs = kMaxRecordMs;
+  //           recordTimer?.cancel();
+  //         }
+  //         notifyListeners();
+  //       },
+  //     );
+  //   } catch (e) {}
+  // }
 
-  Future<void> stopRecording() async {
-    if (!isRecording) return;
-    recordTimer?.cancel();
+  // Future<void> stopRecording() async {
+  //   if (!isRecording) return;
+  //   recordTimer?.cancel();
 
-    try {
-      final path = await recorder.stop();
-      isRecording = false;
-      notifyListeners();
-      if (path == null) return;
+  //   try {
+  //     final path = await recorder.stop();
+  //     isRecording = false;
+  //     notifyListeners();
+  //     if (path == null) return;
 
-      Duration? dur;
-      try {
-        await player.setFilePath(path);
-        dur = player.duration;
-        await player.stop();
-      } catch (_) {}
+  //     Duration? dur;
+  //     try {
+  //       await player.setFilePath(path);
+  //       dur = player.duration;
+  //       await player.stop();
+  //     } catch (_) {}
 
-      // Save attempt
-      attempts.insert(
-        0,
-        Attempt(
-          word: word_list[index],
-          score: elapsedMs / kMaxRecordMs, // Placeholder for score
-          filePath: path,
-          durationMs: (dur ?? Duration.zero).inMilliseconds,
-        ),
-      );
-      notifyListeners();
+  //     // Save attempt
+  //     attempts.insert(
+  //       0,
+  //       Attempt(
+  //         word: word_list[index],
+  //         score: elapsedMs / kMaxRecordMs, // Placeholder for score
+  //         filePath: path,
+  //         durationMs: (dur ?? Duration.zero).inMilliseconds,
+  //       ),
+  //     );
+  //     notifyListeners();
 
 
-    } catch (e) {}
-  }
+  //   } catch (e) {}
+  // }
 
-  Future<void> play(String path) async {
-    if (isPlaying) return;
-    try {
-      await player.setFilePath(path);
-      await player.play();
-      isPlaying = true;
-      notifyListeners();
+  // Future<void> play(String path) async {
+  //   if (isPlaying) return;
+  //   try {
+  //     await player.setFilePath(path);
+  //     await player.play();
+  //     isPlaying = true;
+  //     notifyListeners();
 
-      player.playerStateStream.listen((s) {
-        if (s.processingState == ProcessingState.completed || s.playing == false) {
-          isPlaying = false;
-          notifyListeners();
-        }
-      });
-    } catch (e) {}
-  }
+  //     player.playerStateStream.listen((s) {
+  //       if (s.processingState == ProcessingState.completed || s.playing == false) {
+  //         isPlaying = false;
+  //         notifyListeners();
+  //       }
+  //     });
+  //   } catch (e) {}
+  // }
 
   void incrementIndex(int increment) {
     if (isRecording) return;

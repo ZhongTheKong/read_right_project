@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
 import '../providers/session_provider.dart';
 
@@ -13,16 +14,17 @@ class ProgressScreen extends StatefulWidget {
 }
 
 class _ProgressScreenState extends State<ProgressScreen> {
-
+  
 
   @override
   Widget build(BuildContext context) {
+    RecordingProvider recordingProvider = context.watch<RecordingProvider>();
 
-    // SessionProvider sessionProvider = context.watch<RecordingProvider>();
+    SessionProvider sessionProvider = context.watch<SessionProvider>();
 
 
-    return Consumer<SessionProvider>(
-      builder: (context, sessionProvider, child) {
+    // return Consumer<SessionProvider>(
+    //   builder: (context, sessionProvider, child) {
 
 
         return Scaffold(
@@ -69,19 +71,20 @@ class _ProgressScreenState extends State<ProgressScreen> {
                     border: Border.all(color: Colors.blue, width: 3),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Consumer<SessionProvider>(
-                    builder: (BuildContext context, SessionProvider recorder, Widget? child) => recorder.attempts.isEmpty
+                  // child: Consumer<SessionProvider>(
+                    // builder: (BuildContext context, SessionProvider recorder, Widget? child) => recorder.attempts.isEmpty
+                    child: sessionProvider.attempts.isEmpty
                       ? const Center(
                           child: Text('No attempts yet')
                       )
                       : ClipRRect(
                         borderRadius: BorderRadiusGeometry.circular(8),
                         child: ListView.separated(
-                            itemCount: recorder.attempts.length,
+                            itemCount: sessionProvider.attempts.length,
                             separatorBuilder: (_, __) => const SizedBox(height: 8),
                             itemBuilder: (context, i) {
                             
-                              final iterAttempt = recorder.attempts[i];
+                              final iterAttempt = sessionProvider.attempts[i];
                               final exists = File(iterAttempt.filePath).existsSync();
                             
                               return Material(
@@ -94,16 +97,16 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                   title: Text(iterAttempt.word),
                                                             
                                   subtitle: Text(
-                                      'Attempt ${recorder.attempts.length - i}\nDate: ${iterAttempt.createdAt.toLocal()}\nDuration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s'),
+                                      'Attempt ${sessionProvider.attempts.length - i}\nDate: ${iterAttempt.createdAt.toLocal()}\nDuration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s'),
                                                             
                                   trailing: Row(
                                     mainAxisSize: MainAxisSize.min, 
                                     children: [
                                       IconButton(
                                         tooltip: 'Play',
-                                        onPressed: (!exists || recorder.isPlaying)
+                                        onPressed: (!exists || recordingProvider.isPlaying)
                                             ? null
-                                            : () => recorder.play(iterAttempt.filePath),
+                                            : () => recordingProvider.play(iterAttempt.filePath),
                                         icon: const Icon(Icons.play_arrow),
                                       ),
                                       
@@ -111,9 +114,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                         tooltip: 'Stop',
                                                             
                                         // TODO: CREATE A BETTER PLAY ATTEMPT BUTTON CALLBACK
-                                        onPressed: recorder.isPlaying
-                                            ? () => recorder.player.stop().then(
-                                                (_) => setState(() => recorder.isPlaying = false))
+                                        onPressed: recordingProvider.isPlaying
+                                            ? () => recordingProvider.player.stop().then(
+                                                (_) => setState(() => recordingProvider.isPlaying = false))
                                             : null,
                                                             
                                         icon: const Icon(Icons.stop),
@@ -121,7 +124,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                                                         
                                       IconButton(
                                         onPressed: () {
-                                          recorder.selectedIndex = i;
+                                          sessionProvider.selectedIndex = i;
                                           Navigator.pushNamed(context, AppRoutes.feedback);
                                         }, 
                                         icon: Icon(Icons.feedback)
@@ -137,7 +140,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                       ),
                   ),
                 ),
-              ),
+              // ),
 
                 ElevatedButton(
                   onPressed: () {
@@ -161,8 +164,8 @@ class _ProgressScreenState extends State<ProgressScreen> {
         );
 
 
-      },
-    );
+    //   },
+    // );
 
 
   }

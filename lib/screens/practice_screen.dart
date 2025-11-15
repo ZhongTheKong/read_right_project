@@ -18,8 +18,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
   @override
   void initState() {
     super.initState();
-    SessionProvider sessionProvider = context.read<SessionProvider>();
-    sessionProvider.initAudio(mounted);
+    // SessionProvider sessionProvider = context.read<SessionProvider>();
+    // sessionProvider.initAudio(mounted);
+    // RecordingProvider recordingProvider = context.watch<RecordingProvider>();
+    // recordingProvider.initAudio(mounted);
   }
 
   @override

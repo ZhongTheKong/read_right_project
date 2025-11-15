@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
 
 class TeacherDashboardScreen extends StatelessWidget {
@@ -7,10 +8,17 @@ class TeacherDashboardScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => SessionProvider()..initAudio(true),
-      child: Consumer<SessionProvider>(
-        builder: (context, provider, child) {
+
+    RecordingProvider recordingProvider = context.watch<RecordingProvider>();
+
+    SessionProvider sessionProvider = context.watch<SessionProvider>();
+
+
+    // return ChangeNotifierProvider(
+    //   create: (_) => SessionProvider()..initAudio(true),
+    //   child: Consumer<SessionProvider>(
+    //     builder: (context, provider, child) {
+
           return Scaffold(
             appBar: AppBar(title: const Text('Teacher Screen')),
             body: Padding(
@@ -20,7 +28,7 @@ class TeacherDashboardScreen extends StatelessWidget {
                 children: [
                   // Recording status
                   Text(
-                    provider.isRecording
+                    recordingProvider.isRecording
                         ? 'Recording...'
                         : 'Press the button to start recording',
                     style: const TextStyle(fontSize: 18),
@@ -28,7 +36,7 @@ class TeacherDashboardScreen extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   Text(
-                    provider.isTranscribing
+                    recordingProvider.isTranscribing
                         ? 'Transcribing...'
                         : 'Transcribed text will appear here',
                     style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
@@ -37,10 +45,10 @@ class TeacherDashboardScreen extends StatelessWidget {
 
                   // Start/Stop recording button
                   ElevatedButton.icon(
-                    icon: Icon(provider.isRecording ? Icons.stop : Icons.mic),
-                    label: Text(provider.isRecording ? 'Stop Recording' : 'Start Recording'),
+                    icon: Icon(recordingProvider.isRecording ? Icons.stop : Icons.mic),
+                    label: Text(recordingProvider.isRecording ? 'Stop Recording' : 'Start Recording'),
                     onPressed: () {
-                      provider.transcribeAudio('');
+                      sessionProvider.transcribeAudio('');
                       // if (provider.isRecording) {
                       //   provider.stopRecording();
                       // } else {
@@ -53,15 +61,15 @@ class TeacherDashboardScreen extends StatelessWidget {
                   // Show all past attempts
                   Expanded(
                     child: ListView.builder(
-                      itemCount: provider.attempts.length,
+                      itemCount: sessionProvider.attempts.length,
                       itemBuilder: (context, index) {
-                        final attempt = provider.attempts[index];
+                        final attempt = sessionProvider.attempts[index];
                         return ListTile(
                           title: Text('Word: ${attempt.word}'),
                           subtitle: Text('File: ${attempt.filePath}\nDuration: ${attempt.durationMs} ms'),
                           trailing: IconButton(
                             icon: const Icon(Icons.play_arrow),
-                            onPressed: () => provider.play(attempt.filePath),
+                            onPressed: () => recordingProvider.play(attempt.filePath),
                           ),
                         );
                       },
@@ -81,8 +89,10 @@ class TeacherDashboardScreen extends StatelessWidget {
               ),
             ),
           );
-        },
-      ),
-    );
+          
+    //     },
+    //   ),
+    // );
+
   }
 }
