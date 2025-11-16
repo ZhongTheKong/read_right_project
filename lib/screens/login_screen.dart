@@ -25,7 +25,16 @@ class _LoginScreenState extends State<LoginScreen> {
     AllUserData allUserData = allUsersProvider.allUserData;
 
     try {
-      UserData userWithMatchingUsername = allUserData.userDataList.firstWhere((u) => u.username == username && u.isTeacher == isTeacher);
+      UserData userWithMatchingUsername;
+      if (isTeacher)
+      {
+        userWithMatchingUsername = allUserData.teacherUserDataList.firstWhere((u) => u.username == username);
+      }
+      else
+      {
+        userWithMatchingUsername = allUserData.studentUserDataList.firstWhere((u) => u.username == username);
+      }
+      // UserData userWithMatchingUsername = allUserData.userDataList.firstWhere((u) => u.username == username && u.isTeacher == isTeacher);
       if (userWithMatchingUsername.password == password)
       {
         return userWithMatchingUsername;

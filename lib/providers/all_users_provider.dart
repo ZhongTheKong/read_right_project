@@ -8,7 +8,7 @@ import 'package:read_right_project/utils/user_data.dart';
 
 class AllUsersProvider extends ChangeNotifier{
 
-  AllUserData allUserData = AllUserData(lastLoggedInUser: null, userDataList: []);
+  AllUserData allUserData = AllUserData(lastLoggedInUser: null, studentUserDataList: [], teacherUserDataList: []);
 
   // UserData? lastLoggedInUser;
   // List<UserData> loadedUserDataList = [];

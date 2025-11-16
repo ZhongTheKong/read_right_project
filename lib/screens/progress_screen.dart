@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
 import '../providers/session_provider.dart';
 
 class ProgressScreen extends StatefulWidget {
@@ -53,7 +54,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                             style: const TextStyle(fontSize: 18),
                         ),
                         Text(
-                            'Number of Attempts: ${allUsersProvider.allUserData!.lastLoggedInUser!.attempts.length}',
+                            'Number of Attempts: ${(allUsersProvider.allUserData!.lastLoggedInUser! as StudentUserData).attempts.length}',
                             style: const TextStyle(fontSize: 18),
                         ),
                         Text(

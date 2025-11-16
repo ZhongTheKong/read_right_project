@@ -4,25 +4,25 @@ class UserData {
   UserData({
     required this.username,
     required this.password,
-    required this.isTeacher,
-    required this.attempts,
+    // required this.isTeacher,
+    // required this.attempts,
   });
 
   final String username;
   final String password;
-  final bool isTeacher;
-  final List<Attempt> attempts;
+  // final bool isTeacher;
+  // final List<Attempt> attempts;
 
   // Deserialize
   factory UserData.fromJson(Map<String, dynamic> json) {
     return UserData(
       username: json['username'],
       password: json['password'],
-      isTeacher: json['isTeacher'],
+      // isTeacher: json['isTeacher'],
       // attempts: json['attempts'],
-      attempts: (json['attempts'] as List<dynamic>)
-          .map((a) => Attempt.fromJson(a))
-          .toList(),
+      // attempts: (json['attempts'] as List<dynamic>)
+      //     .map((a) => Attempt.fromJson(a))
+      //     .toList(),
     );
   }
 
@@ -31,8 +31,8 @@ class UserData {
     return {
       'username': username,
       'password': password,
-      'isTeacher': isTeacher,
-      'attempts': attempts.map((a) => a.toJson()).toList(),
+      // 'isTeacher': isTeacher,
+      // 'attempts': attempts.map((a) => a.toJson()).toList(),
     };
   }
 }

@@ -5,6 +5,8 @@ import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/utils/all_users_data.dart';
 import 'package:read_right_project/utils/routes.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
+import 'package:read_right_project/utils/teacher_user_data.dart';
 import 'package:read_right_project/utils/user_data.dart';
 
 class CreateAccountScreen extends StatefulWidget {
@@ -74,7 +76,15 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 // }
                 // TODO: Check for unique username
                 AllUserData allUserData = allUsersProvider.allUserData;
-                allUserData.userDataList.add(UserData(username: username, password: password, isTeacher: sessionProvider.isTeacher, attempts: []));
+                if (sessionProvider.isTeacher)
+                {
+                  allUserData.teacherUserDataList.add(TeacherUserData(username: username, password: password, studentUsernames: []));
+                }
+                else
+                {
+                  allUserData.studentUserDataList.add(StudentUserData(username: username, password: password, attempts: []));
+                }
+                // allUserData.userDataList.add(UserData(username: username, password: password, isTeacher: sessionProvider.isTeacher, attempts: []));
                 allUsersProvider.saveUserData(allUserData);
                 Navigator.pushReplacementNamed(context, AppRoutes.login);
 
