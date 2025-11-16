@@ -61,23 +61,23 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                       
-                    Column(
-                      children: [
-                        SizedBox(height: 18,), // size of word # font
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.blue, width: 2), // outline color & width
-                          ),
-                          child: IconButton(
-                            onPressed: () => sessionProvider.changeSentence(),
-                            icon: Icon(
-                              Icons.arrow_left
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    // Column(
+                    //   children: [
+                    //     SizedBox(height: 18,), // size of word # font
+                    //     Container(
+                    //       decoration: BoxDecoration(
+                    //         shape: BoxShape.circle,
+                    //         border: Border.all(color: Colors.blue, width: 2), // outline color & width
+                    //       ),
+                    //       child: IconButton(
+                    //         onPressed: () => sessionProvider.changeSentence(),
+                    //         icon: Icon(
+                    //           Icons.arrow_left
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
                       
                     Column(
                       children: [
@@ -99,23 +99,24 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       ],
                     ),
                       
-                    Column(
-                      children: [
-                        SizedBox(height: 18,),
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.blue, width: 2), // outline color & width
-                          ),
-                          child: IconButton(
-                            onPressed: () => sessionProvider.changeSentence(),
-                            icon: Icon(
-                              Icons.arrow_right
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
+                    // Column(
+                    //   children: [
+                    //     SizedBox(height: 18,),
+                    //     Container(
+                    //       decoration: BoxDecoration(
+                    //         shape: BoxShape.circle,
+                    //         border: Border.all(color: Colors.blue, width: 2), // outline color & width
+                    //       ),
+                    //       child: IconButton(
+                    //         onPressed: () => sessionProvider.changeSentence(),
+                    //         icon: Icon(
+                    //           Icons.arrow_right
+                    //         ),
+                    //       ),
+                    //     ),
+                    //   ],
+                    // )
+
                   ],
                 ),
               ),
@@ -246,14 +247,21 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       //sessionProvider.selectedIndex = sessionProvider.index;
                       Navigator.pushNamed(context, AppRoutes.feedback);
                     },
-                    child: const Text('Review Feedback'),
+                    child: const Text('Submit Recording'),
                   ),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.wordList);
-                    },
-                    child: const Text('Go to Word List')
-                  ),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     //sessionProvider.selectedIndex = sessionProvider.index;
+                  //     Navigator.pushNamed(context, AppRoutes.feedback);
+                  //   },
+                  //   child: const Text('Review Feedback'),
+                  // ),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.pushNamed(context, AppRoutes.wordList);
+                  //   },
+                  //   child: const Text('Go to Word List')
+                  // ),
                   ElevatedButton(
                     onPressed: () {
                       Navigator.pushNamed(context, AppRoutes.progress);

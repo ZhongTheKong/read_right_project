@@ -40,20 +40,22 @@ class _LoginScreenState extends State<LoginScreen> {
 
       // return null;
     }
-
-    // // non existent username
-    // if (!loginData.containsKey(username)) {
-    //   print("Username: $username does not exist");
-    //   return false;
-    // }
-    // // password does not match
-    // if (loginData[username] != password) {
-    //   print("Password: $password does not match");
-    //   return false;
-    // }
-    // // username exists and password matches
-    // return true;
   }
+
+  // Future<UserData> getMatchingUserDataOfLastUser(BuildContext context, bool isTeacher, String username) async {
+
+  //   AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+  //   List<UserData> allUserData = await allUsersProvider.getLoadedAllUserData();
+
+  //   try {
+  //     return allUserData.firstWhere((u) => u.username == username && u.isTeacher == isTeacher);
+  //   } catch (e) {
+  //     // If no user is found, return null
+  //     throw UserNotFoundException(username);
+
+  //     // return null;
+  //   }
+  // }
 
   // Future<String> getLastLoggedInUsername() async {
   //   final prefs = await SharedPreferences.getInstance();
@@ -78,6 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
     TextEditingController passwordTextEditingController = TextEditingController();
 
     SessionProvider sessionProvider = context.read<SessionProvider>();
+    AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
 
     return FutureBuilder<String?>(
       future: sessionProvider.loadUsername(),
@@ -94,6 +97,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
 
           if (lastLoggedInUsername != '' && lastLoggedInUsername != 'Guest') {
+
+            // sessionProvider.currUser = await getMatchingUserDataOfLastUser(context, sessionProvider.isTeacher, lastLoggedInUsername);
+
             return Scaffold(
               appBar: AppBar(title: const Text('Login Screen')),
               body: Center(
@@ -177,6 +183,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         {
                           UserData matchingUser = await getMatchingUserData(context, sessionProvider.isTeacher, username, password);
                           sessionProvider.saveUsername(username);
+                          sessionProvider.currUser = matchingUser;
                           Navigator.pushReplacementNamed(context, AppRoutes.practice);
                         }
                         on UserNotFoundException catch(e)
