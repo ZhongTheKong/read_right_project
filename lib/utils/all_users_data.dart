@@ -1,31 +1,29 @@
-// import 'package:read_right_project/utils/user_data.dart';
+import 'package:read_right_project/utils/user_data.dart';
 
-// class AllUsersData {
-//   AllUsersData({
-//     required this.allUserData,
-//   });
-//   final List<UserData> allUserData;
+class AllUserData {
+  AllUserData({
+    required this.lastLoggedInUser,
+    required this.userDataList,
+  });
+  UserData? lastLoggedInUser;
+  final List<UserData> userDataList;
 
-//     // Deserialize
-//   factory AllUsersData.fromJson(Map<String, dynamic> json) {
-//     return AllUsersData(
-//       username: json['username'],
-//       password: json['password'],
-//       isTeacher: json['isTeacher'],
-//       // attempts: json['attempts'],
-//       allUserData: (json['allUserData'] as List<dynamic>)
-//           .map((a) => Attempt.fromJson(a))
-//           .toList(),
-//     );
-//   }
+    // Deserialize
+  factory AllUserData.fromJson(Map<String, dynamic> json) {
+    return AllUserData(
+      lastLoggedInUser: UserData.fromJson(json['isTeacher']),
+      // attempts: json['attempts'],
+      userDataList: (json['allUserData'] as List<dynamic>)
+          .map((a) => UserData.fromJson(a))
+          .toList(),
+    );
+  }
 
-//   // Serialize
-//   Map<String, dynamic> toJson() {
-//     return {
-//       'username': username,
-//       'password': password,
-//       'isTeacher': isTeacher,
-//       'attempts': attempts,
-//     };
-//   }
-// }
+  // Serialize
+  Map<String, dynamic> toJson() {
+    return {
+      'lastLoggedInUser': lastLoggedInUser?.toJson(),
+      'allUserData': userDataList.map((a) => a.toJson()).toList(),
+    };
+  }
+}

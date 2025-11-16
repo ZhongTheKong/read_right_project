@@ -37,6 +37,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+    allUsersProvider.loadUserData();
+
     return MaterialApp(
       title: 'Navigation Demo',
       debugShowCheckedModeBanner: false,

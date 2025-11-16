@@ -102,9 +102,10 @@ class SessionProvider extends ChangeNotifier {
   // static const int kMaxRecordMs = 7000;
   // Timer? recordTimer;
   // int elapsedMs = 0;
+
   // To keep track of the current logged in user
-  String _username = 'Guest';
-  UserData? currUser;
+  // String _username = 'Guest';
+  // UserData? currUser;
 
 
   // static const int intervalMs = 50;
@@ -118,12 +119,12 @@ class SessionProvider extends ChangeNotifier {
 
   int get numberOfAttempts => attempts.length;
 
-  String get currentUser => _username;
+  // String get currentUser => _username;
 
   /// Currently needed to get progress screen to persist
-  SessionProvider() {
-    loadUsername();
-  }
+  // SessionProvider() {
+  //   loadLastUser();
+  // }
 
   // TODO: loadUsername and ready speech to text need to be initialized somewhere else
   // Future<void> initAudio(bool mounted) async {
@@ -141,27 +142,31 @@ class SessionProvider extends ChangeNotifier {
   //   notifyListeners();
   // }
 
-  // Load the username from local storage
-  Future<String> loadUsername() async {
-    final prefs = await SharedPreferences.getInstance();
-    _username = prefs.getString('lastUser') ?? 'Guest';
-    notifyListeners();
-    return _username;
-  }
+  // // Load the username from local storage
+  // Future<void> loadLastUser() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   _username = prefs.getString('lastUser_username') ?? 'Guest';
+  //   isTeacher = prefs.getBool('lastUser_isTeacher') ?? false;
+  //   notifyListeners();
+  //   // return _username;
+  // }
 
-  void clearUsername() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove("lastUser");
-    notifyListeners();
-  }
+  // void clearLastUser() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   prefs.remove("lastUser_username");
+  //   prefs.remove("lastUser_isTeacher");
+  //   notifyListeners();
+  // }
 
-  // Save the username to local storage
-  Future<void> saveUsername(String username) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('lastUser', username);
-    _username = username;
-    notifyListeners();
-  }
+  // // Save the username to local storage
+  // Future<void> saveLastUser(String username) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString('lastUser_username', username);
+  //   await prefs.setBool('lastUser_isTeacher', isTeacher);
+  //   _username = username;
+  //   isTeacher = isTeacher;
+  //   notifyListeners();
+  // }
 
   // @override
   // void dispose() {

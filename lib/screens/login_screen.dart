@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:read_right_project/data/login_data.dart';
 import 'package:read_right_project/models/labeled_login_text_field.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
+import 'package:read_right_project/utils/all_users_data.dart';
 import 'package:read_right_project/utils/routes.dart';
 import 'package:read_right_project/utils/user_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,10 +22,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<UserData> getMatchingUserData(BuildContext context, bool isTeacher, String username, String password) async {
 
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
-    List<UserData> allUserData = await allUsersProvider.getLoadedAllUserData();
+    AllUserData allUserData = await allUsersProvider.getAllUserData();
 
     try {
-      UserData userWithMatchingUsername = allUserData.firstWhere((u) => u.username == username && u.isTeacher == isTeacher);
+      UserData userWithMatchingUsername = allUserData.userDataList.firstWhere((u) => u.username == username && u.isTeacher == isTeacher);
       if (userWithMatchingUsername.password == password)
       {
         return userWithMatchingUsername;
@@ -82,21 +83,22 @@ class _LoginScreenState extends State<LoginScreen> {
     SessionProvider sessionProvider = context.read<SessionProvider>();
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
 
-    return FutureBuilder<String?>(
-      future: sessionProvider.loadUsername(),
+    return FutureBuilder<void>(
+      future: allUsersProvider.loadUserData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          final String lastLoggedInUsername = snapshot.data ?? '';
+          // final String lastLoggedInUsername = allUsersProvider.allUserData!.lastLoggedInUser!.username;
+          final UserData? lastLoggedInUser = allUsersProvider.allUserData!.lastLoggedInUser;
 
 
 
 
 
-          if (lastLoggedInUsername != '' && lastLoggedInUsername != 'Guest') {
+          if (lastLoggedInUser != null) {
 
             // sessionProvider.currUser = await getMatchingUserDataOfLastUser(context, sessionProvider.isTeacher, lastLoggedInUsername);
 
@@ -105,34 +107,26 @@ class _LoginScreenState extends State<LoginScreen> {
               body: Center(
                 child: Column(
                   children: [
-                    Text("Welcome back: $lastLoggedInUsername"),
+                    Text("Welcome back: ${lastLoggedInUser.username}"),
                     SizedBox(height: 20.0,),
+
                     ElevatedButton(
                       onPressed: () {
-                        sessionProvider.clearUsername();
-                        // Navigator.pushNamedAndRemoveUntil(context, AppRoutes.practice, (route) => false);
+                        // allUsersProvider.clearLastUser();
                         Navigator.pushReplacementNamed(context, AppRoutes.practice);
-                        /// Improve the flow of navigation
-                        Provider.of<SessionProvider>(context, listen: false).saveUsername('Guest');
-                        setState(() {
-                          
-                        });
-                        // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                        // allUsersProvider.saveLastUser(lastLoggedInUsername);
                       },
                       child: const Text('Continue to practice screen'),
                     ),
+
                     ElevatedButton(
                       onPressed: () {
-                        sessionProvider.clearUsername();
-                        /// Improve the flow of navigation
-                        Provider.of<SessionProvider>(context, listen: false).saveUsername('Guest');
-                        setState(() {
-                          
-                        });
-                        // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                        allUsersProvider.clearLastUser();
+                        setState(() {});
                       },
                       child: const Text('CLEAR LAST LOGIN DATA'),
                     ),
+
                   ],
                 ),
               )
@@ -176,14 +170,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         final username = usernameTextEditingController.text;
                         final password = passwordTextEditingController.text;
-                        // Navigate back to main screen and clear previous routes
-                        // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
 
                         try
                         {
                           UserData matchingUser = await getMatchingUserData(context, sessionProvider.isTeacher, username, password);
-                          sessionProvider.saveUsername(username);
-                          sessionProvider.currUser = matchingUser;
+                          allUsersProvider.saveLastUser(matchingUser);
+                          // sessionProvider.currUser = matchingUser;
                           Navigator.pushReplacementNamed(context, AppRoutes.practice);
                         }
                         on UserNotFoundException catch(e)
@@ -194,21 +186,6 @@ class _LoginScreenState extends State<LoginScreen> {
                         {
                           print("Incorrect password: $e");
                         }
-
-                        // if (LoginData.isValidLoginData(username, password) == true)
-                        // {
-                        //   print("successful login");
-                        //   sessionProvider.saveUsername(username);
-                        //   /// Share data with provider
-                        //   // Provider.of<SessionProvider>(context, listen: false).saveUsername(username);
-                        //   // Navigator.pushNamedAndRemoveUntil(context, AppRoutes.practice, (route) => false);
-                        //   Navigator.pushReplacementNamed(context, AppRoutes.practice);
-                        //   // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-                        // }
-                        // else
-                        // {
-                        //   print("incorrect login");
-                        // }
                       },
                       child: const Text('LOGIN'),
                     ),
@@ -219,16 +196,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       }, 
                       child: Text("Create account"),
                     )
-                    
-                    // ElevatedButton(
-                    //   onPressed: () {
-                    //     // Navigate back to main screen and clear previous routes
-                    //     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-                        
-                    //   },
-                    //   child: const Text('Back to Main Screen'),
-                    // ),
-
                   ],
                 ),
               ),

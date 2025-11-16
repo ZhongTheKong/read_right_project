@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:read_right_project/models/labeled_login_text_field.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
+import 'package:read_right_project/utils/all_users_data.dart';
 import 'package:read_right_project/utils/routes.dart';
 import 'package:read_right_project/utils/user_data.dart';
 
@@ -72,8 +73,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 //   print("incorrect login");
                 // }
                 // TODO: Check for unique username
-                List<UserData> allUserData = await allUsersProvider.getLoadedAllUserData();
-                allUserData.add(UserData(username: username, password: password, isTeacher: sessionProvider.isTeacher, attempts: []));
+                AllUserData allUserData = await allUsersProvider.getAllUserData();
+                allUserData.userDataList.add(UserData(username: username, password: password, isTeacher: sessionProvider.isTeacher, attempts: []));
                 allUsersProvider.saveUserData(allUserData);
                 Navigator.pushReplacementNamed(context, AppRoutes.login);
 

@@ -32,7 +32,7 @@ class UserData {
       'username': username,
       'password': password,
       'isTeacher': isTeacher,
-      'attempts': attempts,
+      'attempts': attempts.map((a) => a.toJson()).toList(),
     };
   }
 }
