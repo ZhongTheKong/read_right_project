@@ -1,11 +1,15 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show rootBundle; // Import rootBundle
+import 'package:csv/csv.dart'; // Import the CSV package
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:read_right_project/utils/attempt.dart';
 import 'package:record/record.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:read_right_project/utils/word.dart';
+
 
 class SessionProvider extends ChangeNotifier {
   // final recorder = AudioRecorder();
@@ -19,83 +23,13 @@ class SessionProvider extends ChangeNotifier {
 
   bool isTeacher = false;
 
-  final List<String> word_list = const [
-    'round',
-    'small',
-    'grow',
-    'sleep',
-    'again',
-    'fly',
-    'because',
-    'must',
-    'always',
-    'saw',
-    'keep',
-    'bake_cake',
-    'car_tar',
-    'bat_back',
-    'date_gate',
-    'sink_think',
-    'reed_weed',
-    'sit_sick',
-    'fan_van',
-    'free_three',
-    'goo_glue',
-    'see_seed'
-  ];
+
   int index = 0;
   int selectedIndex = 0;
+  String grade = "Pre-Primer";
 
-  int sentenceIndex = 0;
-  String selectedWord = '';
+  List<Word> word_list = [];
 
-  /// Placeholder for CSV file parsing
-  final Map<String, String> sentence_list = const {
-    'round1': 'The circle is round',
-    'round2': 'Time for round two',
-    'small1': 'The dog is small',
-    'small2': 'Bugs are small',
-    'grow1': 'You can grow by drinking milk',
-    'grow2': 'Kids grow up fast',
-    'sleep1': 'Sleep for eight hours',
-    'sleep2': 'You should sleep when it is night',
-    'again1': 'Do it again',
-    'again2': 'Mom baked cookies again',
-    'fly1': 'Birds fly',
-    'fly2': 'People cannot fly',
-    'because1': 'You eat fruits because they are good for you',
-    'because2': 'You do not talk to strangers because they are dangerous',
-    'must1': 'You must look both ways before crossing the street',
-    'must2': 'You must wash your hands after using the bathroom',
-    'always1': 'Always brush your teeth',
-    'always2': 'You always know what to say',
-    'saw1': 'Dad cut some wood with a saw',
-    'saw2': 'I saw a shooting star',
-    'keep1': 'Keep trying and you will succeed',
-    'keep2': 'Keep up the good work',
-    'bake_cake1': 'Bake the cake in the oven',
-    'bake_cake2': 'Bake at high temperature to get a cake',
-    'car_tar1': 'Drive your car and stay out of tar',
-    'car_tar2': 'Tar is bad for your car',
-    'bat_back1': 'Take the bat around back',
-    'bat_back2': 'The back of a bat is brown',
-    'date_gate1': 'Open the gate on the right date',
-    'date_gate2': 'On this date they will build the gate',
-    'sink_think1': 'Think in the sink',
-    'sink_think2': 'You will sink if you don\'t think',
-    'reed_weed1': 'A reed is a weed',
-    'reed_weed2': 'Not every weed is a reed',
-    'sit_sick1': 'You must sit and rest when you are sick',
-    'sit_sick2': 'Sick days mean you sit at home',
-    'fan_van1': 'A van gets hot without a fan',
-    'fan_van2': 'There is a fan in the van',
-    'free_three1': 'Buy one get three free',
-    'free_three2': 'Three free birds',
-    'goo_glue1': 'Glue is a kind of goo',
-    'goo_glue2': 'Not all goo is glue',
-    'see_seed1': 'See the seed grow',
-    'see_seed2': 'The seed cannot see you',
-  };
 
   final List<Attempt> attempts = [];
   // static const int kMaxRecordMs = 7000;
@@ -118,26 +52,55 @@ class SessionProvider extends ChangeNotifier {
 
   String get currentUser => _username;
 
+  String get word => word_list[index].text;
+  String get grade_level => word_list[index].grade;
+
   /// Currently needed to get progress screen to persist
   SessionProvider() {
     loadUsername();
+    loadWordList('assets/seed_words.csv');
   }
 
   // TODO: loadUsername and ready speech to text need to be initialized somewhere else
-  // Future<void> initAudio(bool mounted) async {
-  //   final hasPerm = await recorder.hasPermission();
-  //   if (!hasPerm) {
-  //     final granted = await recorder.hasPermission();
-  //     if (!granted && mounted) return;
-  //   }
-  //   recorderReady = true;
+  Future<void> loadWordList(String path) async {
+    try {
+      final fileData = await rootBundle.loadString(path);
+      // Use CsvToListConverter to parse the CSV string.
+      List<List<dynamic>> csvTable = const CsvToListConverter(eol: '\n').convert(fileData);
 
-  //   _speech = stt.SpeechToText();
+      final List<Word> loadedWords = [];
+      // Start from index 1 to skip the header row.
+      for (var i = 1; i < csvTable.length; i++) {
+        final row = csvTable[i];
+        // Ensure the row has at least two columns.
+        if (row.length > 1) {
+          final grade = row[0].toString().trim(); // Grade is in the first column (index 0)
+          final wordText = row[1].toString().trim(); // Word is in the second column (index 1)
+          if (grade.isNotEmpty && wordText.isNotEmpty) {
+            // Create a Word object and add it to the list.
+            loadedWords.add(Word(grade: grade, text: wordText));
+          }
+        }
+      }
 
-  //   await _loadUsername();
+      // Update the state with the new list of Word objects.
+      word_list = loadedWords;
 
-  //   notifyListeners();
-  // }
+      // Notify listeners to rebuild widgets that use this provider.
+      notifyListeners();
+    } catch (e) {
+      print('Error loading or parsing CSV file: $e');
+      // In case of an error, ensure the word list is empty.
+      word_list = [];
+      notifyListeners();
+    }
+  }
+
+  void incrementIndex(int increment) {
+    // if (isRecording) return;
+    index = (index + increment) % word_list.length;
+    notifyListeners();
+  }
 
   // Load the username from local storage
   Future<String> loadUsername() async {
@@ -176,23 +139,6 @@ class SessionProvider extends ChangeNotifier {
     return '${dir.path}/read_right/recordings/readright_${word_list[index]}_$ts.wav';
   }
 
-  void incrementIndex(int increment) {
-    // if (isRecording) return;
-    index = (index + increment) % word_list.length;
-    notifyListeners();
-  }
-
-  void selectWord(String word) {
-    sentenceIndex = 0;
-    selectedWord = word;
-    notifyListeners();
-  }
-
-  void changeSentence() {
-    if(sentenceIndex == 0) {sentenceIndex = 1;}
-    else {sentenceIndex = 0;}
-    notifyListeners();
-  }
 
   /// Transcribes the recorded audio using speech_to_text (live transcription)
   Future<void> transcribeAudio(String path) async {
