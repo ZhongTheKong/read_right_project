@@ -49,30 +49,13 @@ class _WordListScreenState extends State<WordListScreen> {
 
                     Column(
                       children: [
-                        const SizedBox(height: 18), // size of word # font
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.blue, width: 2), // outline color & width
-                          ),
-                          child: IconButton(
-                            onPressed: () => context.read<SessionProvider>().incrementIndex(-1),
-                            icon: const Icon(
-                                Icons.arrow_left
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    Column(
-                      children: [
                         Text(
                           'Word #${recorder.index + 1}',
                           style: const TextStyle(fontSize: 30),
                         ),
                         Text(
-                          'Select from the list below to practice',
+                          'This is the word you must practice\n'
+                              'Current grade: ${recorder.grade_level}',
                           style: const TextStyle(fontSize: 22),
                         ),
                         const SizedBox(height: 5),
@@ -80,7 +63,7 @@ class _WordListScreenState extends State<WordListScreen> {
                           children: [
                             Text(
                               // Use 'recorder' to get the current word.
-                              recorder.word_list[recorder.index],
+                              '${recorder.word}',
                               style: const TextStyle(fontSize: 100),
                             ),
                           ],
@@ -88,33 +71,12 @@ class _WordListScreenState extends State<WordListScreen> {
                         const SizedBox(height: 10),
                         ElevatedButton(
                           onPressed: () {
-                            context.read<SessionProvider>().
-                            selectWord(recorder.word_list[recorder.index]);
                             Navigator.pushNamed(context, AppRoutes.practice);
                           },
                           child: const Text('Go Practice!'),
                         ),
                       ],
                     ),
-
-                    Column(
-                      children: [
-                        const SizedBox(height: 18),
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.blue, width: 2), // outline color & width
-                          ),
-                          child: IconButton(
-                            // Use context.read() to call the function.
-                            onPressed: () => context.read<SessionProvider>().incrementIndex(1),
-                            icon: const Icon(
-                                Icons.arrow_right
-                            ),
-                          ),
-                        ),
-                      ],
-                    )
                   ],
                 ),
               ),
