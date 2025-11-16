@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:provider/provider.dart';
+import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
+import 'package:read_right_project/utils/teacher_user_data.dart';
+import 'package:read_right_project/utils/user_data.dart';
 
 class RoleSelectionScreen extends StatefulWidget {
   const RoleSelectionScreen({super.key});
@@ -27,15 +31,25 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
   Widget build(BuildContext context) {
 
     SessionProvider sessionProvider = context.read<SessionProvider>();
+    AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+    final lastLoggedInUser = allUsersProvider.allUserData.lastLoggedInUser;
+    print("last logged in user username: ${lastLoggedInUser == null ? 'null' : lastLoggedInUser.username}");
+    print(lastLoggedInUser.runtimeType);
+
 
     return Scaffold(
-      body: Row(
+      body: Column(
           children: [
             Expanded(
               child: ElevatedButton(
                 onPressed: () { 
                   sessionProvider.isTeacher = false;
-                  Navigator.pushReplacementNamed(context, AppRoutes.login);
+                  if (lastLoggedInUser is StudentUserData) {
+                    Navigator.pushReplacementNamed(context, AppRoutes.wordList);
+                  }
+                  else {
+                    Navigator.pushReplacementNamed(context, AppRoutes.login);
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.red,
@@ -67,6 +81,12 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
               child: ElevatedButton(
                 onPressed: () { 
                   sessionProvider.isTeacher = true;
+                  if (lastLoggedInUser is TeacherUserData) {
+                    Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
+                  }
+                  else {
+                    Navigator.pushReplacementNamed(context, AppRoutes.login);
+                  }
                   Navigator.pushReplacementNamed(context, AppRoutes.login);
                 },
                 style: ElevatedButton.styleFrom(
