@@ -15,7 +15,7 @@ class PracticeScreen extends StatefulWidget {
 class _PracticeScreenState extends State<PracticeScreen> {
   // This Future will hold the loading operation and ensure it only runs once.
   Future<void>? _loadWordsFuture;
-
+  bool _isAudioInitialized = false;
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -62,6 +62,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
           // We use a Consumer to ensure the UI rebuilds with the latest provider data.
           return Consumer2<SessionProvider, RecordingProvider>(
             builder: (context, sessionProvider, recordingProvider, child) {
+              if (!_isAudioInitialized) {
+                recordingProvider.initAudio();
+                _isAudioInitialized = true;
+              }
               // After a successful load, double-check that the list is not empty.
               if (sessionProvider.word_list.isEmpty) {
                 return const Center(
@@ -73,7 +77,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
               }
 
               // Initialize the audio here, safely after loading.
-              recordingProvider.initAudio(mounted);
+              // recordingProvider.initAudio(mounted);
 
               // Safely get the current Word object from the list.
               final Word currentWord = sessionProvider.word_list[sessionProvider.index];

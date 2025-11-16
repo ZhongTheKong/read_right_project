@@ -3,15 +3,16 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:read_right_project/providers/session_provider.dart';
+// REMOVED: No longer needs a direct reference to SessionProvider
+// import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/utils/attempt.dart';
 import 'package:record/record.dart';
 
 class RecordingProvider extends ChangeNotifier {
 
-  SessionProvider? generalProvider;
-
-  RecordingProvider(this.generalProvider);
+  // --- REMOVED: Direct dependency on SessionProvider ---
+  // SessionProvider? generalProvider;
+  // RecordingProvider(this.generalProvider);
 
   final recorder = AudioRecorder();
   final player = AudioPlayer();
@@ -21,47 +22,52 @@ class RecordingProvider extends ChangeNotifier {
   bool isPlaying = false;
   bool isTranscribing = false;
 
-  int index = 0;
-  int selectedIndex = 0;
+  // --- REMOVED: Redundant index properties that belong in SessionProvider ---
+  // int index = 0;
+  // int selectedIndex = 0;
 
   static const int kMaxRecordMs = 7000;
   Timer? recordTimer;
   int elapsedMs = 0;
 
-
   static const int intervalMs = 50;
 
-  void updateStudent(SessionProvider newGeneralProvider) {
-    generalProvider = newGeneralProvider;
-  }
+  // --- REMOVED: This anti-pattern is no longer needed ---
+  // void updateStudent(SessionProvider newGeneralProvider) {
+  //   generalProvider = newGeneralProvider;
+  // }
 
-  Future<void> initAudio(bool mounted) async {
+  /// Initializes the audio recorder. Should only be called once.
+  Future<void> initAudio() async {
+    // If it's already ready, don't do anything.
+    if (recorderReady) return;
+
     final hasPerm = await recorder.hasPermission();
-    if (!hasPerm) {
-      final granted = await recorder.hasPermission();
-      if (!granted && mounted) return;
+    if (hasPerm) {
+      recorderReady = true;
+      notifyListeners(); // Notify UI that the recorder is ready
     }
-    recorderReady = true;
   }
 
-  Future<String> _nextPath() async {
-    // TODO: Change this to not save to OneDrive/Documents
+  /// Generates the next file path for a recording.
+  /// Now uses the word passed to it, making it self-contained.
+  Future<String> _nextPath(String word) async {
     final dir = await getApplicationDocumentsDirectory();
     final ts = DateTime.now().millisecondsSinceEpoch;
-    return '${dir.path}/read_right/recordings/readright_${index}_$ts.wav';
+    // Use the word passed as a parameter for a unique filename.
+    return '${dir.path}/readright_${word}_$ts.wav';
   }
 
   Future<void> startRecording(String word, List<Attempt> attempts) async {
-
     if (!recorderReady || isRecording) {
-      print("Cannot start recording");
+      print("Recorder not ready or already recording.");
       return;
     }
-    print("Starting recording");
+    print("Starting recording for word: $word");
 
+    // Generate path using the current word
+    final path = await _nextPath(word);
 
-    final path = await _nextPath();
-    
     try {
       final config = RecordConfig(
         encoder: AudioEncoder.wav,
@@ -71,87 +77,111 @@ class RecordingProvider extends ChangeNotifier {
 
       await recorder.start(config, path: path);
       isRecording = true;
-      // Start automatic transcription after recording
-      // await transcribeAudio(path);
+      elapsedMs = 0; // Reset timer
       notifyListeners();
 
+      // Set a master timeout for the recording
       recordTimer?.cancel();
       recordTimer = Timer(const Duration(milliseconds: kMaxRecordMs), () => stopRecording(word, attempts));
 
+      // Start the periodic timer to update the UI progress bar
       recordTimer = Timer.periodic(
         const Duration(milliseconds: intervalMs),
-        (timer) {
+            (timer) {
           elapsedMs = timer.tick * intervalMs;
-          // print("elapsed MS: ${elapsedMs}");
           if (elapsedMs >= kMaxRecordMs) {
             elapsedMs = kMaxRecordMs;
-            recordTimer?.cancel();
+            timer.cancel(); // Stop this timer when max time is reached
           }
           notifyListeners();
-          // timerCallback();
         },
       );
-    } catch (e) {}
+    } catch (e) {
+      print("Error starting recording: $e");
+      isRecording = false;
+      notifyListeners();
+    }
   }
 
   Future<void> stopRecording(String word, List<Attempt> attempts) async {
-
-    if (!isRecording)
-    {
-      print("is recording is false");
+    if (!isRecording) {
+      print("Not recording, cannot stop.");
       return;
     }
-    recordTimer?.cancel();
-    print("Stopping recoridng");
+
+    recordTimer?.cancel(); // Stop the timer immediately
+    print("Stopping recording");
 
     try {
       final path = await recorder.stop();
       isRecording = false;
+      elapsedMs = 0; // Reset progress bar
       notifyListeners();
-      if (path == null) return;
+
+      if (path == null) {
+        print("Recorder stopped but no path was returned.");
+        return;
+      }
 
       Duration? dur;
       try {
         await player.setFilePath(path);
         dur = player.duration;
         await player.stop();
-      } catch (_) {}
+      } catch (e) {
+        print("Error getting recording duration: $e");
+      }
 
-      // Save attempt
+      // Save the attempt to the list passed from the UI
       attempts.insert(
         0,
         Attempt(
           word: word,
-          score: elapsedMs / kMaxRecordMs, // Placeholder for score
+          // A more realistic score could be based on other metrics,
+          // but for now, this placeholder is fine.
+          score: (elapsedMs / kMaxRecordMs).clamp(0.0, 1.0),
           filePath: path,
           durationMs: (dur ?? Duration.zero).inMilliseconds,
         ),
       );
-    } catch (e) {}
+    } catch (e) {
+      print("Error stopping recording: $e");
+      // Ensure state is clean even on error
+      isRecording = false;
+      elapsedMs = 0;
+      notifyListeners();
+    }
   }
 
   Future<void> play(String path) async {
     if (isPlaying) return;
-    print("Playing recoridng");
+    print("Playing recording from: $path");
 
     try {
       await player.setFilePath(path);
-      await player.play();
       isPlaying = true;
       notifyListeners();
 
-      player.playerStateStream.listen((s) {
-        if (s.processingState == ProcessingState.completed || s.playing == false) {
-          isPlaying = false;
-          notifyListeners();
-        }
-      });
-    } catch (e) {}
+      await player.play();
+
+      // The stream subscription should be managed carefully.
+      // A simple `await player.play()` completes when the audio finishes.
+      // After it finishes, update the state.
+      isPlaying = false;
+      notifyListeners();
+
+    } catch (e) {
+      print("Error playing audio: $e");
+      isPlaying = false;
+      notifyListeners();
+    }
   }
 
-  // void incrementIndex(int increment) {
-  //   if (isRecording) return;
-  //   index = (index + increment) % word_list.length;
-  //   notifyListeners();
-  // }
+  @override
+  void dispose() {
+    recorder.dispose();
+    player.dispose();
+    recordTimer?.cancel();
+    super.dispose();
+  }
 }

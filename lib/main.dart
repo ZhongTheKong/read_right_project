@@ -10,22 +10,19 @@ void main() {
   runApp(
     MultiProvider(
       providers: [
-
         ChangeNotifierProvider(
           create: (_) => SessionProvider(),
         ),
 
-        ChangeNotifierProxyProvider<SessionProvider, RecordingProvider>(
-          create: (_) => RecordingProvider(null), 
-          update: (_, generalProvider, previous) {
-            previous!.updateStudent(generalProvider);
-            return RecordingProvider(generalProvider);
-          }
+        ChangeNotifierProvider(
+          create: (_) => RecordingProvider(),
         ),
-        ChangeNotifierProvider(create: (_) => AllUsersProvider()),
-        
+
+        ChangeNotifierProvider(
+          create: (_) => AllUsersProvider(),
+        ),
       ],
-      child: const MaterialApp(home: MyApp())
+      child: const MyApp(),
     ),
   );
 }
