@@ -148,6 +148,12 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   },
                   child: const Text('Practice'),
                 ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/teacherDashboard');
+                  },
+                  child: const Text('backdoor to teacherdashboard'),
+                ),
                 const SizedBox(height: 20),
 
                 ElevatedButton(

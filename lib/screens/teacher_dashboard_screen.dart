@@ -1,98 +1,88 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:read_right_project/providers/recording_provider.dart';
-import 'package:read_right_project/providers/session_provider.dart';
+import 'package:uuid/uuid.dart';
+import '../models/attempt.dart';
+import '../data/attempt_db.dart';
+import '../services/attempts_sync_manager.dart';
 
-class TeacherDashboardScreen extends StatelessWidget {
-  const TeacherDashboardScreen({super.key});
+class TeacherDashboardTestScreen extends StatefulWidget {
+  const TeacherDashboardTestScreen({super.key});
+
+  @override
+  State<TeacherDashboardTestScreen> createState() =>
+      _TeacherDashboardTestScreenState();
+}
+
+class _TeacherDashboardTestScreenState
+    extends State<TeacherDashboardTestScreen> {
+  final AttemptsDb db = AttemptsDb();
+  late final SyncManager syncManager;
+  List<Attempt> localAttempts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    syncManager = SyncManager(db);
+    _loadAttempts();
+  }
+
+  Future<void> _loadAttempts() async {
+    final attempts = await db.getAll();
+    setState(() => localAttempts = attempts);
+  }
+
+  Future<void> _addDummyAttempt() async {
+    final attempt = Attempt.newAttempt(
+      studentId: 'student123',
+      classId: 'class456',
+      audioUrl: 'dummy_audio.mp3',
+      transcript: 'Test transcript ${DateTime.now()}',
+    );
+
+    print("There is an errorrr!!!!");
+    await db.upsert(attempt);
+    await _loadAttempts();
+  }
+
+  Future<void> _sync() async {
+    final report = await syncManager.sync(online: true);
+    print('Sync report: $report');
+    await _loadAttempts();
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    RecordingProvider recordingProvider = context.watch<RecordingProvider>();
-
-    SessionProvider sessionProvider = context.watch<SessionProvider>();
-
-
-    // return ChangeNotifierProvider(
-    //   create: (_) => SessionProvider()..initAudio(true),
-    //   child: Consumer<SessionProvider>(
-    //     builder: (context, provider, child) {
-
-          return Scaffold(
-            appBar: AppBar(title: const Text('Teacher Screen')),
-            body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Recording status
-                  Text(
-                    recordingProvider.isRecording
-                        ? 'Recording...'
-                        : 'Press the button to start recording',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 10),
-
-                  Text(
-                    recordingProvider.isTranscribing
-                        ? 'Transcribing...'
-                        : 'Transcribed text will appear here',
-                    style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Start/Stop recording button
-                  ElevatedButton.icon(
-                    icon: Icon(recordingProvider.isRecording ? Icons.stop : Icons.mic),
-                    label: Text(recordingProvider.isRecording ? 'Stop Recording' : 'Start Recording'),
-                    onPressed: () {
-                      sessionProvider.transcribeAudio('');
-                      // if (provider.isRecording) {
-                      //   provider.stopRecording();
-                      // } else {
-                      //   provider.startRecording();
-                      // }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Show all past attempts
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: sessionProvider.attempts.length,
-                      itemBuilder: (context, index) {
-                        final attempt = sessionProvider.attempts[index];
-                        return ListTile(
-                          title: Text('Word: ${attempt.word}'),
-                          subtitle: Text('File: ${attempt.filePath}\nDuration: ${attempt.durationMs} ms'),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.play_arrow),
-                            onPressed: () => recordingProvider.play(attempt.filePath),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  // Back button
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-                    },
-                    child: const Text('Back to Main Screen'),
-                  ),
-                ],
+    return Scaffold(
+      appBar: AppBar(title: const Text('Teacher Dashboard Test')),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            ElevatedButton(
+              onPressed: _addDummyAttempt,
+              child: const Text('Add Dummy Attempt'),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: _sync,
+              child: const Text('Sync Attempts'),
+            ),
+            const SizedBox(height: 20),
+            Expanded(
+              child: ListView.builder(
+                itemCount: localAttempts.length,
+                itemBuilder: (context, index) {
+                  final a = localAttempts[index];
+                  return ListTile(
+                    title: Text('Transcript: ${a.transcript}'),
+                    subtitle: Text(
+                        'Dirty: ${a.dirty} | Updated: ${a.updatedAt.toIso8601String()}'),
+                  );
+                },
               ),
             ),
-          );
-          
-    //     },
-    //   ),
-    // );
-
+          ],
+        ),
+      ),
+    );
   }
 }

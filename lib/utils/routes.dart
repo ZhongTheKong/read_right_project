@@ -27,7 +27,7 @@ final Map<String, WidgetBuilder> appRoutes = {
   AppRoutes.login: (context) => const LoginScreen(),
   AppRoutes.practice: (context) => const PracticeScreen(),
   AppRoutes.progress: (context) => const ProgressScreen(),
-  AppRoutes.teacherDashboard: (context) => const TeacherDashboardScreen(),
+  AppRoutes.teacherDashboard: (context) => const TeacherDashboardTestScreen(),
   AppRoutes.wordList: (context) => const WordListScreen(),
   AppRoutes.feedback: (context) => const FeedbackScreen(),
 };

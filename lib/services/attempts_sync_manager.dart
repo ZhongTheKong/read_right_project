@@ -1,65 +1,83 @@
+import '../models/attempt.dart';
 import '../data/attempt_db.dart';
 import './attempts_api.dart';
 
-class AttemptSyncReport {
+/// Value class to report what the sync did (great for UI & logging)
+class SyncReport {
   final int pushed;
   final int pulled;
-  final int conflicts;
+  final int conflictsResolved;
   final int skipped;
-  const AttemptSyncReport({
+  const SyncReport({
     required this.pushed,
     required this.pulled,
-    required this.conflicts,
+    required this.conflictsResolved,
     required this.skipped,
   });
+
+  @override
+  String toString() =>
+      'Pushed $pushed · Pulled $pulled · Resolved $conflictsResolved · Skipped $skipped';
 }
 
-class AttemptSyncManager {
+/// Coordinates local ↔ remote data and applies a conflict strategy.
+/// Strategy used: LAST-WRITE-WINS via `updatedAt`.
+class SyncManager {
   final AttemptsDb db;
-  AttemptSyncManager(this.db);
+  SyncManager(this.db);
 
-  Future<AttemptSyncReport> sync({required bool online}) async {
+  /// Perform one sync pass.
+  /// - If offline: do nothing and return zeros.
+  /// - If online:
+  ///   1) PUSH all dirty local notes to remote (then mark clean).
+  ///   2) PULL all remote notes and merge:
+  ///      - If remote is newer → override local (conflict +1).
+  ///      - If local is newer → keep local (skipped +1).
+  Future<SyncReport> sync({required bool online}) async {
     if (!online) {
-      return const AttemptSyncReport(
+      return const SyncReport(
         pushed: 0,
         pulled: 0,
-        conflicts: 0,
+        conflictsResolved: 0,
         skipped: 0,
       );
     }
 
     int pushed = 0, pulled = 0, conflicts = 0, skipped = 0;
 
-    // 1) push dirty attempts
-    final dirty = await db.dirtyAttempts();
-    for (final a in dirty) {
-      await AttemptsApi.upsert(a);
+    // 1) PUSH local dirty notes
+    final dirty = await db.dirtyNotes();
+    for (final n in dirty) {
+      await RemoteApi.upsert(n);
       pushed++;
     }
     await db.markAllClean(dirty.map((e) => e.uuid).toSet());
 
-    // 2) pull remote attempts
-    final remote = await AttemptsApi.listAll();
+    // 2) PULL remote → merge into local
+    final remote = await RemoteApi.listAll();
     final local = await db.getAll();
-    final localMap = {for (final a in local) a.uuid: a};
+    final localByUuid = {for (final n in local) n.uuid: n};
 
     for (final r in remote) {
-      final l = localMap[r.uuid];
+      final l = localByUuid[r.uuid];
       if (l == null) {
+        // Remote note we don't have → insert locally (marked clean)
         await db.upsert(r.copyWith(dirty: false));
         pulled++;
       } else if (r.updatedAt.isAfter(l.updatedAt)) {
+        // Remote is newer → take remote (conflict)
         await db.upsert(r.copyWith(dirty: false));
         conflicts++;
       } else {
+        // Local is newer (was pushed already if dirty) → no change
         skipped++;
       }
     }
 
-    return AttemptSyncReport(
+    return SyncReport(
       pushed: pushed,
       pulled: pulled,
-      conflicts: conflicts,
+      conflictsResolved: conflicts,
       skipped: skipped,
     );
   }
