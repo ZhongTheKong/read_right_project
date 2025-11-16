@@ -32,6 +32,8 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       else
       {
+        print("Searching for $username");
+
         userWithMatchingUsername = allUserData.studentUserDataList.firstWhere((u) => u.username == username);
       }
       // UserData userWithMatchingUsername = allUserData.userDataList.firstWhere((u) => u.username == username && u.isTeacher == isTeacher);
