@@ -23,12 +23,11 @@ class SessionProvider extends ChangeNotifier {
 
   bool isTeacher = false;
 
-
+  List<Word> word_list = [];
   int index = 0;
   int selectedIndex = 0;
   String grade = "Pre-Primer";
-
-  List<Word> word_list = [];
+  bool _wordsLoaded = false;
 
 
   final List<Attempt> attempts = [];
@@ -58,11 +57,11 @@ class SessionProvider extends ChangeNotifier {
   /// Currently needed to get progress screen to persist
   SessionProvider() {
     loadUsername();
-    loadWordList('assets/seed_words.csv');
   }
 
   // TODO: loadUsername and ready speech to text need to be initialized somewhere else
   Future<void> loadWordList(String path) async {
+    if (_wordsLoaded) return;
     try {
       final fileData = await rootBundle.loadString(path);
       // Use CsvToListConverter to parse the CSV string.

@@ -17,6 +17,7 @@ dependencies:
   audio_session: ^0.1.25
   path_provider: ^2.1.5
   speech_to_text: ^7.3.0
+  csv: ^6.0.0
 
 dev_dependencies:
   flutter_test:
@@ -26,3 +27,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/seed_words.csv
