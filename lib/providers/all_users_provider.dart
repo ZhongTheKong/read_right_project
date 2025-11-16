@@ -19,8 +19,8 @@ class AllUsersProvider extends ChangeNotifier{
   Future<void> saveUserData(List<UserData> allUserData) async {
     // TODO: Change this to not save to OneDrive/Documents
     final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/all_user_data.json');
-    print("Saving data to ${directory.path}/all_user_data.json");
+    final file = File('${directory.path}/save_data/all_user_data.json');
+    print("Saving data to ${directory.path}/}/save_data/all_user_data.json");
 
     final jsonList = allUserData.map((u) => u.toJson()).toList();
     const encoder = JsonEncoder.withIndent('  ');
@@ -33,7 +33,7 @@ class AllUsersProvider extends ChangeNotifier{
   Future<void> loadUserData() async {
     // TODO: Change this to not save to OneDrive/Documents
   final directory = await getApplicationDocumentsDirectory();
-  final file = File('${directory.path}/userdata.json');
+  final file = File('${directory.path}/}/save_data/userdata.json');
 
   if (!file.existsSync()) return;
 

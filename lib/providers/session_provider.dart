@@ -173,7 +173,7 @@ class SessionProvider extends ChangeNotifier {
     // TODO: Change this to not save to OneDrive/Documents
     final dir = await getApplicationDocumentsDirectory();
     final ts = DateTime.now().millisecondsSinceEpoch;
-    return '${dir.path}/readright_${word_list[index]}_$ts.wav';
+    return '${dir.path}/recordings/readright_${word_list[index]}_$ts.wav';
   }
 
   void incrementIndex(int increment) {
