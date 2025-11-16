@@ -199,14 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   UserData matchingUser = await getMatchingUserData(context, sessionProvider.isTeacher, username, password);
                   allUsersProvider.saveLastUser(matchingUser);
                   // sessionProvider.currUser = matchingUser;
-                  if (sessionProvider.isTeacher)
-                  {
-                    Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
-                  }
-                  else
-                  {
-                    Navigator.pushReplacementNamed(context, AppRoutes.wordList);
-                  }
+                  Navigator.pushReplacementNamed(context, AppRoutes.practice);
                 }
                 on UserNotFoundException catch(e)
                 {
