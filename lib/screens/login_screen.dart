@@ -32,6 +32,8 @@ class _LoginScreenState extends State<LoginScreen> {
       }
       else
       {
+        print("Searching for $username");
+
         userWithMatchingUsername = allUserData.studentUserDataList.firstWhere((u) => u.username == username);
       }
       // UserData userWithMatchingUsername = allUserData.userDataList.firstWhere((u) => u.username == username && u.isTeacher == isTeacher);
@@ -197,7 +199,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   UserData matchingUser = await getMatchingUserData(context, sessionProvider.isTeacher, username, password);
                   allUsersProvider.saveLastUser(matchingUser);
                   // sessionProvider.currUser = matchingUser;
-                  Navigator.pushReplacementNamed(context, AppRoutes.practice);
+                  if (sessionProvider.isTeacher)
+                  {
+                    Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
+                  }
+                  else
+                  {
+                    Navigator.pushReplacementNamed(context, AppRoutes.wordList);
+                  }
                 }
                 on UserNotFoundException catch(e)
                 {

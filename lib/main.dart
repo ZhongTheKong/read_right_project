@@ -6,7 +6,12 @@ import 'package:audio_session/audio_session.dart';
 import 'package:provider/provider.dart';
 import 'providers/session_provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final AllUsersProvider allUsersProvider = AllUsersProvider();
+  await allUsersProvider.loadUserData();
+
   runApp(
     MultiProvider(
       providers: [
@@ -18,8 +23,17 @@ void main() {
           create: (_) => RecordingProvider(),
         ),
 
+        // OLD CODE USED TO CONNECT THE TWO PROVIDERS
+        // ChangeNotifierProxyProvider<SessionProvider, RecordingProvider>(
+        //   create: (_) => RecordingProvider(null), 
+        //   update: (_, generalProvider, previous) {
+        //     previous!.updateStudent(generalProvider);
+        //     return RecordingProvider(generalProvider);
+        //   }
+        // ),
+
         ChangeNotifierProvider(
-          create: (_) => AllUsersProvider(),
+          create: (_) => allUsersProvider,
         ),
       ],
       child: const MyApp(),
