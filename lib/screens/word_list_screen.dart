@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
 
@@ -16,6 +17,7 @@ class _WordListScreenState extends State<WordListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
     // Use context.watch<RecordingProvider>() to get the provider
     // This will make the widget rebuild whenever notifyListeners() is called.
     final recorder = context.watch<SessionProvider>();
@@ -30,8 +32,27 @@ class _WordListScreenState extends State<WordListScreen> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+
+            Column(
+              children: [
+                Text(
+                  "Welcome Back",
+                  style: TextStyle(
+                    fontSize: 30,
+                  ),
+                ),
+                Text(
+                  allUsersProvider.allUserData.lastLoggedInUser!.username,
+                  style: TextStyle(
+                    fontSize: 60,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+              ],
+            ),
+
 
             // WORD DISPLAY
             SizedBox(
@@ -46,6 +67,7 @@ class _WordListScreenState extends State<WordListScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+
 
                     Column(
                       children: [
@@ -123,9 +145,11 @@ class _WordListScreenState extends State<WordListScreen> {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                allUsersProvider.clearLastUser();
+                Navigator.pushReplacementNamed(context, AppRoutes.role);
               },
-              child: const Text('Back to Main Screen'),
+              child: const Text('Sign Out'),
             )
           ],
         ),

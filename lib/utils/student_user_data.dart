@@ -5,7 +5,7 @@ class StudentUserData extends UserData {
   StudentUserData({
     required super.username, 
     required super.password, 
-    // required super.isTeacher, 
+    required super.isTeacher, 
     required this.attempts,
   });
   final List<Attempt> attempts;
@@ -15,7 +15,7 @@ class StudentUserData extends UserData {
     return StudentUserData(
       username: json['username'],
       password: json['password'],
-      // isTeacher: json['isTeacher'],
+      isTeacher: json['isTeacher'],
       // attempts: json['attempts'],
       attempts: (json['attempts'] as List<dynamic>)
           .map((a) => Attempt.fromJson(a))
@@ -28,7 +28,7 @@ class StudentUserData extends UserData {
     return {
       'username': username,
       'password': password,
-      // 'isTeacher': isTeacher,
+      'isTeacher': isTeacher,
       'attempts': attempts.map((a) => a.toJson()).toList(),
     };
   }

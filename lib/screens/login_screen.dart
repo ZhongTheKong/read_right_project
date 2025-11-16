@@ -92,61 +92,73 @@ class _LoginScreenState extends State<LoginScreen> {
     SessionProvider sessionProvider = context.read<SessionProvider>();
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
 
-    return FutureBuilder<void>(
-      future: allUsersProvider.loadUserData(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          // final String lastLoggedInUsername = allUsersProvider.allUserData!.lastLoggedInUser!.username;
-          final UserData? lastLoggedInUser = allUsersProvider.allUserData.lastLoggedInUser;
+    // return FutureBuilder<void>(
+    //   future: allUsersProvider.loadUserData(),
+    //   builder: (context, snapshot) {
+    //     if (snapshot.connectionState == ConnectionState.waiting) {
+    //       return const CircularProgressIndicator();
+    //     } else if (snapshot.hasError) {
+    //       return Text('Error: ${snapshot.error}');
+    //     } else {
+    //       // final String lastLoggedInUsername = allUsersProvider.allUserData!.lastLoggedInUser!.username;
+          // final UserData? lastLoggedInUser = allUsersProvider.allUserData.lastLoggedInUser;
 
 
 
 
 
-          if (lastLoggedInUser != null) {
+          // if (lastLoggedInUser != null) {
 
-            // sessionProvider.currUser = await getMatchingUserDataOfLastUser(context, sessionProvider.isTeacher, lastLoggedInUsername);
+          //   // sessionProvider.currUser = await getMatchingUserDataOfLastUser(context, sessionProvider.isTeacher, lastLoggedInUsername);
 
-            return Scaffold(
-              appBar: AppBar(title: const Text('Login Screen')),
-              body: Center(
-                child: Column(
-                  children: [
-                    Text("Welcome back: ${lastLoggedInUser.username}"),
-                    SizedBox(height: 20.0,),
+          //   return Scaffold(
+          //     appBar: AppBar(title: const Text('Returning Login Screen')),
+          //     body: Center(
+          //       child: Column(
+          //         children: [
+                    // Text(
+                    //   "Welcome Back",
+                    //   style: TextStyle(
+                    //     fontSize: 30,
+                    //   ),
+                    // ),
+                    // Text(
+                    //   lastLoggedInUser.username,
+                    //   style: TextStyle(
+                    //     fontSize: 60,
+                    //     fontWeight: FontWeight.bold
+                    //   ),
+                    // ),
+          //           SizedBox(height: 20.0,),
 
-                    ElevatedButton(
-                      onPressed: () {
-                        // allUsersProvider.clearLastUser();
-                        Navigator.pushReplacementNamed(context, AppRoutes.practice);
-                        // allUsersProvider.saveLastUser(lastLoggedInUsername);
-                      },
-                      child: const Text('Continue to practice screen'),
-                    ),
+          //           ElevatedButton(
+          //             onPressed: () {
+          //               // allUsersProvider.clearLastUser();
+          //               Navigator.pushReplacementNamed(context, AppRoutes.practice);
+          //               // allUsersProvider.saveLastUser(lastLoggedInUsername);
+          //             },
+          //             child: const Text('Continue to practice screen'),
+          //           ),
 
-                    ElevatedButton(
-                      onPressed: () {
-                        allUsersProvider.clearLastUser();
-                        setState(() {});
-                      },
-                      child: const Text('CLEAR LAST LOGIN DATA'),
-                    ),
+          //           ElevatedButton(
+          //             onPressed: () {
+          //               allUsersProvider.clearLastUser();
+          //               setState(() {});
+          //             },
+          //             child: const Text('CLEAR LAST LOGIN DATA'),
+          //           ),
 
-                  ],
-                ),
-              )
-            );
-          }
-
-
+          //         ],
+          //       ),
+          //     )
+          //   );
+          // }
 
 
 
-          else {
+
+
+          // else {
             return Scaffold(
               appBar: AppBar(
                 title: sessionProvider.isTeacher ? const Text('Teacher Login Screen') : const Text('Student Login Screen')
@@ -211,10 +223,10 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           }
         }
-      },
-    );
-  }
-}
+      // },
+    // );
+  // }
+// }
 
 class UserNotFoundException implements Exception {
   final String username;

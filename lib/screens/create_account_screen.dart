@@ -78,11 +78,11 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 AllUserData allUserData = allUsersProvider.allUserData;
                 if (sessionProvider.isTeacher)
                 {
-                  allUserData.teacherUserDataList.add(TeacherUserData(username: username, password: password, studentUsernames: []));
+                  allUserData.teacherUserDataList.add(TeacherUserData(username: username, password: password, isTeacher: true, studentUsernames: []));
                 }
                 else
                 {
-                  allUserData.studentUserDataList.add(StudentUserData(username: username, password: password, attempts: []));
+                  allUserData.studentUserDataList.add(StudentUserData(username: username, password: password, isTeacher: false, attempts: []));
                 }
                 // allUserData.userDataList.add(UserData(username: username, password: password, isTeacher: sessionProvider.isTeacher, attempts: []));
                 allUsersProvider.saveUserData(allUserData);

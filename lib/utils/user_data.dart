@@ -4,13 +4,13 @@ class UserData {
   UserData({
     required this.username,
     required this.password,
-    // required this.isTeacher,
+    required this.isTeacher,
     // required this.attempts,
   });
 
   final String username;
   final String password;
-  // final bool isTeacher;
+  final bool isTeacher;
   // final List<Attempt> attempts;
 
   // Deserialize
@@ -18,7 +18,7 @@ class UserData {
     return UserData(
       username: json['username'],
       password: json['password'],
-      // isTeacher: json['isTeacher'],
+      isTeacher: json['isTeacher'],
       // attempts: json['attempts'],
       // attempts: (json['attempts'] as List<dynamic>)
       //     .map((a) => Attempt.fromJson(a))
@@ -31,7 +31,7 @@ class UserData {
     return {
       'username': username,
       'password': password,
-      // 'isTeacher': isTeacher,
+      'isTeacher': isTeacher,
       // 'attempts': attempts.map((a) => a.toJson()).toList(),
     };
   }

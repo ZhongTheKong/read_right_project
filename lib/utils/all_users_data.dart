@@ -17,8 +17,24 @@ class AllUserData {
 
     // Deserialize
   factory AllUserData.fromJson(Map<String, dynamic> json) {
+
+    UserData? lastLoggedInUser;
+    if (json['lastLoggedInUser'] != null)
+    {
+      final lastJson = json['lastLoggedInUser'] as Map<String, dynamic>;
+      if (lastJson['isTeacher'] == true)
+      {
+        lastLoggedInUser = TeacherUserData.fromJson(lastJson);
+      }
+      else
+      {
+        lastLoggedInUser = StudentUserData.fromJson(lastJson);
+      }
+    }
+
+
     return AllUserData(
-      lastLoggedInUser: json['lastLoggedInUser'] != null ? UserData.fromJson(json['lastLoggedInUser']) : null,
+      lastLoggedInUser: lastLoggedInUser,
       // attempts: json['attempts'],
       // userDataList: (json['userDataList'] as List<dynamic>)
       //     .map((a) => UserData.fromJson(a))
