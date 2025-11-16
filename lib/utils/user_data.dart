@@ -5,13 +5,13 @@ class UserData {
     required this.username,
     required this.password,
     required this.isTeacher,
-    required this.attempts,
+    //required this.attempts,
   });
 
   final String username;
   final String password;
   final bool isTeacher;
-  final List<Attempt> attempts;
+  //final List<Attempt> attempts;
 
   // Deserialize
   factory UserData.fromJson(Map<String, dynamic> json) {
@@ -20,9 +20,9 @@ class UserData {
       password: json['password'],
       isTeacher: json['isTeacher'],
       // attempts: json['attempts'],
-      attempts: (json['attempts'] as List<dynamic>)
-          .map((a) => Attempt.fromJson(a))
-          .toList(),
+      //attempts: (json['attempts'] as List<dynamic>)
+      //    .map((a) => Attempt.fromJson(a))
+      //    .toList(),
     );
   }
 
@@ -32,7 +32,7 @@ class UserData {
       'username': username,
       'password': password,
       'isTeacher': isTeacher,
-      'attempts': attempts,
+      //'attempts': attempts,
     };
   }
 }

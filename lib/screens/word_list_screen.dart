@@ -1,4 +1,4 @@
-import 'dart:io';
+// In lib/screens/word_list_screen.dart
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -14,45 +14,50 @@ class WordListScreen extends StatefulWidget {
 }
 
 class _WordListScreenState extends State<WordListScreen> {
-
   @override
   Widget build(BuildContext context) {
-    AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
-    // Use context.watch<RecordingProvider>() to get the provider
-    // This will make the widget rebuild whenever notifyListeners() is called.
-    final recorder = context.watch<SessionProvider>();
+    // Use `watch` to rebuild the UI when data changes.
+    final allUsersProvider = context.watch<AllUsersProvider>();
+    final sessionProvider = context.watch<SessionProvider>();
+
+    // --- FIX 1: Safely access the username ---
+    // Use a local variable with a null check to prevent crashing.
+    final String username = allUsersProvider.allUserData.lastLoggedInUser?.username ?? 'Guest';
+
+    // --- FIX 2: Safely access the current word ---
+    // Check if the word list is empty before trying to access an element.
+    final bool isWordListEmpty = sessionProvider.word_list.isEmpty;
+    final wordObject = isWordListEmpty ? null : sessionProvider.word_list[sessionProvider.index];
 
     return Scaffold(
       backgroundColor: Colors.blue[800],
       appBar: AppBar(
           centerTitle: true,
-          title: const Text(
-              'Word List'
-          )
+          title: const Text('Word List')
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-
             Column(
               children: [
-                Text(
+                const Text(
                   "Welcome Back",
                   style: TextStyle(
                     fontSize: 30,
+                    color: Colors.white, // Added for better visibility
                   ),
                 ),
                 Text(
-                  allUsersProvider.allUserData.lastLoggedInUser!.username,
-                  style: TextStyle(
+                  username, // Use the safe variable
+                  style: const TextStyle(
                     fontSize: 60,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white, // Added for better visibility
                   ),
                 ),
               ],
             ),
-
 
             // WORD DISPLAY
             SizedBox(
@@ -61,43 +66,43 @@ class _WordListScreenState extends State<WordListScreen> {
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.blue[300],
-                  border: Border.all(color: Colors.blue, width: 2), // outline color & width
+                  border: Border.all(color: Colors.blue, width: 2),
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                // --- FIX 3: Handle the case where the word list might be empty ---
+                child: isWordListEmpty
+                    ? const Center(
+                  child: Text(
+                    'Word list is loading or empty.\nPlease go to Practice first.',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 22),
+                  ),
+                )
+                    : Column(
                   children: [
-
-
-                    Column(
-                      children: [
-                        Text(
-                          'Word #${recorder.index + 1}',
-                          style: const TextStyle(fontSize: 30),
-                        ),
-                        Text(
-                          'This is the word you must practice\n'
-                              'Current grade: ${recorder.grade_level}',
-                          style: const TextStyle(fontSize: 22),
-                        ),
-                        const SizedBox(height: 5),
-                        Row(
-                          children: [
-                            Text(
-                              // Use 'recorder' to get the current word.
-                              '${recorder.word}',
-                              style: const TextStyle(fontSize: 100),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.practice);
-                          },
-                          child: const Text('Go Practice!'),
-                        ),
-                      ],
+                    Text(
+                      'Word #${sessionProvider.index + 1}',
+                      style: const TextStyle(fontSize: 30),
+                    ),
+                    Text(
+                      'This is the word you must practice\n'
+                      // Access grade from the word object
+                          'Current grade: ${wordObject?.grade}',
+                      style: const TextStyle(fontSize: 22),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      // Access text from the word object
+                      wordObject?.text ?? 'N/A',
+                      style: const TextStyle(fontSize: 100),
+                    ),
+                    const SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.practice);
+                      },
+                      child: const Text('Go Practice!'),
                     ),
                   ],
                 ),
@@ -107,7 +112,6 @@ class _WordListScreenState extends State<WordListScreen> {
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
-                // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                 allUsersProvider.clearLastUser();
                 Navigator.pushReplacementNamed(context, AppRoutes.role);
               },

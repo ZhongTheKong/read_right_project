@@ -20,7 +20,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
     final session = await AudioSession.instance;
     await session.configure(const AudioSessionConfiguration.speech());
   }
-  
+
   @override
   void initState() {
     super.initState();
@@ -42,7 +42,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
           children: [
             Expanded(
               child: ElevatedButton(
-                onPressed: () { 
+                onPressed: () {
                   sessionProvider.isTeacher = false;
                   if (lastLoggedInUser is StudentUserData) {
                     Navigator.pushReplacementNamed(context, AppRoutes.wordList);
@@ -79,7 +79,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
             ),
             Expanded(
               child: ElevatedButton(
-                onPressed: () { 
+                onPressed: () {
                   sessionProvider.isTeacher = true;
                   if (lastLoggedInUser is TeacherUserData) {
                     Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);

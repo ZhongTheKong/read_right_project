@@ -1,9 +1,13 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/models/labeled_login_text_field.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
+import 'package:read_right_project/utils/all_users_data.dart';
 import 'package:read_right_project/utils/routes.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
+import 'package:read_right_project/utils/teacher_user_data.dart';
 import 'package:read_right_project/utils/user_data.dart';
 
 class CreateAccountScreen extends StatefulWidget {
@@ -36,18 +40,18 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
-            
+
             LabelledLoginTextField(
-              textEditingController: usernameTextEditingController, 
-              fieldIcon: Icons.face, 
-              labelText: "Username"
+                textEditingController: usernameTextEditingController,
+                fieldIcon: Icons.face,
+                labelText: "Username"
             ),
             const SizedBox(height: 20),
 
             LabelledLoginTextField(
-              textEditingController: passwordTextEditingController, 
-              fieldIcon: Icons.key, 
-              labelText: "Password"
+                textEditingController: passwordTextEditingController,
+                fieldIcon: Icons.key,
+                labelText: "Password"
             ),
             const SizedBox(height: 20),
 
@@ -72,8 +76,16 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 //   print("incorrect login");
                 // }
                 // TODO: Check for unique username
-                List<UserData> allUserData = await allUsersProvider.getLoadedAllUserData();
-                allUserData.add(UserData(username: username, password: password, isTeacher: sessionProvider.isTeacher, attempts: []));
+                AllUserData allUserData = allUsersProvider.allUserData;
+                if (sessionProvider.isTeacher)
+                {
+                  allUserData.teacherUserDataList.add(TeacherUserData(username: username, password: password, isTeacher: true, studentUsernames: []));
+                }
+                else
+                {
+                  allUserData.studentUserDataList.add(StudentUserData(username: username, password: password, isTeacher: false, attempts: []));
+                }
+                // allUserData.userDataList.add(UserData(username: username, password: password, isTeacher: sessionProvider.isTeacher, attempts: []));
                 allUsersProvider.saveUserData(allUserData);
                 Navigator.pushReplacementNamed(context, AppRoutes.login);
 
@@ -81,12 +93,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               child: const Text('Create Account'),
             ),
             const SizedBox(height: 20),
-            
+
             // ElevatedButton(
             //   onPressed: () {
             //     // Navigate back to main screen and clear previous routes
             //     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-                
+
             //   },
             //   child: const Text('Back to Main Screen'),
             // ),
