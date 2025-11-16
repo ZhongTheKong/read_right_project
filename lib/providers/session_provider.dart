@@ -170,6 +170,7 @@ class SessionProvider extends ChangeNotifier {
   // }
 
   Future<String> _nextPath() async {
+    // TODO: Change this to not save to OneDrive/Documents
     final dir = await getApplicationDocumentsDirectory();
     final ts = DateTime.now().millisecondsSinceEpoch;
     return '${dir.path}/readright_${word_list[index]}_$ts.wav';

@@ -151,6 +151,12 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: const Text('LOGIN'),
                     ),
                     const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, AppRoutes.create_account);
+                      }, 
+                      child: Text("Create account"),
+                    )
                     
                     // ElevatedButton(
                     //   onPressed: () {
