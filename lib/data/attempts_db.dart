@@ -4,11 +4,11 @@ import '../models/attempt.dart';
 
 /// DAO (Data Access Object) for all Note-related DB operations.
 /// Hides raw SQL from the UI and exposes clean methods.
-class NotesDb {
+class AttemptsDb{
   // Singleton pattern so we don’t open multiple DB connections accidentally.
-  static final NotesDb _instance = NotesDb._internal();
-  factory NotesDb() => _instance;
-  NotesDb._internal();
+  static final AttemptsDb _instance = AttemptsDb._internal();
+  factory AttemptsDb() => _instance;
+  AttemptsDb._internal();
 
   static const _dbName = 'offline_first_demo.db';
   static const table = 'notes';
@@ -42,12 +42,12 @@ class NotesDb {
   Future<List<Attempt>> getAll() async {
     final db = await database;
     final rows = await db.query(table, orderBy: 'updatedAt DESC');
-    return rows.map(Note.fromMap).toList();
+    return rows.map(Attempt.fromMap).toList();
   }
 
   /// Insert or update a note by its logical id (uuid).
   /// Returns the stored note with local `id` filled in.
-  Future<Note> upsert(Note n) async {
+  Future<Attempt> upsert(Attempt n) async {
     final db = await database;
     final map = n.toMap()..remove('id'); // id is auto-managed locally
     final existing = await db.query(
@@ -73,7 +73,7 @@ class NotesDb {
         whereArgs: [n.uuid],
         limit: 1,
       );
-      return Note.fromMap(row.first);
+      return Attempt.fromMap(row.first);
     }
   }
 
@@ -84,10 +84,10 @@ class NotesDb {
   }
 
   /// Query only notes that are dirty (require upload)
-  Future<List<Note>> dirtyNotes() async {
+  Future<List<Attempt>> dirtyNotes() async {
     final db = await database;
     final rows = await db.query(table, where: 'dirty = 1');
-    return rows.map(Note.fromMap).toList();
+    return rows.map(Attempt.fromMap).toList();
   }
 
   /// Batch mark many notes clean after a successful push
