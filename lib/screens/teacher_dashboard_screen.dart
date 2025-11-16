@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:read_right_project/providers/all_users_provider.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
+import 'package:read_right_project/utils/user_data.dart';
 
 class TeacherDashboardScreen extends StatefulWidget {
   @override
@@ -12,6 +16,24 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
 
   // Example data
   final students = ['Alice', 'Bob', 'Charlie'];
+
+  /* Potential Changes-------------------------------------------------------------------------------
+  // List<String> students = [];
+  List<StudentUserData> students_2 =[
+    StudentUserData(username: 'Alice', password: 'a', isTeacher: false, attempts: []),
+    StudentUserData(username: 'Bob', password: 'a', isTeacher: false, attempts: []),
+    StudentUserData(username: 'Charlie', password: 'a', isTeacher: false, attempts: []),
+  ];
+    List<StudentUserData> get filteredOverview {
+    return students_2.where((item) {
+      final matchStudent = selectedStudent == null || item.username == selectedStudent;
+      final matchList = selectedList == null || item.isTeacher == selectedList;
+      final matchDate = selectedDate == null || item.attempts == selectedDate!.toIso8601String().split('T')[0];
+      return matchStudent && matchList && matchDate;
+    }).toList();
+  }
+  */
+
   final lists = ['Math', 'Science', 'History'];
   final classOverview = [
     {'name': 'Alice', 'list': 'Math', 'date': '2025-11-15'},
@@ -45,6 +67,11 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    // AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+    // students = allUsersProvider.allUserData.studentUserDataList.map((d) => d.username).toList();
+
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Teacher Dashboard v1'),
