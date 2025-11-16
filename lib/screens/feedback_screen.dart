@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
+import 'package:read_right_project/utils/routes.dart';
 
 class FeedbackScreen extends StatelessWidget {
   const FeedbackScreen({super.key});
@@ -26,6 +27,7 @@ class FeedbackScreen extends StatelessWidget {
                 onPressed: () {
                   // Navigate back to main screen and clear previous routes
                   Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                  Navigator.pushReplacementNamed(context, AppRoutes.practice);
                 },
                 child: const Text('Back to Main Screen'),
               ),

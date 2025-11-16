@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
 import '../providers/session_provider.dart';
@@ -21,6 +22,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
     RecordingProvider recordingProvider = context.watch<RecordingProvider>();
 
     SessionProvider sessionProvider = context.watch<SessionProvider>();
+    AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
 
 
     // return Consumer<SessionProvider>(
@@ -47,11 +49,11 @@ class _ProgressScreenState extends State<ProgressScreen> {
                       children: [
                         // Display the user's data from the provider
                         Text(
-                            'Username: ${sessionProvider.currentUser}',
+                            'Username: ${allUsersProvider.allUserData!.lastLoggedInUser!.username}',
                             style: const TextStyle(fontSize: 18),
                         ),
                         Text(
-                            'Number of Attempts: ${sessionProvider.numberOfAttempts}',
+                            'Number of Attempts: ${allUsersProvider.allUserData!.lastLoggedInUser!.attempts.length}',
                             style: const TextStyle(fontSize: 18),
                         ),
                         Text(

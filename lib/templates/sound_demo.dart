@@ -100,9 +100,10 @@ class _ReadRightHomeState extends State<ReadRightHome> {
   }
 
   Future<String> _nextPath() async {
+    // TODO: Change this to not save to OneDrive/Documents
     final dir = await getApplicationDocumentsDirectory();
     final ts = DateTime.now().millisecondsSinceEpoch;
-    return '${dir.path}/readright_${_words[_index]}_$ts.m4a';
+    return '${dir.path}/read_right/recordings/readright_${_words[_index]}_$ts.m4a';
   }
 
   Future<void> _startRecording() async {

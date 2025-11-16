@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:read_right_project/data/login_data.dart';
 import 'package:read_right_project/models/labeled_login_text_field.dart';
+import 'package:read_right_project/providers/all_users_provider.dart';
+import 'package:read_right_project/utils/all_users_data.dart';
 import 'package:read_right_project/utils/routes.dart';
+import 'package:read_right_project/utils/user_data.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import '../providers/session_provider.dart';
@@ -15,6 +18,45 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
+  Future<UserData> getMatchingUserData(BuildContext context, bool isTeacher, String username, String password) async {
+
+    AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+    AllUserData allUserData = allUsersProvider.allUserData;
+
+    try {
+      UserData userWithMatchingUsername = allUserData.userDataList.firstWhere((u) => u.username == username && u.isTeacher == isTeacher);
+      if (userWithMatchingUsername.password == password)
+      {
+        return userWithMatchingUsername;
+      }
+      else
+      {
+        throw PasswordIncorrectException();
+        // return null;
+      }
+    } catch (e) {
+      // If no user is found, return null
+      throw UserNotFoundException(username);
+
+      // return null;
+    }
+  }
+
+  // Future<UserData> getMatchingUserDataOfLastUser(BuildContext context, bool isTeacher, String username) async {
+
+  //   AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+  //   List<UserData> allUserData = await allUsersProvider.getLoadedAllUserData();
+
+  //   try {
+  //     return allUserData.firstWhere((u) => u.username == username && u.isTeacher == isTeacher);
+  //   } catch (e) {
+  //     // If no user is found, return null
+  //     throw UserNotFoundException(username);
+
+  //     // return null;
+  //   }
+  // }
 
   // Future<String> getLastLoggedInUsername() async {
   //   final prefs = await SharedPreferences.getInstance();
@@ -39,55 +81,52 @@ class _LoginScreenState extends State<LoginScreen> {
     TextEditingController passwordTextEditingController = TextEditingController();
 
     SessionProvider sessionProvider = context.read<SessionProvider>();
+    AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
 
-    return FutureBuilder<String?>(
-      future: sessionProvider.loadUsername(),
+    return FutureBuilder<void>(
+      future: allUsersProvider.loadUserData(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const CircularProgressIndicator();
         } else if (snapshot.hasError) {
           return Text('Error: ${snapshot.error}');
         } else {
-          final String lastLoggedInUsername = snapshot.data ?? '';
+          // final String lastLoggedInUsername = allUsersProvider.allUserData!.lastLoggedInUser!.username;
+          final UserData? lastLoggedInUser = allUsersProvider.allUserData.lastLoggedInUser;
 
 
 
 
 
-          if (lastLoggedInUsername != '' && lastLoggedInUsername != 'Guest') {
+          if (lastLoggedInUser != null) {
+
+            // sessionProvider.currUser = await getMatchingUserDataOfLastUser(context, sessionProvider.isTeacher, lastLoggedInUsername);
+
             return Scaffold(
               appBar: AppBar(title: const Text('Login Screen')),
               body: Center(
                 child: Column(
                   children: [
-                    Text("Welcome back: $lastLoggedInUsername"),
+                    Text("Welcome back: ${lastLoggedInUser.username}"),
                     SizedBox(height: 20.0,),
+
                     ElevatedButton(
                       onPressed: () {
-                        sessionProvider.clearUsername();
-                        // Navigator.pushNamedAndRemoveUntil(context, AppRoutes.practice, (route) => false);
+                        // allUsersProvider.clearLastUser();
                         Navigator.pushReplacementNamed(context, AppRoutes.practice);
-                        /// Improve the flow of navigation
-                        Provider.of<SessionProvider>(context, listen: false).saveUsername('Guest');
-                        setState(() {
-                          
-                        });
-                        // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                        // allUsersProvider.saveLastUser(lastLoggedInUsername);
                       },
                       child: const Text('Continue to practice screen'),
                     ),
+
                     ElevatedButton(
                       onPressed: () {
-                        sessionProvider.clearUsername();
-                        /// Improve the flow of navigation
-                        Provider.of<SessionProvider>(context, listen: false).saveUsername('Guest');
-                        setState(() {
-                          
-                        });
-                        // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                        allUsersProvider.clearLastUser();
+                        setState(() {});
                       },
                       child: const Text('CLEAR LAST LOGIN DATA'),
                     ),
+
                   ],
                 ),
               )
@@ -131,36 +170,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         final username = usernameTextEditingController.text;
                         final password = passwordTextEditingController.text;
-                        // Navigate back to main screen and clear previous routes
-                        // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-                        if (LoginData.isValidLoginData(username, password) == true)
+
+                        try
                         {
-                          print("successful login");
-                          sessionProvider.saveUsername(username);
-                          /// Share data with provider
-                          // Provider.of<SessionProvider>(context, listen: false).saveUsername(username);
-                          // Navigator.pushNamedAndRemoveUntil(context, AppRoutes.practice, (route) => false);
+                          UserData matchingUser = await getMatchingUserData(context, sessionProvider.isTeacher, username, password);
+                          allUsersProvider.saveLastUser(matchingUser);
+                          // sessionProvider.currUser = matchingUser;
                           Navigator.pushReplacementNamed(context, AppRoutes.practice);
-                          // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                         }
-                        else
+                        on UserNotFoundException catch(e)
                         {
-                          print("incorrect login");
+                          print("User not found: $e");
+                        }
+                        on PasswordIncorrectException catch(e)
+                        {
+                          print("Incorrect password: $e");
                         }
                       },
                       child: const Text('LOGIN'),
                     ),
                     const SizedBox(height: 20),
-                    
-                    // ElevatedButton(
-                    //   onPressed: () {
-                    //     // Navigate back to main screen and clear previous routes
-                    //     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-                        
-                    //   },
-                    //   child: const Text('Back to Main Screen'),
-                    // ),
-
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushReplacementNamed(context, AppRoutes.create_account);
+                      }, 
+                      child: Text("Create account"),
+                    )
                   ],
                 ),
               ),
@@ -170,4 +205,17 @@ class _LoginScreenState extends State<LoginScreen> {
       },
     );
   }
+}
+
+class UserNotFoundException implements Exception {
+  final String username;
+  UserNotFoundException(this.username);
+
+  @override
+  String toString() => "UserNotFoundException: User '$username' not found";
+}
+
+class PasswordIncorrectException implements Exception {
+  @override
+  String toString() => "PasswordIncorrectException: Password is incorrect";
 }

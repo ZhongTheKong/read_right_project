@@ -12,4 +12,26 @@ class Attempt {
   final String filePath;
   final int durationMs;
   final DateTime createdAt;
+
+  // Deserialize
+  factory Attempt.fromJson(Map<String, dynamic> json) {
+    return Attempt(
+      word: json['word'],
+      score: json['score'],
+      filePath: json['filePath'],
+      durationMs: json['durationMs'],
+      createdAt: json['createdAt'],
+    );
+  }
+
+  // Serialize
+  Map<String, dynamic> toJson() {
+    return {
+      'word': word,
+      'score': score,
+      'filePath': filePath,
+      'durationMs': durationMs,
+      'createdAt': createdAt,
+    };
+  }
 }
