@@ -48,7 +48,7 @@ class RecordingProvider extends ChangeNotifier {
     // TODO: Change this to not save to OneDrive/Documents
     final dir = await getApplicationDocumentsDirectory();
     final ts = DateTime.now().millisecondsSinceEpoch;
-    return '${dir.path}/recordings/readright_${index}_$ts.wav';
+    return '${dir.path}/read_right/recordings/readright_${index}_$ts.wav';
   }
 
   Future<void> startRecording(String word, List<Attempt> attempts) async {

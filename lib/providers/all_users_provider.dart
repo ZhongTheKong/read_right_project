@@ -19,8 +19,16 @@ class AllUsersProvider extends ChangeNotifier{
   Future<void> saveUserData(List<UserData> allUserData) async {
     // TODO: Change this to not save to OneDrive/Documents
     final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/save_data/all_user_data.json');
-    print("Saving data to ${directory.path}/}/save_data/all_user_data.json");
+
+    final saveDir = Directory('${directory.path}/read_right/save_data');
+
+    // Create directory if it doesn't exist
+    if (!await saveDir.exists()) {
+      await saveDir.create(recursive: true); // recursive = true creates parent dirs too
+    }
+
+    final file = File('${saveDir.path}/all_user_data.json');
+    print("Saving data to ${file.path}");
 
     final jsonList = allUserData.map((u) => u.toJson()).toList();
     const encoder = JsonEncoder.withIndent('  ');
@@ -33,7 +41,7 @@ class AllUsersProvider extends ChangeNotifier{
   Future<void> loadUserData() async {
     // TODO: Change this to not save to OneDrive/Documents
   final directory = await getApplicationDocumentsDirectory();
-  final file = File('${directory.path}/}/save_data/userdata.json');
+  final file = File('${directory.path}/read_right/save_data/userdata.json');
 
   if (!file.existsSync()) return;
 
