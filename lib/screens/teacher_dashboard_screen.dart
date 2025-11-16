@@ -1,98 +1,119 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:read_right_project/providers/recording_provider.dart';
-import 'package:read_right_project/providers/session_provider.dart';
 
-class TeacherDashboardScreen extends StatelessWidget {
-  const TeacherDashboardScreen({super.key});
+class TeacherDashboardScreen extends StatefulWidget {
+  @override
+  _TeacherDashboardScreenState createState() => _TeacherDashboardScreenState();
+}
+
+class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
+  String? selectedStudent;
+  String? selectedList;
+  DateTime? selectedDate;
+
+  // Example data
+  final students = ['Alice', 'Bob', 'Charlie'];
+  final lists = ['Math', 'Science', 'History'];
+  final classOverview = [
+    {'name': 'Alice', 'list': 'Math', 'date': '2025-11-15'},
+    {'name': 'Bob', 'list': 'Science', 'date': '2025-11-16'},
+    {'name': 'Charlie', 'list': 'History', 'date': '2025-11-17'},
+  ];
+
+  // Filter function
+  List<Map<String, String>> get filteredOverview {
+    return classOverview.where((item) {
+      final matchStudent = selectedStudent == null || item['name'] == selectedStudent;
+      final matchList = selectedList == null || item['list'] == selectedList;
+      final matchDate = selectedDate == null || item['date'] == selectedDate!.toIso8601String().split('T')[0];
+      return matchStudent && matchList && matchDate;
+    }).toList();
+  }
+
+  Future<void> _pickDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
-    RecordingProvider recordingProvider = context.watch<RecordingProvider>();
-
-    SessionProvider sessionProvider = context.watch<SessionProvider>();
-
-
-    // return ChangeNotifierProvider(
-    //   create: (_) => SessionProvider()..initAudio(true),
-    //   child: Consumer<SessionProvider>(
-    //     builder: (context, provider, child) {
-
-          return Scaffold(
-            appBar: AppBar(title: const Text('Teacher Screen')),
-            body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Recording status
-                  Text(
-                    recordingProvider.isRecording
-                        ? 'Recording...'
-                        : 'Press the button to start recording',
-                    style: const TextStyle(fontSize: 18),
-                  ),
-                  const SizedBox(height: 10),
-
-                  Text(
-                    recordingProvider.isTranscribing
-                        ? 'Transcribing...'
-                        : 'Transcribed text will appear here',
-                    style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Start/Stop recording button
-                  ElevatedButton.icon(
-                    icon: Icon(recordingProvider.isRecording ? Icons.stop : Icons.mic),
-                    label: Text(recordingProvider.isRecording ? 'Stop Recording' : 'Start Recording'),
-                    onPressed: () {
-                      sessionProvider.transcribeAudio('');
-                      // if (provider.isRecording) {
-                      //   provider.stopRecording();
-                      // } else {
-                      //   provider.startRecording();
-                      // }
-                    },
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Show all past attempts
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: sessionProvider.attempts.length,
-                      itemBuilder: (context, index) {
-                        final attempt = sessionProvider.attempts[index];
-                        return ListTile(
-                          title: Text('Word: ${attempt.word}'),
-                          subtitle: Text('File: ${attempt.filePath}\nDuration: ${attempt.durationMs} ms'),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.play_arrow),
-                            onPressed: () => recordingProvider.play(attempt.filePath),
-                          ),
-                        );
-                      },
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Teacher Dashboard v1'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          children: [
+            // Filters
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                DropdownButton<String>(
+                  hint: Text('Select Student'),
+                  value: selectedStudent,
+                  items: students
+                      .map((student) => DropdownMenuItem(
+                            value: student,
+                            child: Text(student),
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedStudent = value;
+                    });
+                  },
+                ),
+                DropdownButton<String>(
+                  hint: Text('Select List'),
+                  value: selectedList,
+                  items: lists
+                      .map((list) => DropdownMenuItem(
+                            value: list,
+                            child: Text(list),
+                          ))
+                      .toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedList = value;
+                    });
+                  },
+                ),
+                ElevatedButton(
+                  onPressed: () => _pickDate(context),
+                  child: Text(selectedDate == null
+                      ? 'Select Date'
+                      : '${selectedDate!.toLocal()}'.split(' ')[0]),
+                ),
+              ],
+            ),
+            SizedBox(height: 20),
+            // Class Overview
+            Expanded(
+              child: ListView.builder(
+                itemCount: filteredOverview.length,
+                itemBuilder: (context, index) {
+                  final item = filteredOverview[index];
+                  return Card(
+                    child: ListTile(
+                      title: Text(item['name']!),
+                      subtitle: Text('List: ${item['list']} | Date: ${item['date']}'),
                     ),
-                  ),
-
-                  const SizedBox(height: 10),
-
-                  // Back button
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-                    },
-                    child: const Text('Back to Main Screen'),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
-          );
-          
-    //     },
-    //   ),
-    // );
-
+          ],
+        ),
+      ),
+    );
   }
 }

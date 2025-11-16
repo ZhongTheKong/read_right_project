@@ -30,7 +30,7 @@ final Map<String, WidgetBuilder> appRoutes = {
   AppRoutes.create_account: (context) => const CreateAccountScreen(),
   AppRoutes.practice: (context) => const PracticeScreen(),
   AppRoutes.progress: (context) => const ProgressScreen(),
-  AppRoutes.teacherDashboard: (context) => const TeacherDashboardScreen(),
+  AppRoutes.teacherDashboard: (context) => TeacherDashboardScreen(),
   AppRoutes.wordList: (context) => const WordListScreen(),
   AppRoutes.feedback: (context) => const FeedbackScreen(),
 };
