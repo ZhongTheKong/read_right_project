@@ -22,7 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<UserData> getMatchingUserData(BuildContext context, bool isTeacher, String username, String password) async {
 
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
-    AllUserData allUserData = await allUsersProvider.getAllUserData();
+    AllUserData allUserData = allUsersProvider.allUserData;
 
     try {
       UserData userWithMatchingUsername = allUserData.userDataList.firstWhere((u) => u.username == username && u.isTeacher == isTeacher);
@@ -92,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
           return Text('Error: ${snapshot.error}');
         } else {
           // final String lastLoggedInUsername = allUsersProvider.allUserData!.lastLoggedInUser!.username;
-          final UserData? lastLoggedInUser = allUsersProvider.allUserData!.lastLoggedInUser;
+          final UserData? lastLoggedInUser = allUsersProvider.allUserData.lastLoggedInUser;
 
 
 

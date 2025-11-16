@@ -27,12 +27,12 @@ class AllUsersProvider extends ChangeNotifier{
   //   return loadedUserDataList;
   // }
 
-  Future<AllUserData> getAllUserData() async {
-    if (allUserData == null) { 
-      await loadUserData();
-    }
-    return allUserData!;
-  }
+  // Future<AllUserData> getAllUserData() async {
+  //   if (allUserData == null) { 
+  //     await loadUserData();
+  //   }
+  //   return allUserData!;
+  // }
 
     Future<void> saveUserData(AllUserData allUserData) async {
     // TODO: Change this to not save to OneDrive/Documents
@@ -59,14 +59,18 @@ class AllUsersProvider extends ChangeNotifier{
   Future<void> loadUserData() async {
     // TODO: Change this to not save to OneDrive/Documents
     final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/read_right/save_data/userdata.json');
+    final file = File('${directory.path}/read_right/save_data/all_user_data.json');
 
-    if (!file.existsSync()) return;
+    if (!file.existsSync()) {
+      print("File does not exist");
+      return;
+    }
 
     final content = await file.readAsString();
+    print("Loaded json:\n$content");
     final data = jsonDecode(content);
 
-    AllUserData loadedAllUserData = AllUserData.fromJson(data);
+    allUserData = AllUserData.fromJson(data);
     // return UserData.fromJson(jsonDecode(content));
   }
 
@@ -116,14 +120,14 @@ class AllUsersProvider extends ChangeNotifier{
   // }
 
   void clearLastUser() async {
-    (await getAllUserData()).lastLoggedInUser = null;
+    allUserData.lastLoggedInUser = null;
     saveUserData(allUserData!);
     notifyListeners();
   }
 
   // Save the username to local storage
   Future<void> saveLastUser(UserData lastUser) async {
-    (await getAllUserData()).lastLoggedInUser = lastUser;
+    allUserData.lastLoggedInUser = lastUser;
     saveUserData(allUserData!);
     // final prefs = await SharedPreferences.getInstance();
     // await prefs.setString('lastUser_username', username);

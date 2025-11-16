@@ -73,7 +73,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 //   print("incorrect login");
                 // }
                 // TODO: Check for unique username
-                AllUserData allUserData = await allUsersProvider.getAllUserData();
+                AllUserData allUserData = allUsersProvider.allUserData;
                 allUserData.userDataList.add(UserData(username: username, password: password, isTeacher: sessionProvider.isTeacher, attempts: []));
                 allUsersProvider.saveUserData(allUserData);
                 Navigator.pushReplacementNamed(context, AppRoutes.login);

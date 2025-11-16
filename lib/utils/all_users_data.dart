@@ -11,9 +11,9 @@ class AllUserData {
     // Deserialize
   factory AllUserData.fromJson(Map<String, dynamic> json) {
     return AllUserData(
-      lastLoggedInUser: UserData.fromJson(json['isTeacher']),
+      lastLoggedInUser: UserData.fromJson(json['lastLoggedInUser']),
       // attempts: json['attempts'],
-      userDataList: (json['allUserData'] as List<dynamic>)
+      userDataList: (json['userDataList'] as List<dynamic>)
           .map((a) => UserData.fromJson(a))
           .toList(),
     );
@@ -23,7 +23,7 @@ class AllUserData {
   Map<String, dynamic> toJson() {
     return {
       'lastLoggedInUser': lastLoggedInUser?.toJson(),
-      'allUserData': userDataList.map((a) => a.toJson()).toList(),
+      'userDataList': userDataList.map((a) => a.toJson()).toList(),
     };
   }
 }
