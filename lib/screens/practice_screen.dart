@@ -81,7 +81,50 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
               // Safely get the current Word object from the list.
               final Word currentWord = sessionProvider.word_list[sessionProvider.index];
-
+              final listComplete = sessionProvider.listComplete;
+              if (listComplete) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 800,
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.blue[300],
+                            border: Border.all(color: Colors.blue, width: 2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'List Complete!',
+                                    style: const TextStyle(fontSize: 100),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      sessionProvider.nextWord('Needs work', false);
+                                      Navigator.pushNamed(context, '/practice');
+                                    },
+                                    child: const Text('Next List')
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                );
+              }
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -98,25 +98,32 @@ class SessionProvider extends ChangeNotifier {
   void incrementIndex(int increment) {
     // if (isRecording) return;
     index = (index + increment) % word_list.length;
+    print('Grade: ${word_list[index].grade} ${listComplete}');
     notifyListeners();
   }
 
-  void nextWord(String isCorrect) {
+  void nextWord(String isCorrect, bool updateList) {
     if (word_list.isEmpty) return;
+    if (!updateList) {
+      listComplete = false;
+      notifyListeners();
+    }
     if (isCorrect != 'Needs work') {
       String prev = word_list[index].grade;
       incrementIndex(1);
       print('Next word: ${word_list[index].text}');
-      notifyListeners();
       if (prev != word_list[index].grade) {
         listComplete = true;
+        notifyListeners();
       }
       else {
         listComplete = false;
+        notifyListeners();
       }
     }
     else {
       listComplete = false;
+      notifyListeners();
     }
   }
 
