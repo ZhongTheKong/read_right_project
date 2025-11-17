@@ -61,6 +61,7 @@ class SessionProvider extends ChangeNotifier {
   }
 
   /// Functions to load and save the index in the word list
+  /// Likely will be replaced once attempt persistence is implemented
   Future<void> loadIndex() async {
     final prefs = await SharedPreferences.getInstance();
     index = prefs.getInt('lastIndex') ?? 0;
@@ -72,6 +73,8 @@ class SessionProvider extends ChangeNotifier {
     await prefs.setInt('lastIndex', index);
   }
 
+  /// Index saving was added. Likely will be replaced once attempt persistence
+  /// is added.
   // TODO: loadUsername and ready speech to text need to be initialized somewhere else
   Future<void> loadWordList(String path) async {
     if (_wordsLoaded) return;
