@@ -141,6 +141,23 @@ class FeedbackScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
 
+            ElevatedButton(
+              onPressed: () {
+                sessionProvider.nextWord('Perfect!');
+                Navigator.pushNamed(context, '/progress');
+              },
+              child: const Text('Simulate Perfect Score'),
+            ),
+            const SizedBox(height: 20),
+
+            ElevatedButton(
+              onPressed: () {
+                sessionProvider.nextWord('Needs work');
+                Navigator.pushNamed(context, '/progress');
+              },
+              child: const Text('Simulate Failing Score'),
+            ),
+            const SizedBox(height: 20),
 
             ElevatedButton(
               onPressed: () {

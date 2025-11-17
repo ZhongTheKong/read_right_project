@@ -101,6 +101,14 @@ class SessionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void nextWord(String isCorrect) {
+    if (word_list.isEmpty) return;
+    if (isCorrect != 'Needs work') {
+      word_list.removeAt(0);
+      notifyListeners();
+    }
+  }
+
   // Load the username from local storage
   Future<String> loadUsername() async {
     final prefs = await SharedPreferences.getInstance();
