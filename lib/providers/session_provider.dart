@@ -28,7 +28,7 @@ class SessionProvider extends ChangeNotifier {
   int selectedIndex = 0;
   String grade = "Pre-Primer";
   bool _wordsLoaded = false;
-
+  bool listComplete = false;
 
   final List<Attempt> attempts = [];
   // static const int kMaxRecordMs = 7000;
@@ -104,9 +104,19 @@ class SessionProvider extends ChangeNotifier {
   void nextWord(String isCorrect) {
     if (word_list.isEmpty) return;
     if (isCorrect != 'Needs work') {
+      String prev = word_list[index].grade;
       incrementIndex(1);
       print('Next word: ${word_list[index].text}');
       notifyListeners();
+      if (prev != word_list[index].grade) {
+        listComplete = true;
+      }
+      else {
+        listComplete = false;
+      }
+    }
+    else {
+      listComplete = false;
     }
   }
 
