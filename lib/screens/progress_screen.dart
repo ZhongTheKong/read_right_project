@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
 import '../providers/session_provider.dart';
+import 'package:read_right_project/providers/all_users_provider.dart';
 
 class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
@@ -19,10 +20,10 @@ class _ProgressScreenState extends State<ProgressScreen> {
   @override
   Widget build(BuildContext context) {
     RecordingProvider recordingProvider = context.watch<RecordingProvider>();
-
+    AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
     SessionProvider sessionProvider = context.watch<SessionProvider>();
 
-
+    final String username = allUsersProvider.allUserData.lastLoggedInUser?.username ?? 'Guest';
     // return Consumer<SessionProvider>(
     //   builder: (context, sessionProvider, child) {
 
@@ -47,7 +48,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                       children: [
                         // Display the user's data from the provider
                         Text(
-                            'Username: ${sessionProvider.currentUser}',
+                            'Username: ${username}',
                             style: const TextStyle(fontSize: 18),
                         ),
                         Text(
