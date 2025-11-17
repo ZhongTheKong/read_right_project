@@ -57,11 +57,25 @@ class SessionProvider extends ChangeNotifier {
   /// Currently needed to get progress screen to persist
   SessionProvider() {
     loadUsername();
+    loadIndex();
+  }
+
+  /// Functions to load and save the index in the word list
+  Future<void> loadIndex() async {
+    final prefs = await SharedPreferences.getInstance();
+    index = prefs.getInt('lastIndex') ?? 0;
+    notifyListeners();
+  }
+
+  Future<void> saveIndex() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('lastIndex', index);
   }
 
   // TODO: loadUsername and ready speech to text need to be initialized somewhere else
   Future<void> loadWordList(String path) async {
     if (_wordsLoaded) return;
+    await loadIndex();
     try {
       final fileData = await rootBundle.loadString(path);
       // Use CsvToListConverter to parse the CSV string.
@@ -84,6 +98,7 @@ class SessionProvider extends ChangeNotifier {
 
       // Update the state with the new list of Word objects.
       word_list = loadedWords;
+      await saveIndex();
 
       // Notify listeners to rebuild widgets that use this provider.
       notifyListeners();
@@ -96,12 +111,15 @@ class SessionProvider extends ChangeNotifier {
   }
 
   void incrementIndex(int increment) {
-    // if (isRecording) return;
+    if (word_list.isEmpty) return;
     index = (index + increment) % word_list.length;
+    saveIndex();
     print('Grade: ${word_list[index].grade} ${listComplete}');
     notifyListeners();
   }
 
+  /// Moves to the next word to practice. Also keeps track of if a list has been
+  /// completed.
   void nextWord(String isCorrect, bool updateList) {
     if (word_list.isEmpty) return;
     if (!updateList) {
