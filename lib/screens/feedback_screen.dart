@@ -144,7 +144,7 @@ class FeedbackScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 sessionProvider.nextWord('Perfect!');
-                Navigator.pushNamed(context, '/progress');
+                Navigator.pushNamed(context, '/practice');
               },
               child: const Text('Simulate Perfect Score'),
             ),
@@ -153,7 +153,7 @@ class FeedbackScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 sessionProvider.nextWord('Needs work');
-                Navigator.pushNamed(context, '/progress');
+                Navigator.pushNamed(context, '/practice');
               },
               child: const Text('Simulate Failing Score'),
             ),

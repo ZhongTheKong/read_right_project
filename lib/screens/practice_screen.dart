@@ -115,16 +115,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                 ),
                               ],
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.blue, width: 2),
-                              ),
-                              child: IconButton(
-                                onPressed: () => sessionProvider.incrementIndex(1),
-                                icon: const Icon(Icons.arrow_right),
-                              ),
-                            ),
                           ],
                         ),
                       ),

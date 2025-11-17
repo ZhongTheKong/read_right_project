@@ -104,7 +104,8 @@ class SessionProvider extends ChangeNotifier {
   void nextWord(String isCorrect) {
     if (word_list.isEmpty) return;
     if (isCorrect != 'Needs work') {
-      word_list.removeAt(0);
+      incrementIndex(1);
+      print('Next word: ${word_list[index].text}');
       notifyListeners();
     }
   }
