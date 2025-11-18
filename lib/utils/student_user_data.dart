@@ -5,6 +5,8 @@ class StudentUserData extends UserData {
   StudentUserData({
     required super.username,
     required super.password,
+    required super.firstName,
+    required super.lastName,
     required super.isTeacher,
     // required this.attempts,
     required this.word_list_attempts,
@@ -17,6 +19,8 @@ class StudentUserData extends UserData {
     return StudentUserData(
       username: json['username'],
       password: json['password'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
       isTeacher: json['isTeacher'],
       word_list_attempts: (json['word_list_attempts'] as Map<String, dynamic>).map(
       (key, value) {
@@ -38,6 +42,8 @@ class StudentUserData extends UserData {
     return {
       'username': username,
       'password': password,
+      'firstName': firstName,
+      'lastName': lastName,
       'isTeacher': isTeacher,
       // 'attempts': attempts.map((a) => a.toJson()).toList(),
       'word_list_attempts': word_list_attempts.map((key, value) {
