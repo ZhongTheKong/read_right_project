@@ -22,10 +22,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
   Widget build(BuildContext context) {
     TextEditingController usernameTextEditingController = TextEditingController();
     TextEditingController passwordTextEditingController = TextEditingController();
-    TextEditingController firstNameTextEditingController = TextEditingController();
-    TextEditingController lastNameTextEditingController = TextEditingController();
-
-
 
     SessionProvider sessionProvider = context.read<SessionProvider>();
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
@@ -42,20 +38,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
             const Text(
               'Hello, World! This is the Create Account Screen.',
               style: TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 20),
-
-            LabelledLoginTextField(
-                textEditingController: firstNameTextEditingController,
-                fieldIcon: Icons.face,
-                labelText: "First Name"
-            ),
-            const SizedBox(height: 20),
-
-            LabelledLoginTextField(
-                textEditingController: lastNameTextEditingController,
-                fieldIcon: Icons.key,
-                labelText: "Last Name"
             ),
             const SizedBox(height: 20),
 
@@ -77,8 +59,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               onPressed: () async {
                 final username = usernameTextEditingController.text;
                 final password = passwordTextEditingController.text;
-                final firstName = firstNameTextEditingController.text;
-                final lastName = lastNameTextEditingController.text;
                 // Navigate back to main screen and clear previous routes
                 // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                 // if (LoginData.isValidLoginData(username, password) == true)
@@ -99,22 +79,13 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 AllUserData allUserData = allUsersProvider.allUserData;
                 if (sessionProvider.isTeacher)
                 {
-                  allUserData.teacherUserDataList.add(TeacherUserData(
-                    username: username, 
-                    password: password, 
-                    firstName: firstName,
-                    lastName: lastName,
-                    isTeacher: true, 
-                    studentUsernames: []
-                  ));
+                  allUserData.teacherUserDataList.add(TeacherUserData(username: username, password: password, isTeacher: true, studentUsernames: []));
                 }
                 else
                 {
                   allUserData.studentUserDataList.add(StudentUserData(
                     username: username, 
                     password: password, 
-                    firstName: firstName,
-                    lastName: lastName,
                     isTeacher: false, 
                     // attempts: [],
                     word_list_attempts: {},

@@ -40,13 +40,7 @@ class _WordListScreenState extends State<WordListScreen> {
     final sessionProvider = context.watch<SessionProvider>();
 
     // Safely access the username with a null check.
-    // This should only be getting hit if going to word list from dev mode
-    String fullName = 'Guest';
-    if (allUsersProvider.allUserData.lastLoggedInUser != null)
-    {
-      fullName = "${allUsersProvider.allUserData.lastLoggedInUser!.firstName} ${allUsersProvider.allUserData.lastLoggedInUser!.lastName}";
-    }
-    // final String username = allUsersProvider.allUserData.lastLoggedInUser?.username ?? 'Guest';
+    final String username = allUsersProvider.allUserData.lastLoggedInUser?.username ?? 'Guest';
 
     return Scaffold(
       backgroundColor: Colors.blue[800],
@@ -65,7 +59,7 @@ class _WordListScreenState extends State<WordListScreen> {
                   ),
                 ),
                 Text(
-                  fullName, // Use the safe variable
+                  username, // Use the safe variable
                   style: const TextStyle(
                     fontSize: 60,
                     fontWeight: FontWeight.bold,
