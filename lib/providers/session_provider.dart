@@ -30,6 +30,8 @@ class SessionProvider extends ChangeNotifier {
   bool _wordsLoaded = false;
   bool listComplete = false;
 
+  String word_list_name = '';
+
   final List<Attempt> attempts = [];
   // static const int kMaxRecordMs = 7000;
   // Timer? recordTimer;
@@ -101,6 +103,7 @@ class SessionProvider extends ChangeNotifier {
 
       // Update the state with the new list of Word objects.
       word_list = loadedWords;
+      word_list_name = path;
       await saveIndex();
 
       // Notify listeners to rebuild widgets that use this provider.

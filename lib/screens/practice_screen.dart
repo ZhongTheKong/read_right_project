@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/word.dart';
 
 class PracticeScreen extends StatefulWidget {
@@ -31,6 +33,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+
     return Scaffold(
       backgroundColor: Colors.blue[800],
       appBar: AppBar(
@@ -198,23 +203,45 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ElevatedButton.icon(
-                            onPressed: () {
-                              recordingProvider.startRecording(
+                            onPressed: () async {
+
+                              final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
+                              final wordListName = sessionProvider.word_list_name;
+                              // Ensure the key exists
+                              studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+                              // Now it's safe to access
+                              final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+
+                              await recordingProvider.startRecording(
                                 currentWord.text, // Pass the word text
-                                sessionProvider.attempts,
+                                attempts,
                               );
+                              allUsersProvider.saveUserData(allUsersProvider.allUserData);
                             },
                             icon: const Icon(Icons.mic),
                             label: const Text('Record'),
                           ),
                           const SizedBox(width: 20),
                           ElevatedButton.icon(
-                            onPressed: () {
-                              recordingProvider.stopRecording(
+                            onPressed: () async {
+
+                              final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
+                              final wordListName = sessionProvider.word_list_name;
+                              // Ensure the key exists
+                              studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+                              // Now it's safe to access
+                              final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+
+                              // print("Before stop recording: $attempts");
+                              await recordingProvider.stopRecording(
                                 currentWord.text, // Pass the word text
-                                sessionProvider.attempts,
+                                // sessionProvider.attempts,
+                                attempts,
                               );
+                              // print("After stop recording: $attempts");
                               sessionProvider.selectedIndex = sessionProvider.index;
+                              allUsersProvider.saveUserData(allUsersProvider.allUserData);
+
                               setState(() {});
                             },
                             icon: const Icon(Icons.stop_circle_outlined),
@@ -222,10 +249,23 @@ class _PracticeScreenState extends State<PracticeScreen> {
                           ),
                           const SizedBox(width: 20),
                           ElevatedButton.icon(
-                            onPressed: () {
+                            onPressed: () async {
+                              
+                              final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
+                              final wordListName = sessionProvider.word_list_name;
+                              // Ensure the key exists
+                              studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+                              // Now it's safe to access
+                              final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+                              
                               // Playback logic
-                              if (sessionProvider.attempts.length > sessionProvider.index) {
-                                recordingProvider.play(sessionProvider.attempts[sessionProvider.index].filePath);
+                              // if (sessionProvider.attempts.length > sessionProvider.index) {
+                              if (attempts.isNotEmpty) {
+                                // recordingProvider.play(sessionProvider.attempts[sessionProvider.index].filePath);
+                                print("Attempting to play file at location: ${attempts[attempts.length - 1].filePath}");
+                                allUsersProvider.saveUserData(allUsersProvider.allUserData);
+                                await recordingProvider.play(attempts[attempts.length - 1].filePath);
+
                               }
                             },
                             icon: const Icon(Icons.play_arrow),

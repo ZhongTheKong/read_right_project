@@ -132,6 +132,9 @@ class RecordingProvider extends ChangeNotifier {
         print("Error getting recording duration: $e");
       }
 
+      // print("Attempting to save file to: $path");
+      // print("Before save: $attempts");
+
       // Save the attempt to the list passed from the UI
       attempts.insert(
         0,
@@ -144,6 +147,7 @@ class RecordingProvider extends ChangeNotifier {
           durationMs: (dur ?? Duration.zero).inMilliseconds,
         ),
       );
+      // print("After save: $attempts");
     } catch (e) {
       print("Error stopping recording: $e");
       // Ensure state is clean even on error

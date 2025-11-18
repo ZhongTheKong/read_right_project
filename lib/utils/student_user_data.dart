@@ -6,9 +6,11 @@ class StudentUserData extends UserData {
     required super.username,
     required super.password,
     required super.isTeacher,
-    required this.attempts,
+    // required this.attempts,
+    required this.word_list_attempts,
   });
-  final List<Attempt> attempts;
+  // final List<Attempt> attempts;
+  final Map<String, List<Attempt>> word_list_attempts;
 
   // Deserialize
   factory StudentUserData.fromJson(Map<String, dynamic> json) {
@@ -16,10 +18,18 @@ class StudentUserData extends UserData {
       username: json['username'],
       password: json['password'],
       isTeacher: json['isTeacher'],
+      word_list_attempts: (json['word_list_attempts'] as Map<String, dynamic>).map(
+      (key, value) {
+        var list = (value as List)
+            .map((item) => Attempt.fromJson(item))
+            .toList();
+        return MapEntry(key, list);
+      },
+    ),
       // attempts: json['attempts'],
-      attempts: (json['attempts'] as List<dynamic>)
-          .map((a) => Attempt.fromJson(a))
-          .toList(),
+      // attempts: (json['attempts'] as List<dynamic>)
+      //     .map((a) => Attempt.fromJson(a))
+      //     .toList(),
     );
   }
 
@@ -29,7 +39,10 @@ class StudentUserData extends UserData {
       'username': username,
       'password': password,
       'isTeacher': isTeacher,
-      'attempts': attempts.map((a) => a.toJson()).toList(),
+      // 'attempts': attempts.map((a) => a.toJson()).toList(),
+      'word_list_attempts': word_list_attempts.map((key, value) {
+        return MapEntry(key, value.map((e) => e.toJson()).toList());
+      }),
     };
   }
 }
