@@ -71,6 +71,7 @@ Milestone 2 Progress
 -Improved feedback screen
 -Last logged in user, teachers, students and their attempts for word lists are saved to and loaded from json
 -Role->Login->Word List->Practice->Feedback->Progress done
+https://www.loom.com/share/cfcc6f2ced1a4ee780b94fa3f2b50da4
 
 SETUP NOTES:
 -If you want to use your own CSV file, name it "seed_words.csv" and format it 
