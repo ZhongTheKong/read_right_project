@@ -34,7 +34,7 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
   }
   */
 
-  final lists = ['Math', 'Science', 'History'];
+  final lists = ['1st Grade', '2nd Grade', '3rd Grade'];
   final classOverview = [
     {'name': 'Alice', 'list': 'Math', 'date': '2025-11-15'},
     {'name': 'Bob', 'list': 'Science', 'date': '2025-11-16'},
