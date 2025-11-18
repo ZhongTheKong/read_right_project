@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/widgets.dart';
 import 'package:just_audio/just_audio.dart';
@@ -32,6 +33,8 @@ class RecordingProvider extends ChangeNotifier {
 
   static const int intervalMs = 50;
 
+  double progress = 0;
+
   // --- REMOVED: This anti-pattern is no longer needed ---
   // void updateStudent(SessionProvider newGeneralProvider) {
   //   generalProvider = newGeneralProvider;
@@ -58,7 +61,7 @@ class RecordingProvider extends ChangeNotifier {
     return '${dir.path}/readright_${word}_$ts.wav';
   }
 
-  Future<void> startRecording(String word, List<Attempt> attempts) async {
+  Future<void> startRecording(String word, List<Attempt> attempts, VoidCallback? onRecordStop) async {
     if (!recorderReady || isRecording) {
       print("Recorder not ready or already recording.");
       return;
@@ -82,7 +85,7 @@ class RecordingProvider extends ChangeNotifier {
 
       // Set a master timeout for the recording
       recordTimer?.cancel();
-      recordTimer = Timer(const Duration(milliseconds: kMaxRecordMs), () => stopRecording(word, attempts));
+      recordTimer = Timer(const Duration(milliseconds: kMaxRecordMs), () => stopRecording(word, attempts, onRecordStop));
 
       // Start the periodic timer to update the UI progress bar
       recordTimer = Timer.periodic(
@@ -91,6 +94,7 @@ class RecordingProvider extends ChangeNotifier {
           elapsedMs = timer.tick * intervalMs;
           if (elapsedMs >= kMaxRecordMs) {
             elapsedMs = kMaxRecordMs;
+            progress = elapsedMs / kMaxRecordMs;
             timer.cancel(); // Stop this timer when max time is reached
           }
           notifyListeners();
@@ -103,7 +107,7 @@ class RecordingProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> stopRecording(String word, List<Attempt> attempts) async {
+  Future<void> stopRecording(String word, List<Attempt> attempts, VoidCallback? onRecordStop) async {
     if (!isRecording) {
       print("Not recording, cannot stop.");
       return;
@@ -142,7 +146,8 @@ class RecordingProvider extends ChangeNotifier {
           word: word,
           // A more realistic score could be based on other metrics,
           // but for now, this placeholder is fine.
-          score: (elapsedMs / kMaxRecordMs).clamp(0.0, 1.0),
+          // score: (elapsedMs / kMaxRecordMs).clamp(0.0, 1.0),
+          score: Random().nextDouble(),
           filePath: path,
           durationMs: (dur ?? Duration.zero).inMilliseconds,
         ),
@@ -155,6 +160,10 @@ class RecordingProvider extends ChangeNotifier {
       elapsedMs = 0;
       notifyListeners();
     }
+    if (onRecordStop != null)
+    {
+      onRecordStop();
+    }
   }
 
   Future<void> play(String path) async {
@@ -163,10 +172,44 @@ class RecordingProvider extends ChangeNotifier {
 
     try {
       await player.setFilePath(path);
+      Duration? totalDuration = player.duration;
+      elapsedMs = 0;
       isPlaying = true;
       notifyListeners();
 
+      // TODO: ADD TRUE TRACKING OF PLAYER
+      Timer.periodic(
+        const Duration(milliseconds: intervalMs),
+        (timer) {
+          elapsedMs += intervalMs; // increment elapsed time
+          if (elapsedMs >= totalDuration!.inMilliseconds) {
+            elapsedMs = totalDuration.inMilliseconds;
+            progress = elapsedMs / totalDuration.inMilliseconds;
+            timer.cancel(); // Stop the timer when max time is reached
+          }
+          notifyListeners();
+        },
+      );
       await player.play();
+
+      // _uiTimer?.cancel(); // Cancel any existing timer
+      // _uiTimer = Timer.periodic(
+      
+
+
+      // Timer.periodic(
+      //   const Duration(milliseconds: intervalMs),
+      //       (timer) {
+      //     elapsedMs = timer.tick * intervalMs;
+      //     if (elapsedMs >= kMaxRecordMs) {
+      //       elapsedMs = kMaxRecordMs;
+      //       timer.cancel(); // Stop this timer when max time is reached
+      //     }
+      //     notifyListeners();
+      //   },
+      // );
+
+      
 
       // The stream subscription should be managed carefully.
       // A simple `await player.play()` completes when the audio finishes.

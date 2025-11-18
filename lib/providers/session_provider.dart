@@ -126,13 +126,14 @@ class SessionProvider extends ChangeNotifier {
 
   /// Moves to the next word to practice. Also keeps track of if a list has been
   /// completed.
-  void nextWord(String isCorrect, bool updateList) {
+  // void nextWord(String isCorrect, bool updateList) {
+    void nextWord(bool updateList) {
     if (word_list.isEmpty) return;
     if (!updateList) {
       listComplete = false;
       notifyListeners();
     }
-    if (isCorrect != 'Needs work') {
+    // if (isCorrect != 'Needs work') {
       String prev = word_list[index].grade;
       incrementIndex(1);
       print('Next word: ${word_list[index].text}');
@@ -144,11 +145,11 @@ class SessionProvider extends ChangeNotifier {
         listComplete = false;
         notifyListeners();
       }
-    }
-    else {
-      listComplete = false;
-      notifyListeners();
-    }
+    // }
+    // else {
+    //   listComplete = false;
+    //   notifyListeners();
+    // }
   }
 
   // Load the username from local storage
