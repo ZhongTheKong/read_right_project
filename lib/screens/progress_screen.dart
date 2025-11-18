@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
 import '../providers/session_provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 
@@ -74,18 +75,20 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   ),
                   // child: Consumer<SessionProvider>(
                     // builder: (BuildContext context, SessionProvider recorder, Widget? child) => recorder.attempts.isEmpty
-                    child: sessionProvider.attempts.isEmpty
+                    child: (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]!.isEmpty
                       ? const Center(
                           child: Text('No attempts yet')
                       )
                       : ClipRRect(
                         borderRadius: BorderRadiusGeometry.circular(8),
                         child: ListView.separated(
-                            itemCount: sessionProvider.attempts.length,
+                            // itemCount: sessionProvider.attempts.length,
+                            itemCount: (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]!.length,
                             separatorBuilder: (_, __) => const SizedBox(height: 8),
                             itemBuilder: (context, i) {
                             
-                              final iterAttempt = sessionProvider.attempts[i];
+                              // final iterAttempt = sessionProvider.attempts[i];
+                              final iterAttempt = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]![i];
                               final exists = File(iterAttempt.filePath).existsSync();
                             
                               return Material(

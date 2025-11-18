@@ -92,4 +92,4 @@ KNOWN ISSUES (Future Goals):
 -Save progress in word list separately per student
 -Implement Teacher Dashboard with real data
 -Export CSV/JSON with date ranges from Teacher Dashboard/Progress Screen
--Fix bug that deletes account information on startup
+-Fix bug that requires users to delete/overwrite account information if their json format is outdated
