@@ -115,7 +115,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                   const SizedBox(height: 8),
                                   ElevatedButton(
                                     onPressed: () {
-                                      sessionProvider.nextWord('Needs work', false);
+                                      // sessionProvider.nextWord('Needs work', false);
+                                      sessionProvider.nextWord(false);
                                       Navigator.pushNamed(context, '/practice');
                                     },
                                     child: const Text('Next List')
@@ -132,38 +133,41 @@ class _PracticeScreenState extends State<PracticeScreen> {
               }
               return Center(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 10),
                     // WORD DISPLAY
-                    SizedBox(
-                      width: 800,
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.blue[300],
-                          border: Border.all(color: Colors.blue, width: 2),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Word #${sessionProvider.index + 1}\n'
-                                      'Grade: ${currentWord.grade}', // Use the 'grade' property
-                                  style: const TextStyle(fontSize: 20),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  currentWord.text, // Use the 'text' property
-                                  style: const TextStyle(fontSize: 40),
-                                ),
-                              ],
-                            ),
-                          ],
+                    Expanded(
+                      child: SizedBox(
+                        width: 400,
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.blue[300],
+                            border: Border.all(color: Colors.blue, width: 2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Word #${sessionProvider.index + 1}\n'
+                                        'Grade: ${currentWord.grade}', // Use the 'grade' property
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    currentWord.text, // Use the 'text' property
+                                    style: const TextStyle(fontSize: 40),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -172,7 +176,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
                     // LINEAR PROGRESS INDICATOR
                     Container(
-                      width: 400,
+                      width: 350,
                       height: 10,
                       decoration: BoxDecoration(
                         color: Colors.grey[300],
@@ -181,6 +185,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: LinearProgressIndicator(
+                          // value: recordingProvider.progress,
                           value: recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
                           minHeight: 10,
                           backgroundColor: Colors.grey[300],
@@ -188,6 +193,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         ),
                       ),
                     ),
+
+                    // Slider(
+                    //   value: recordingProvider.currentPosition.inMilliseconds.toDouble(),
+                    //   max: recordingProvider.totalDuration.inMilliseconds.toDouble(),
+                    //   onChanged: (value) {
+                    //     recordingProvider.player.seek(Duration(milliseconds: value.toInt()));
+                    //   },
+                    // ),
 
                     // RECORDING CONTROLS
                     Container(
@@ -200,7 +213,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ElevatedButton.icon(
                             onPressed: () async {
@@ -215,13 +228,16 @@ class _PracticeScreenState extends State<PracticeScreen> {
                               await recordingProvider.startRecording(
                                 currentWord.text, // Pass the word text
                                 attempts,
+                                () { 
+                                  Navigator.pushReplacementNamed(context, AppRoutes.feedback); 
+                                }
                               );
                               allUsersProvider.saveUserData(allUsersProvider.allUserData);
                             },
                             icon: const Icon(Icons.mic),
                             label: const Text('Record'),
                           ),
-                          const SizedBox(width: 20),
+
                           ElevatedButton.icon(
                             onPressed: () async {
 
@@ -237,6 +253,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                 currentWord.text, // Pass the word text
                                 // sessionProvider.attempts,
                                 attempts,
+                                () { 
+                                  Navigator.pushReplacementNamed(context, AppRoutes.feedback); 
+                                }
                               );
                               // print("After stop recording: $attempts");
                               sessionProvider.selectedIndex = sessionProvider.index;
@@ -247,30 +266,40 @@ class _PracticeScreenState extends State<PracticeScreen> {
                             icon: const Icon(Icons.stop_circle_outlined),
                             label: const Text('Stop'),
                           ),
-                          const SizedBox(width: 20),
-                          ElevatedButton.icon(
-                            onPressed: () async {
-                              
-                              final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
-                              final wordListName = sessionProvider.word_list_name;
-                              // Ensure the key exists
-                              studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
-                              // Now it's safe to access
-                              final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
-                              
-                              // Playback logic
-                              // if (sessionProvider.attempts.length > sessionProvider.index) {
-                              if (attempts.isNotEmpty) {
-                                // recordingProvider.play(sessionProvider.attempts[sessionProvider.index].filePath);
-                                print("Attempting to play file at location: ${attempts[attempts.length - 1].filePath}");
-                                allUsersProvider.saveUserData(allUsersProvider.allUserData);
-                                await recordingProvider.play(attempts[attempts.length - 1].filePath);
 
-                              }
-                            },
-                            icon: const Icon(Icons.play_arrow),
-                            label: const Text('Playback'),
-                          ),
+                          ElevatedButton.icon(
+                            onPressed: () {
+                              sessionProvider.nextWord(false);
+                            }, 
+                            icon: Icon(Icons.play_arrow),
+                            label: Text("Next (TEMP)")
+                          )
+
+                          // const SizedBox(width: 20),
+                          // ElevatedButton.icon(
+                          //   onPressed: () async {
+                              
+                          //     final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
+                          //     final wordListName = sessionProvider.word_list_name;
+                          //     // Ensure the key exists
+                          //     studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+                          //     // Now it's safe to access
+                          //     final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+                              
+                          //     // Playback logic
+                          //     // if (sessionProvider.attempts.length > sessionProvider.index) {
+                          //     if (attempts.isNotEmpty) {
+                          //       // recordingProvider.play(sessionProvider.attempts[sessionProvider.index].filePath);
+                          //       print("Attempting to play file at location: ${attempts[0].filePath}");
+                          //       allUsersProvider.saveUserData(allUsersProvider.allUserData);
+                          //       await recordingProvider.play(attempts[0].filePath);
+
+                          //     }
+                          //   },
+                          //   icon: const Icon(Icons.play_arrow),
+                          //   label: const Text('Playback'),
+                          // ),
+
                         ],
                       ),
                     ),
@@ -286,15 +315,15 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              sessionProvider.selectedIndex = sessionProvider.index;
-                              Navigator.pushNamed(context, AppRoutes.feedback);
-                            },
-                            child: const Text('Review Feedback'),
-                          ),
+                          // ElevatedButton(
+                          //   onPressed: () {
+                          //     sessionProvider.selectedIndex = sessionProvider.index;
+                          //     Navigator.pushNamed(context, AppRoutes.feedback);
+                          //   },
+                          //   child: const Text('Review Feedback'),
+                          // ),
                           ElevatedButton(
                             onPressed: () {
                               Navigator.pushNamed(context, AppRoutes.wordList);
