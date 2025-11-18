@@ -10,7 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final AllUsersProvider allUsersProvider = AllUsersProvider();
-  //await allUsersProvider.loadUserData();
+  await allUsersProvider.loadUserData();
 
   runApp(
     MultiProvider(
