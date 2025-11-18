@@ -66,10 +66,11 @@ Milestone 2 Progress
 -Implemented a placeholder teacher dashboard
 -Word list tracks categories for practice words
 -Practice screen indicates when a list of words is complete
--Progress for user's words is saved
 -Wrote system where students must score well to advance through the word list
 -Placeholder implementation for advancing through the word list
 -Improved feedback screen
+-Last logged in user, teachers, students and their attempts for word lists are saved to and loaded from json
+-Role->Login->Word List->Practice->Feedback->Progress done
 
 SETUP NOTES:
 -If you want to use your own CSV file, name it "seed_words.csv" and format it 
@@ -77,19 +78,19 @@ in the same way as the current file in our assets folder before adding it to the
 -When running the app, sign in as a student. Make an account and enter the required information.
 -Log in with your new account. 
 -Click Go Practice to go to the practice screen. Or, you can sign out from here.
--You can hit record to make a new attempt (Currently does not work for recording audio)
+-You can hit record to make a new attempt (Does not work on windows and requires "virtual microphone uses host audio input" enabled)
 -Hit stop to end the recording early
 -You will be sent to the feedback screen which shows you your score
--Hit Retry Word to go back
+-If you get a low score, hit Retry Word to go back
+-If you get a high score, hit Next Word to progress to next word in list
 -Click View Progress to go to the progress screen
 -Click Next(temp) to advance to the next word. Eventually you will finish the list and recieve a message.
 -Click Go to Word List to go back to the main screen.
 
-KNOWN ISSUES (Future Goals):
+KNOWN ISSUES and Future Goals:
 -Get STT and Azure AI to work with Android Studio
--Save attempts over multiple sessions
 -Touch up UI
 -Save progress in word list separately per student
--Implement Teacher Dashboard with real data
+-Implement Teacher Dashboard with real/json data
 -Export CSV/JSON with date ranges from Teacher Dashboard/Progress Screen
 -Fix bug that requires users to delete/overwrite account information if their json format is outdated
