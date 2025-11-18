@@ -25,7 +25,7 @@ class FeedbackScreen extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // Navigate back to main screen and clear previous routes
-                  Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                  Navigator.pushNamed(context, "/wordList");
                 },
                 child: const Text('Back to Main Screen'),
               ),
