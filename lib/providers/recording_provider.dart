@@ -114,10 +114,6 @@ class RecordingProvider extends ChangeNotifier {
     }
 
     recordTimer?.cancel(); // Stop the timer immediately
-    if (onRecordStop != null)
-    {
-      onRecordStop();
-    }
     print("Stopping recording");
 
     try {
@@ -163,6 +159,10 @@ class RecordingProvider extends ChangeNotifier {
       isRecording = false;
       elapsedMs = 0;
       notifyListeners();
+    }
+    if (onRecordStop != null)
+    {
+      onRecordStop();
     }
   }
 
