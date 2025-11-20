@@ -42,7 +42,9 @@ class AllUsersProvider extends ChangeNotifier{
 
     if (!file.existsSync()) {
       print("File does not exist");
-      throw Exception("User data file does not exist.");
+      await saveUserData(allUserData);
+      // throw Exception("User data file does not exist.");
+      // return;
     }
 
     try
@@ -63,20 +65,21 @@ class AllUsersProvider extends ChangeNotifier{
     } catch (e, stack) {
       // Catch-all (e.g. fromJson exceptions)
       print("Unexpected error loading user data: $e\n$stack");
+      // rethrow;
       throw Exception("Unexpected error loading user data: $e");
     }
   }
 
   void clearLastUser() async {
     allUserData.lastLoggedInUser = null;
-    saveUserData(allUserData!);
+    saveUserData(allUserData);
     notifyListeners();
   }
 
   // Save the username to local storage
   Future<void> saveLastUser(UserData lastUser) async {
     allUserData.lastLoggedInUser = lastUser;
-    saveUserData(allUserData!);
+    saveUserData(allUserData);
     notifyListeners();
   }
 
@@ -85,5 +88,40 @@ class AllUsersProvider extends ChangeNotifier{
     await file.rename(corruptPath);
     print("Corrupt JSON moved to: $corruptPath");
   }
+
+  Future<void> quarantineCorruptFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    final file = File('${directory.path}/read_right/save_data/all_user_data.json');
+
+    if (!file.existsSync()) {
+      print("File does not exist");
+      // throw Exception("User data file does not exist.");
+      return;
+    }
+    final corruptPath = file.path + ".corrupt_${DateTime.now().millisecondsSinceEpoch}";
+    await file.rename(corruptPath);
+    print("Corrupt JSON moved to: $corruptPath");
+  }
+
+  Future<void> deleteUserData() async {
+  try {
+    final directory = await getApplicationDocumentsDirectory();
+    final saveDir = Directory('${directory.path}/read_right/save_data');
+    final file = File('${saveDir.path}/all_user_data.json');
+
+    if (!await file.exists()) {
+      throw Exception("No user data file found to delete.");
+    }
+
+    await file.delete();
+    print("User data deleted at: ${file.path}");
+
+  } catch (e) {
+    print("Error deleting user data: $e");
+    throw Exception("Failed to delete user data: $e");
+  }
+}
+
 
 }
