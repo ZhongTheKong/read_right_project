@@ -53,37 +53,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  // Future<UserData> getMatchingUserDataOfLastUser(BuildContext context, bool isTeacher, String username) async {
-
-  //   AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
-  //   List<UserData> allUserData = await allUsersProvider.getLoadedAllUserData();
-
-  //   try {
-  //     return allUserData.firstWhere((u) => u.username == username && u.isTeacher == isTeacher);
-  //   } catch (e) {
-  //     // If no user is found, return null
-  //     throw UserNotFoundException(username);
-
-  //     // return null;
-  //   }
-  // }
-
-  // Future<String> getLastLoggedInUsername() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   String? lastUser = prefs.getString("lastUser");
-  //   return lastUser ?? "";
-  // }
-
-  // void clearLastLoggedInUsername() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   prefs.remove("lastUser");
-  // }
-
-  // void setLastLoggedInUsername(String newLoggedInUser) async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   prefs.setString("lastUser", newLoggedInUser);
-  // }
-
   @override
   Widget build(BuildContext context) {
 
@@ -104,62 +73,6 @@ class _LoginScreenState extends State<LoginScreen> {
     //       // final String lastLoggedInUsername = allUsersProvider.allUserData!.lastLoggedInUser!.username;
     // final UserData? lastLoggedInUser = allUsersProvider.allUserData.lastLoggedInUser;
 
-
-
-
-
-    // if (lastLoggedInUser != null) {
-
-    //   // sessionProvider.currUser = await getMatchingUserDataOfLastUser(context, sessionProvider.isTeacher, lastLoggedInUsername);
-
-    //   return Scaffold(
-    //     appBar: AppBar(title: const Text('Returning Login Screen')),
-    //     body: Center(
-    //       child: Column(
-    //         children: [
-    // Text(
-    //   "Welcome Back",
-    //   style: TextStyle(
-    //     fontSize: 30,
-    //   ),
-    // ),
-    // Text(
-    //   lastLoggedInUser.username,
-    //   style: TextStyle(
-    //     fontSize: 60,
-    //     fontWeight: FontWeight.bold
-    //   ),
-    // ),
-    //           SizedBox(height: 20.0,),
-
-    //           ElevatedButton(
-    //             onPressed: () {
-    //               // allUsersProvider.clearLastUser();
-    //               Navigator.pushReplacementNamed(context, AppRoutes.practice);
-    //               // allUsersProvider.saveLastUser(lastLoggedInUsername);
-    //             },
-    //             child: const Text('Continue to practice screen'),
-    //           ),
-
-    //           ElevatedButton(
-    //             onPressed: () {
-    //               allUsersProvider.clearLastUser();
-    //               setState(() {});
-    //             },
-    //             child: const Text('CLEAR LAST LOGIN DATA'),
-    //           ),
-
-    //         ],
-    //       ),
-    //     )
-    //   );
-    // }
-
-
-
-
-
-    // else {
     return Scaffold(
       appBar: AppBar(
           title: sessionProvider.isTeacher ? const Text('Teacher Login Screen') : const Text('Student Login Screen')
@@ -197,7 +110,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 {
                   UserData matchingUser = await getMatchingUserData(context, sessionProvider.isTeacher, username, password);
                   allUsersProvider.saveLastUser(matchingUser);
-                  // sessionProvider.currUser = matchingUser;
                   if (sessionProvider.isTeacher)
                   {
                     Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
@@ -231,10 +143,6 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-// },
-// );
-// }
-// }
 
 class UserNotFoundException implements Exception {
   final String username;

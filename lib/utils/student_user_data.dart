@@ -16,25 +16,36 @@ class StudentUserData extends UserData {
 
   // Deserialize
   factory StudentUserData.fromJson(Map<String, dynamic> json) {
-    return StudentUserData(
-      username: json['username'],
-      password: json['password'],
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      isTeacher: json['isTeacher'],
-      word_list_attempts: (json['word_list_attempts'] as Map<String, dynamic>).map(
-      (key, value) {
-        var list = (value as List)
-            .map((item) => Attempt.fromJson(item))
-            .toList();
-        return MapEntry(key, list);
-      },
-    ),
+    try {
+      return StudentUserData(
+        username: json['username'] ?? "",
+        password: json['password'] ?? "",
+        firstName: json['firstName'] ?? "",
+        lastName: json['lastName'] ?? "",
+        isTeacher: json['isTeacher'] ?? false,
+        word_list_attempts: json['word_list_attempts'] != null ? 
+          (json['word_list_attempts'] as Map<String, dynamic>).map(
+            (key, value) {
+              var list = (value as List)
+                  .map((item) => Attempt.fromJson(item))
+                  .toList();
+              return MapEntry(key, list);
+            },
+          )
+          : {}
+      );
+    }
       // attempts: json['attempts'],
       // attempts: (json['attempts'] as List<dynamic>)
       //     .map((a) => Attempt.fromJson(a))
       //     .toList(),
-    );
+    on FormatException catch (e) {
+      // Happens when JSON is malformed
+      print("StudentUserData.fromJSON | JSON format error: $e");
+
+      // Optionally: rename the bad file so user doesn't get stuck
+      throw Exception("Saved data file (StudentUserData) is corrupted. ($e)");
+    }
   }
 
   // Serialize

@@ -42,15 +42,29 @@ class AllUsersProvider extends ChangeNotifier{
 
     if (!file.existsSync()) {
       print("File does not exist");
-      return;
+      throw Exception("User data file does not exist.");
     }
 
-    final content = await file.readAsString();
-    print("Loaded json:\n$content");
-    final data = jsonDecode(content);
+    try
+    {
+      final content = await file.readAsString();
+      print("Loaded json:\n$content");
+      final data = jsonDecode(content);
 
-    allUserData = AllUserData.fromJson(data);
-    // return UserData.fromJson(jsonDecode(content));
+      allUserData = AllUserData.fromJson(data);
+      // return UserData.fromJson(jsonDecode(content));
+    } on FormatException catch (e) {
+      // Happens when JSON is malformed
+      print("JSON format error: $e");
+
+      // Optionally: rename the bad file so user doesn't get stuck
+      await _quarantineCorruptFile(file);
+      throw Exception("Saved data file is corrupted. ($e)");
+    } catch (e, stack) {
+      // Catch-all (e.g. fromJson exceptions)
+      print("Unexpected error loading user data: $e\n$stack");
+      throw Exception("Unexpected error loading user data: $e");
+    }
   }
 
   void clearLastUser() async {
@@ -64,6 +78,12 @@ class AllUsersProvider extends ChangeNotifier{
     allUserData.lastLoggedInUser = lastUser;
     saveUserData(allUserData!);
     notifyListeners();
+  }
+
+  Future<void> _quarantineCorruptFile(File file) async {
+    final corruptPath = file.path + ".corrupt_${DateTime.now().millisecondsSinceEpoch}";
+    await file.rename(corruptPath);
+    print("Corrupt JSON moved to: $corruptPath");
   }
 
 }

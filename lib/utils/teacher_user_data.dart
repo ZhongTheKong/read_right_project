@@ -13,22 +13,28 @@ class TeacherUserData extends UserData {
 
   // Deserialize
   factory TeacherUserData.fromJson(Map<String, dynamic> json) {
-    return TeacherUserData(
-      username: json['username'],
-      password: json['password'],
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      isTeacher: json['isTeacher'],
-      studentUsernames: (json['studentUsernames'] as List<dynamic>)
-          .map((e) => e.toString())
-          .toList(),
+    try
+    {
+      return TeacherUserData(
+        username: json['username'] ?? "",
+        password: json['password'] ?? "",
+        firstName: json['firstName'] ?? "",
+        lastName: json['lastName'] ?? "",
+        isTeacher: json['isTeacher'] ?? true,
+        studentUsernames: json['studentUsernames'] != null ? 
+          (json['studentUsernames'] as List<dynamic>)
+              .map((e) => e.toString())
+              .toList()
+          : []
+      );
+    }
+    on FormatException catch (e) {
+      // Happens when JSON is malformed
+      print("TeacherUserData.fromJSON | JSON format error: $e");
 
-      // isTeacher: json['isTeacher'],
-      // attempts: json['attempts'],
-      // attempts: (json['attempts'] as List<dynamic>)
-      //     .map((a) => Attempt.fromJson(a))
-      //     .toList(),
-    );
+      // Optionally: rename the bad file so user doesn't get stuck
+      throw Exception("Saved data file (TeacherUserData) is corrupted. ($e)");
+    }
   }
 
   // Serialize

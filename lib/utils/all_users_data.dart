@@ -81,6 +81,9 @@ class AllUserData {
 
   // Deserialize
   factory AllUserData.fromJson(Map<String, dynamic> json) {
+
+    try
+    {
     // Handle lastLoggedInUser safely
     UserData? lastLoggedInUser;
     if (json['lastLoggedInUser'] != null) {
@@ -109,6 +112,14 @@ class AllUserData {
       studentUserDataList: studentList,
       teacherUserDataList: teacherList,
     );
+    }
+    on FormatException catch (e) {
+      // Happens when JSON is malformed
+      print("AllUserData.fromJSON | JSON format error: $e");
+
+      // Optionally: rename the bad file so user doesn't get stuck
+      throw Exception("Saved data file (AllUserData) is corrupted. ($e)");
+    }
   }
 
   // Serialize
