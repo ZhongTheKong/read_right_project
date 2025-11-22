@@ -50,15 +50,19 @@ class _ProgressScreenState extends State<ProgressScreen> {
                         // Display the user's data from the provider
                         Text(
                             'Username: ${username}',
-                            style: const TextStyle(fontSize: 18),
+                            style: const TextStyle(fontSize: 14),
                         ),
                         Text(
-                            'Number of Attempts: ${sessionProvider.numberOfAttempts}',
-                            style: const TextStyle(fontSize: 18),
+                            'Number of Attempts: ${(allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]!.length}',
+                            style: const TextStyle(fontSize: 14),
                         ),
                         Text(
-                            'Average Score: ${sessionProvider.averageScore.toStringAsFixed(2)}',
-                            style: const TextStyle(fontSize: 18),
+                            'Average Score: ${(allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.averageScore]?.toString ?? 'N/A'}',
+                            style: const TextStyle(fontSize: 14),
+                        ),
+                        Text(
+                            'Most Missed Word: ',
+                            style: const TextStyle(fontSize: 14),
                         ),
                       ],
                     )
