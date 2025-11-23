@@ -7,7 +7,7 @@ import 'package:read_right_project/utils/routes.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
 import '../providers/session_provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
-
+import 'package:read_right_project/utils/attempt.dart';
 class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
 
@@ -24,7 +24,31 @@ class _ProgressScreenState extends State<ProgressScreen> {
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
     SessionProvider sessionProvider = context.watch<SessionProvider>();
 
+    final currentUser = allUsersProvider.allUserData.lastLoggedInUser;
+    final StudentUserData? student = currentUser is StudentUserData ? currentUser : null;
+
     final String username = allUsersProvider.allUserData.lastLoggedInUser?.username ?? 'Guest';
+    final List<Attempt> attempts = student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
+
+    String mostMissedWord = '';
+    if (attempts.isNotEmpty) {
+      final missedWords = attempts
+          .where((attempt) => attempt.score < 0.70) // Define "missed" as less than 60% score
+          .map((attempt) => attempt.word)
+          .toList();
+
+      if (missedWords.isNotEmpty) {
+        // Count the frequency of each missed word
+        final wordCounts = <String, int>{};
+        for (var word in missedWords) {
+          wordCounts[word] = (wordCounts[word] ?? 0) + 1;
+        }
+
+        // Find the word with the highest count
+        mostMissedWord = wordCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+      }
+    }
+
     // return Consumer<SessionProvider>(
     //   builder: (context, sessionProvider, child) {
 
@@ -49,7 +73,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                       children: [
                         // Display the user's data from the provider
                         Text(
-                            'Username: ${username}',
+                            'Username: $username',
                             style: const TextStyle(fontSize: 14),
                         ),
                         Text(
@@ -61,7 +85,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                             style: const TextStyle(fontSize: 14),
                         ),
                         Text(
-                            'Most Missed Word: ',
+                            'Most Missed Word: $mostMissedWord',
                             style: const TextStyle(fontSize: 14),
                         ),
                       ],
