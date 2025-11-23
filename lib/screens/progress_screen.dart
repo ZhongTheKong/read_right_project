@@ -185,14 +185,14 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   onPressed: () {
                     Navigator.pushNamed(context, '/teacherDashboard');
                   },
-                  child: const Text('Backdoor to techer dashbrorad'),
+                  child: const Text('Backdoor to teacher dashboard'),
                 ),
                 const SizedBox(height: 20),
 
                 ElevatedButton(
                   onPressed: () {
                     // Navigate back to main screen and clear previous routes
-                    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                    Navigator.pushNamed(context, '/wordList');
                   },
                   child: const Text('Back to Main Screen'),
                 ),
