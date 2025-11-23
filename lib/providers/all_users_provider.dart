@@ -42,9 +42,7 @@ class AllUsersProvider extends ChangeNotifier{
 
     if (!file.existsSync()) {
       print("File does not exist");
-      await saveUserData(allUserData);
-      // throw Exception("User data file does not exist.");
-      // return;
+      throw Exception("User data file does not exist.");
     }
 
     try
@@ -105,23 +103,34 @@ class AllUsersProvider extends ChangeNotifier{
   }
 
   Future<void> deleteUserData() async {
-  try {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final saveDir = Directory('${directory.path}/read_right/save_data');
+      final file = File('${saveDir.path}/all_user_data.json');
+
+      if (!await file.exists()) {
+        throw Exception("No user data file found to delete.");
+      }
+
+      await file.delete();
+      print("User data deleted at: ${file.path}");
+
+    } catch (e) {
+      print("Error deleting user data: $e");
+      throw Exception("Failed to delete user data: $e");
+    }
+  }
+
+  Future<bool> doesSaveFileExist() async {
     final directory = await getApplicationDocumentsDirectory();
     final saveDir = Directory('${directory.path}/read_right/save_data');
     final file = File('${saveDir.path}/all_user_data.json');
 
     if (!await file.exists()) {
-      throw Exception("No user data file found to delete.");
+      return false;
     }
-
-    await file.delete();
-    print("User data deleted at: ${file.path}");
-
-  } catch (e) {
-    print("Error deleting user data: $e");
-    throw Exception("Failed to delete user data: $e");
+    return true;
   }
-}
 
 
 }
