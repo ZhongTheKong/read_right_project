@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
@@ -22,6 +23,8 @@ class RecordingProvider extends ChangeNotifier {
   bool isRecording = false;
   bool isPlaying = false;
   bool isTranscribing = false;
+
+  bool isAudioRetentionEnabled = true;
 
   // --- REMOVED: Redundant index properties that belong in SessionProvider ---
   // int index = 0;
@@ -227,6 +230,25 @@ class RecordingProvider extends ChangeNotifier {
       print("Error playing audio: $e");
       isPlaying = false;
       notifyListeners();
+    }
+  }
+
+  void deleteAudioFile(String path) async {
+    try {
+      // final directory = await getApplicationDocumentsDirectory();
+      // final saveDir = Directory('${directory.path}/read_right/save_data');
+      final file = File(path);
+
+      if (!await file.exists()) {
+        throw Exception("No audio file found to delete.");
+      }
+
+      await file.delete();
+      print("Audio deleted at: ${file.path}");
+
+    } catch (e) {
+      print("Error deleting audio file: $e");
+      throw Exception("Failed to delete user data: $e");
     }
   }
 

@@ -81,6 +81,7 @@ class FeedbackScreen extends StatelessWidget {
     }
 
     RecordingProvider recordingProvider = context.watch<RecordingProvider>();
+    // SessionProvider sessionProvider = context.watch<SessionProvider>();
     recordingProvider.initAudio();
 
     return Scaffold(
@@ -262,6 +263,16 @@ class FeedbackScreen extends StatelessWidget {
                 if (score > 80)
                 {
                   sessionProvider.nextWord(true);
+                }
+                if (!recordingProvider.isAudioRetentionEnabled)
+                {
+                  String currentWord = sessionProvider.word_list[sessionProvider.index].text;
+                  String? lastFilePath = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[currentWord]?.last.filePath;
+                  (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[currentWord]?.removeLast();
+                  if (lastFilePath != null)
+                  {
+                    recordingProvider.deleteAudioFile(lastFilePath);
+                  }
                 }
                 Navigator.pushReplacementNamed(context, AppRoutes.practice);
               },
