@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:read_right_project/models/custom_app_bar.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
@@ -40,7 +39,36 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
     return Scaffold(
       backgroundColor: Colors.blue[800],
-      appBar: CustomAppBar("PRACTICE", isOnline),
+      appBar: AppBar(
+        
+        title: Column(
+          children: [
+            Text("PRACTICE"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 15,
+                  height: 15,
+                  decoration: BoxDecoration(
+                    color: isOnline ? Colors.green : Colors.red,
+                    shape: BoxShape.circle, // Makes the container circular
+                  ),
+                ),
+                SizedBox(width: 10,),
+                Text(
+                  isOnline ? "ONLINE" : "OFFLINE",
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+              ],
+            )
+          ],
+        )
+
+      ),
 
       // Use FutureBuilder to handle the asynchronous loading of the word list.
       body: FutureBuilder<void>(
