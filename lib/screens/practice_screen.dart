@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:read_right_project/models/custom_app_bar.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
@@ -35,13 +36,12 @@ class _PracticeScreenState extends State<PracticeScreen> {
   Widget build(BuildContext context) {
 
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+    bool isOnline = false;
 
     return Scaffold(
       backgroundColor: Colors.blue[800],
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('PRACTICE'),
-      ),
+      appBar: CustomAppBar("PRACTICE", isOnline),
+
       // Use FutureBuilder to handle the asynchronous loading of the word list.
       body: FutureBuilder<void>(
         future: _loadWordsFuture,

@@ -77,7 +77,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                             style: const TextStyle(fontSize: 14),
                         ),
                         Text(
-                            'Number of Attempts: ${(allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]!.length}',
+                            'Number of Attempts: ${(allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]  != null ? (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]!.length : 0}',
                             style: const TextStyle(fontSize: 14),
                         ),
                         Text(
@@ -103,7 +103,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   ),
                   // child: Consumer<SessionProvider>(
                     // builder: (BuildContext context, SessionProvider recorder, Widget? child) => recorder.attempts.isEmpty
-                    child: (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]!.isEmpty
+                    child: (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name] == null || (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]!.isEmpty
                       ? const Center(
                           child: Text('No attempts yet')
                       )
