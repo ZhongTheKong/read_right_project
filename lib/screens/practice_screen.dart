@@ -225,14 +225,33 @@ class _PracticeScreenState extends State<PracticeScreen> {
                               // Now it's safe to access
                               final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
 
-                              await recordingProvider.startRecording(
-                                currentWord.text, // Pass the word text
-                                attempts,
-                                () { 
-                                  Navigator.pushReplacementNamed(context, AppRoutes.feedback); 
-                                }
-                              );
-                              allUsersProvider.saveUserData(allUsersProvider.allUserData);
+                              try {
+                                await recordingProvider.startRecording(
+                                  currentWord.text, // Pass the word text
+                                  attempts,
+                                  () { 
+                                    Navigator.pushReplacementNamed(context, AppRoutes.feedback); 
+                                  }
+                                );
+                                allUsersProvider.saveUserData(allUsersProvider.allUserData);
+
+                              } catch (e) {
+                                showDialog(
+                                  context: context, 
+                                  builder: (context) => AlertDialog(
+                                    title: Text("App Missing Microphone Permissions"),
+                                    content: Text("Microphone is disabled for this app. To utilize recording functionality, please enable microphone permissions for this app in device settings."),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        }, 
+                                        child: Text("Close")
+                                      ),
+                                    ],
+                                  )
+                                );
+                              }
                             },
                             icon: const Icon(Icons.mic),
                             label: const Text('Record'),

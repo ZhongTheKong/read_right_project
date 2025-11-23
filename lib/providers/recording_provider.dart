@@ -62,8 +62,14 @@ class RecordingProvider extends ChangeNotifier {
   }
 
   Future<void> startRecording(String word, List<Attempt> attempts, VoidCallback? onRecordStop) async {
-    if (!recorderReady || isRecording) {
-      print("Recorder not ready or already recording.");
+    if (!recorderReady) {
+      await initAudio();
+      if (!recorderReady) {
+        throw Exception("Microphone permissions missing.");
+      }
+    }
+    if (isRecording) {
+      print("Currently recording");
       return;
     }
     print("Starting recording for word: $word");
