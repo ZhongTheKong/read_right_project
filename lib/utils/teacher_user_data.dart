@@ -16,27 +16,27 @@ class TeacherUserData extends UserData {
     try
     {
       return TeacherUserData(
-        // username: json['username'] ?? (throw Exception("Missing username")),
-        // password: json['password'] ?? (throw Exception("Missing password")),
-        // firstName: json['firstName'] ?? (throw Exception("Missing first name")),
-        // lastName: json['lastName'] ?? (throw Exception("Missing last name")),
-        // isTeacher: json['isTeacher'] ?? true,
-        // studentUsernames: json['studentUsernames'] != null ? 
-        //   (json['studentUsernames'] as List<dynamic>)
-        //       .map((e) => e.toString())
-        //       .toList()
-        //   : (throw Exception("Missing student usernames"))
-
-        username: json['username'] ?? "",
-        password: json['password'] ?? "",
-        firstName: json['firstName'] ?? "",
-        lastName: json['lastName'] ?? "",
+        username: json['username'] ?? (throw Exception("TeacherUserData | Missing username")),
+        password: json['password'] ?? (throw Exception("TeacherUserData | Missing password")),
+        firstName: json['firstName'] ?? (throw Exception("TeacherUserData | Missing first name")),
+        lastName: json['lastName'] ?? (throw Exception("TeacherUserData | Missing last name")),
         isTeacher: json['isTeacher'] ?? true,
         studentUsernames: json['studentUsernames'] != null ? 
           (json['studentUsernames'] as List<dynamic>)
               .map((e) => e.toString())
               .toList()
-          : []
+          : (throw Exception("TeacherUserData | Missing student usernames"))
+
+        // username: json['username'] ?? "",
+        // password: json['password'] ?? "",
+        // firstName: json['firstName'] ?? "",
+        // lastName: json['lastName'] ?? "",
+        // isTeacher: json['isTeacher'] ?? true,
+        // studentUsernames: json['studentUsernames'] != null ? 
+        //   (json['studentUsernames'] as List<dynamic>)
+        //       .map((e) => e.toString())
+        //       .toList()
+        //   : []
 
         // studentUsernames: (json['studentUsernames'] as List<dynamic>)
         //       .map((e) => e.toString())

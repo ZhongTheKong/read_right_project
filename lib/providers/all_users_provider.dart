@@ -63,8 +63,8 @@ class AllUsersProvider extends ChangeNotifier{
     } catch (e, stack) {
       // Catch-all (e.g. fromJson exceptions)
       print("Unexpected error loading user data: $e\n$stack");
-      // rethrow;
-      throw Exception("Unexpected error loading user data: $e");
+      rethrow;
+      // throw Exception("Unexpected error loading user data: $e");
     }
   }
 

@@ -18,26 +18,10 @@ class StudentUserData extends UserData {
   factory StudentUserData.fromJson(Map<String, dynamic> json) {
     try {
       return StudentUserData(
-        // username: json['username'] ?? (throw Exception("Missing username")),
-        // password: json['password'] ?? (throw Exception("Missing password")),
-        // firstName: json['firstName'] ?? (throw Exception("Missing first name")),
-        // lastName: json['lastName'] ?? (throw Exception("Missing last name")),
-        // isTeacher: json['isTeacher'] ?? false,
-        // word_list_attempts: json['word_list_attempts'] != null ? 
-        //   (json['word_list_attempts'] as Map<String, dynamic>).map(
-        //     (key, value) {
-        //       var list = (value as List)
-        //           .map((item) => Attempt.fromJson(item))
-        //           .toList();
-        //       return MapEntry(key, list);
-        //     },
-        //   )
-        //   : (throw Exception("Missing word list attempts"))
-
-        username: json['username'] ?? "",
-        password: json['password'] ?? "",
-        firstName: json['firstName'] ?? "",
-        lastName: json['lastName'] ?? "",
+        username: json['username'] ?? (throw Exception("StudentUserData | Missing username")),
+        password: json['password'] ?? (throw Exception("StudentUserData | Missing password")),
+        firstName: json['firstName'] ?? (throw Exception("StudentUserData | Missing first name")),
+        lastName: json['lastName'] ?? (throw Exception("StudentUserData | Missing last name")),
         isTeacher: json['isTeacher'] ?? false,
         word_list_attempts: json['word_list_attempts'] != null ? 
           (json['word_list_attempts'] as Map<String, dynamic>).map(
@@ -48,7 +32,23 @@ class StudentUserData extends UserData {
               return MapEntry(key, list);
             },
           )
-          : {}
+          : (throw Exception("StudentUserData | Missing word list attempts"))
+
+        // username: json['username'] ?? "",
+        // password: json['password'] ?? "",
+        // firstName: json['firstName'] ?? "",
+        // lastName: json['lastName'] ?? "",
+        // isTeacher: json['isTeacher'] ?? false,
+        // word_list_attempts: json['word_list_attempts'] != null ? 
+        //   (json['word_list_attempts'] as Map<String, dynamic>).map(
+        //     (key, value) {
+        //       var list = (value as List)
+        //           .map((item) => Attempt.fromJson(item))
+        //           .toList();
+        //       return MapEntry(key, list);
+        //     },
+        //   )
+        //   : {}
 
         // word_list_attempts: (json['word_list_attempts'] as Map<String, dynamic>).map(
         //   (key, value) {
