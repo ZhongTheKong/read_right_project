@@ -19,42 +19,42 @@ class ProgressScreen extends StatefulWidget {
 
 
 class _ProgressScreenState extends State<ProgressScreen> {
-  final SpeechService azureService = SpeechService(
-    key: dotenv.env['AZURE_SPEECH_KEY']!,
-    region: dotenv.env['AZURE_SPEECH_REGION']!,
-  );
+  // final SpeechService azureService = SpeechService(
+  //   key: dotenv.env['AZURE_SPEECH_KEY']!,
+  //   region: dotenv.env['AZURE_SPEECH_REGION']!,
+  // );
 
-  // Optional: cache results locally to avoid repeated calls
-  final Map<String, String> _azureResultsCache = {};
+  // // Optional: cache results locally to avoid repeated calls
+  // final Map<String, String> _azureResultsCache = {};
 
-  Future<String> getAzureResult(String wavPath, String referenceText) async {
-    if (_azureResultsCache.containsKey(wavPath)) {
-      return _azureResultsCache[wavPath]!;
-    }
+  // Future<String> getAzureResult(String wavPath, String referenceText) async {
+  //   if (_azureResultsCache.containsKey(wavPath)) {
+  //     return _azureResultsCache[wavPath]!;
+  //   }
 
-    try {
-      final resultObj = await azureService.assessPronunciation(
-        File(wavPath),
-        referenceText,
-      );
+  //   try {
+  //     final resultObj = await azureService.assessPronunciation(
+  //       File(wavPath),
+  //       referenceText,
+  //     );
 
-      if (resultObj != null &&
-          resultObj['RecognitionStatus'] == 'Success' &&
-          resultObj['NBest'] != null &&
-          resultObj['NBest'].isNotEmpty) {
-        final nbest = resultObj['NBest'][0];
+  //     if (resultObj != null &&
+  //         resultObj['RecognitionStatus'] == 'Success' &&
+  //         resultObj['NBest'] != null &&
+  //         resultObj['NBest'].isNotEmpty) {
+  //       final nbest = resultObj['NBest'][0];
 
-        String formattedResult =
-            "Accuracy: ${nbest['AccuracyScore']}, Pronunciation: ${nbest['PronScore']}";
-        _azureResultsCache[wavPath] = formattedResult;
-        return formattedResult;
-      }
-    } catch (e) {
-      print("Azure assessment error: $e");
-    }
+  //       String formattedResult =
+  //           "Accuracy: ${nbest['AccuracyScore']}, Pronunciation: ${nbest['PronScore']}";
+  //       _azureResultsCache[wavPath] = formattedResult;
+  //       return formattedResult;
+  //     }
+  //   } catch (e) {
+  //     print("Azure assessment error: $e");
+  //   }
 
-    return "No result";
-  }
+  //   return "No result";
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -84,21 +84,22 @@ class _ProgressScreenState extends State<ProgressScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Attempt ${attempts.length - i}, Duration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s',
+                        'Attempt ${ (student?.word_list_attempts[sessionProvider.word_list_name]?.length ?? 0) - i}, Duration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s',
                       ),
+                      Text("Azure: ${iterAttempt.score}"),
                       // Display Azure results
-                      FutureBuilder<String>(
-                        future: getAzureResult(iterAttempt.filePath, iterAttempt.word),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const Text("Loading Azure result...");
-                          } else if (snapshot.hasError) {
-                            return Text("Error: ${snapshot.error}");
-                          } else {
-                            return Text("Azure: ${snapshot.data}");
-                          }
-                        },
-                      ),
+                      // FutureBuilder<String>(
+                      //   future: getAzureResult(iterAttempt.filePath, iterAttempt.word),
+                      //   builder: (context, snapshot) {
+                      //     if (snapshot.connectionState == ConnectionState.waiting) {
+                      //       return const Text("Loading Azure result...");
+                      //     } else if (snapshot.hasError) {
+                      //       return Text("Error: ${snapshot.error}");
+                      //     } else {
+                      //       return Text("Azure: ${snapshot.data}");
+                      //     }
+                      //   },
+                      // ),
                     ],
                   ),
                   trailing: Row(

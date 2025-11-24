@@ -11,6 +11,7 @@ import 'package:read_right_project/utils/attempt.dart';
 // import 'package:record/record.dart';
 
 import 'package:mocktail/mocktail.dart';
+import 'package:read_right_project/utils/pronunciation_analysis.dart';
 import 'package:record/record.dart';
 import 'package:just_audio/just_audio.dart';
 
@@ -167,7 +168,8 @@ class RecordingProvider extends ChangeNotifier {
           // A more realistic score could be based on other metrics,
           // but for now, this placeholder is fine.
           // score: (elapsedMs / kMaxRecordMs).clamp(0.0, 1.0),
-          score: Random().nextDouble(),
+          // score: Random().nextDouble(),
+          score: await getAzureResult(path, word),
           filePath: path,
           durationMs: (dur ?? Duration.zero).inMilliseconds,
         ),
