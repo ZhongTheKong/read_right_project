@@ -1,0 +1,24 @@
+{
+  "lastLoggedInUserUsername": null,
+  "lastLoggedInUserIsTeacher": null,
+  "studentUserDataList": [
+    {
+      "username": "jdoe",
+      "password": "1234",
+      "firstName": "John",
+      "lastName": "Doe",
+      "isTeacher": false,
+      "word_list_attempts": {}
+    }
+  ],
+  "teacherUserDataList": [
+    {
+      "username": "jdoe",
+      "password": "1234",
+      "firstName": "John",
+      "lastName": "Doe",
+      "isTeacher": true,
+      "studentUsernames": []
+    }
+  ]
+}

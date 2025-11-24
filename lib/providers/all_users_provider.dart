@@ -8,20 +8,22 @@ import 'package:read_right_project/utils/user_data.dart';
 
 class AllUsersProvider extends ChangeNotifier{
 
-  AllUserData allUserData = AllUserData(lastLoggedInUser: null, studentUserDataList: [], teacherUserDataList: []);
+  // AllUserData allUserData = AllUserData(lastLoggedInUser: null, studentUserDataList: [], teacherUserDataList: []);
+  AllUserData allUserData = AllUserData(lastLoggedInUserUsername: null, lastLoggedInUserIsTeacher: null, studentUserDataList: [], teacherUserDataList: []);
 
-  Future<void> saveUserData(AllUserData allUserData) async {
-    // TODO: Change this to not save to OneDrive/Documents
+  Future<String> getUserDataFilePath() async {
     final directory = await getApplicationDocumentsDirectory();
-
     final saveDir = Directory('${directory.path}/read_right/save_data');
-
     // Create directory if it doesn't exist
     if (!await saveDir.exists()) {
       await saveDir.create(recursive: true); // recursive = true creates parent dirs too
     }
 
-    final file = File('${saveDir.path}/all_user_data.json');
+    return '${saveDir.path}/all_user_data.json';
+  }
+
+  Future<void> saveUserData(String filePath, AllUserData allUserData) async {
+    final file = File(filePath);
     print("Saving data to ${file.path}");
 
     final jsonList = allUserData.toJson();
@@ -32,13 +34,15 @@ class AllUsersProvider extends ChangeNotifier{
   }
 
   Future<void> saveCurrentUserData() async {
-    await saveUserData(allUserData);
+    await saveUserData(await getUserDataFilePath(), allUserData);
   }
 
-  Future<void> loadUserData() async {
-    // TODO: Change this to not save to OneDrive/Documents
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/read_right/save_data/all_user_data.json');
+  Future<void> loadUserData(String filePath) async {
+    // // Temporary code to clear json
+    // saveCurrentUserData();
+    // return;
+
+    final file = File(filePath);
 
     if (!file.existsSync()) {
       print("File does not exist");
@@ -69,15 +73,19 @@ class AllUsersProvider extends ChangeNotifier{
   }
 
   void clearLastUser() async {
-    allUserData.lastLoggedInUser = null;
-    saveUserData(allUserData);
+    // allUserData.lastLoggedInUser = null;
+    allUserData.lastLoggedInUserUsername = null;
+    allUserData.lastLoggedInUserIsTeacher = null;
+    saveCurrentUserData();
     notifyListeners();
   }
 
   // Save the username to local storage
   Future<void> saveLastUser(UserData lastUser) async {
-    allUserData.lastLoggedInUser = lastUser;
-    saveUserData(allUserData);
+    // allUserData.lastLoggedInUser = lastUser;
+    allUserData.lastLoggedInUserUsername = lastUser.username;
+    allUserData.lastLoggedInUserIsTeacher = lastUser.isTeacher;
+    saveCurrentUserData();
     notifyListeners();
   }
 
