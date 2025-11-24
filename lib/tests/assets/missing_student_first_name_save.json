@@ -1,0 +1,16 @@
+{
+  "lastLoggedInUserUsername": null,
+  "lastLoggedInUserIsTeacher": null,
+  "studentUserDataList": [
+    {
+      "username": "jdoe",
+      "password": "1234",
+      "lastName": "Doe",
+      "isTeacher": false,
+      "word_list_attempts": {
+        "assets/seed_words.csv": []
+      }
+    }
+  ],
+  "teacherUserDataList": []
+}

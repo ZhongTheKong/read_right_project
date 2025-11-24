@@ -1,0 +1,14 @@
+{
+  "lastLoggedInUserUsername": null,
+  "lastLoggedInUserIsTeacher": null,
+  "studentUserDataList": [],
+  "teacherUserDataList": [
+    {
+      "username": "jdoe",
+      "password": "1234",
+      "firstName": "John",
+      "isTeacher": true,
+      "studentUsernames": []
+    }
+  ]
+}
