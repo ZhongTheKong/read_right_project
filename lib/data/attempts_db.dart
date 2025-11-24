@@ -4,7 +4,7 @@ import '../models/attempt.dart';
 
 /// DAO (Data Access Object) for all Note-related DB operations.
 /// Hides raw SQL from the UI and exposes clean methods.
-class AttemptsDb{
+class AttemptsDb {
   // Singleton pattern so we don’t open multiple DB connections accidentally.
   static final AttemptsDb _instance = AttemptsDb._internal();
   factory AttemptsDb() => _instance;
