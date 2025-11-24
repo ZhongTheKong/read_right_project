@@ -16,8 +16,8 @@ class RecordingProvider extends ChangeNotifier {
   // SessionProvider? generalProvider;
   // RecordingProvider(this.generalProvider);
 
-  final recorder = AudioRecorder();
-  final player = AudioPlayer();
+  final AudioRecorder recorder = AudioRecorder();
+  final AudioPlayer player = AudioPlayer();
 
   bool recorderReady = false;
   bool isRecording = false;
