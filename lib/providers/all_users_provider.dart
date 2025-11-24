@@ -22,8 +22,8 @@ class AllUsersProvider extends ChangeNotifier{
     return '${saveDir.path}/all_user_data.json';
   }
 
-  Future<void> saveUserData(AllUserData allUserData) async {
-    final file = File(await getUserDataFilePath());
+  Future<void> saveUserData(String filePath, AllUserData allUserData) async {
+    final file = File(filePath);
     print("Saving data to ${file.path}");
 
     final jsonList = allUserData.toJson();
@@ -34,11 +34,11 @@ class AllUsersProvider extends ChangeNotifier{
   }
 
   Future<void> saveCurrentUserData() async {
-    await saveUserData(allUserData);
+    await saveUserData(await getUserDataFilePath(), allUserData);
   }
 
-  Future<void> loadUserData() async {
-    final file = File(await getUserDataFilePath());
+  Future<void> loadUserData(String filePath) async {
+    final file = File(filePath);
 
     if (!file.existsSync()) {
       print("File does not exist");
@@ -72,7 +72,7 @@ class AllUsersProvider extends ChangeNotifier{
     // allUserData.lastLoggedInUser = null;
     // allUserData.lastLoggedInUserUsername = null;
     // allUserData.lastLoggedInUserIsTeacher = null;
-    saveUserData(allUserData);
+    saveCurrentUserData();
     notifyListeners();
   }
 
@@ -81,7 +81,7 @@ class AllUsersProvider extends ChangeNotifier{
     // allUserData.lastLoggedInUser = lastUser;
     allUserData.lastLoggedInUserUsername = lastUser.username;
     allUserData.lastLoggedInUserIsTeacher = lastUser.isTeacher;
-    saveUserData(allUserData);
+    saveCurrentUserData();
     notifyListeners();
   }
 

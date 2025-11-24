@@ -38,7 +38,10 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
     print("Role selection screen opened");
 
     return FutureBuilder<void>(
-      future: allUsersProvider.loadUserData(),
+      future: (() async {
+        final path = await allUsersProvider.getUserDataFilePath();
+        return allUsersProvider.loadUserData(path);
+      })(),
       builder: (context, snapshot) {
         
         //

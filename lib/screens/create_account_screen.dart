@@ -121,7 +121,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   ));
                 }
                 // allUserData.userDataList.add(UserData(username: username, password: password, isTeacher: sessionProvider.isTeacher, attempts: []));
-                allUsersProvider.saveUserData(allUserData);
+                allUsersProvider.saveCurrentUserData();
                 Navigator.pushReplacementNamed(context, AppRoutes.login);
 
               },

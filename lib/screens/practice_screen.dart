@@ -261,7 +261,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                     Navigator.pushReplacementNamed(context, AppRoutes.feedback); 
                                   }
                                 );
-                                allUsersProvider.saveUserData(allUsersProvider.allUserData);
+                                allUsersProvider.saveCurrentUserData();
 
                               } catch (e) {
                                 showDialog(
@@ -306,7 +306,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                               );
                               // print("After stop recording: $attempts");
                               sessionProvider.selectedIndex = sessionProvider.index;
-                              allUsersProvider.saveUserData(allUsersProvider.allUserData);
+                              allUsersProvider.saveCurrentUserData();
 
                               setState(() {});
                             },
