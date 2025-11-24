@@ -8,6 +8,7 @@ import '../screens/progress_screen.dart';
 import '../screens/teacher_dashboard_screen.dart';
 import '../screens/word_list_screen.dart';
 import '../screens/feedback_screen.dart';
+import '../screens/pronunciation_screen.dart';
 import '../main.dart';
 
 class AppRoutes {
@@ -21,6 +22,7 @@ class AppRoutes {
   static const teacherDashboard = '/teacherDashboard';
   static const wordList = '/wordList';
   static const feedback = '/feedback';
+  static const pronunciation = '/pronunciation';
 }
 
 final Map<String, WidgetBuilder> appRoutes = {
@@ -33,4 +35,5 @@ final Map<String, WidgetBuilder> appRoutes = {
   AppRoutes.teacherDashboard: (context) => TeacherDashboardScreen(),
   AppRoutes.wordList: (context) => const WordListScreen(),
   AppRoutes.feedback: (context) => const FeedbackScreen(),
+  AppRoutes.pronunciation: (context) => PronunciationScreen(),
 };

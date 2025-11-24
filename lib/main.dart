@@ -5,11 +5,23 @@ import 'utils/routes.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:provider/provider.dart';
 import 'providers/session_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  print("Loading .env...");
+  await dotenv.load(fileName: "./assets/.env");
+  print(".env loaded!");
+
+
+
+
+  
   final AllUsersProvider allUsersProvider = AllUsersProvider();
   // await allUsersProvider.loadUserData();
+
 
   runApp(
     MultiProvider(

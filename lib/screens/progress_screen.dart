@@ -188,6 +188,13 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   child: const Text('Backdoor to teacher dashboard'),
                 ),
                 const SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/pronunciation');
+                  },
+                  child: const Text('Backdoor to pronunciation'),
+                ),
+                const SizedBox(height: 20),
 
                 ElevatedButton(
                   onPressed: () {
