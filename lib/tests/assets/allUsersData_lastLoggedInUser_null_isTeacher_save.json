@@ -1,6 +1,6 @@
 {
   "lastLoggedInUserUsername": "jdoe",
-  "lastLoggedInUserIsTeacher": true,
+  "lastLoggedInUserIsTeacher": null,
   "studentUserDataList": [
     {
       "username": "jdoe",
@@ -8,9 +8,7 @@
       "firstName": "John",
       "lastName": "Doe",
       "isTeacher": false,
-      "word_list_attempts": {
-        "assets/seed_words.csv": []
-      }
+      "word_list_attempts": {}
     }
   ],
   "teacherUserDataList": [

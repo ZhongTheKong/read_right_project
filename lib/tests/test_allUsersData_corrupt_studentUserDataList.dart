@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 
 void main() {
-  test('test_corrupt_allUsersData_studentUserDataList_username', () async {
+  test('test_allUsersData_corrupt_studentUserDataList_username', () async {
     final provider = AllUsersProvider();
     final path = File('lib/tests/assets/allUsersData_studentUserDataList_missing_username_save.json').absolute.path;
     print(path);
@@ -17,7 +17,7 @@ void main() {
       print('Caught error: $e');
     }
   });
-  test('test_corrupt_allUsersData_studentUserDataList_password', () async {
+  test('test_allUsersData_corrupt_studentUserDataList_password', () async {
     final provider = AllUsersProvider();
     final path = File('lib/tests/assets/allUsersData_studentUserDataList_missing_password_save.json').absolute.path;
     try {
@@ -30,7 +30,7 @@ void main() {
       print('Caught error: $e');
     }
   });
-  test('test_corrupt_allUsersData_studentUserDataList_first_name', () async {
+  test('test_allUsersData_corrupt_studentUserDataList_first_name', () async {
     final provider = AllUsersProvider();
     final path = File('lib/tests/assets/allUsersData_studentUserDataList_missing_first_name_save.json').absolute.path;
     try {
@@ -43,7 +43,7 @@ void main() {
       print('Caught error: $e');
     }
   });
-  test('test_corrupt_allUsersData_studentUserDataList_last_name', () async {
+  test('test_allUsersData_corrupt_studentUserDataList_last_name', () async {
     final provider = AllUsersProvider();
     final path = File('lib/tests/assets/allUsersData_studentUserDataList_missing_last_name_save.json').absolute.path;
     try {
