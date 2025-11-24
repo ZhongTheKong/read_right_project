@@ -5,7 +5,7 @@ import 'package:read_right_project/providers/all_users_provider.dart';
 void main() {
   test('test_allUsersData_corrupt_studentUserDataList_username', () async {
     final provider = AllUsersProvider();
-    final path = File('lib/tests/assets/allUsersData_studentUserDataList_missing_username_save.json').absolute.path;
+    final path = File('test/unit/assets/allUsersData_studentUserDataList_missing_username_save.json').absolute.path;
     print(path);
     try {
       await provider.loadUserData(path);
@@ -19,7 +19,7 @@ void main() {
   });
   test('test_allUsersData_corrupt_studentUserDataList_password', () async {
     final provider = AllUsersProvider();
-    final path = File('lib/tests/assets/allUsersData_studentUserDataList_missing_password_save.json').absolute.path;
+    final path = File('test/unit/assets/allUsersData_studentUserDataList_missing_password_save.json').absolute.path;
     try {
       await provider.loadUserData(path);
       fail('Expected an exception due to missing password');
@@ -32,7 +32,7 @@ void main() {
   });
   test('test_allUsersData_corrupt_studentUserDataList_first_name', () async {
     final provider = AllUsersProvider();
-    final path = File('lib/tests/assets/allUsersData_studentUserDataList_missing_first_name_save.json').absolute.path;
+    final path = File('test/unit/assets/allUsersData_studentUserDataList_missing_first_name_save.json').absolute.path;
     try {
       await provider.loadUserData(path);
       fail('Expected an exception due to missing first name');
@@ -45,7 +45,7 @@ void main() {
   });
   test('test_allUsersData_corrupt_studentUserDataList_last_name', () async {
     final provider = AllUsersProvider();
-    final path = File('lib/tests/assets/allUsersData_studentUserDataList_missing_last_name_save.json').absolute.path;
+    final path = File('test/unit/assets/allUsersData_studentUserDataList_missing_last_name_save.json').absolute.path;
     try {
       await provider.loadUserData(path);
       fail('Expected an exception due to missing last name');

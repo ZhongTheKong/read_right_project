@@ -8,7 +8,7 @@ import 'package:read_right_project/utils/user_data.dart';
 void main() {
   test('test_allUsersData_lastLoggedInUser_matching_student', () async {
     final provider = AllUsersProvider();
-    final path = File('lib/tests/assets/allUsersData_lastLoggedInUser_matching_student_save.json').absolute.path;
+    final path = File('test/unit/assets/allUsersData_lastLoggedInUser_matching_student_save.json').absolute.path;
     print(path);
     await provider.loadUserData(path);
     UserData? lastLoggedInUser = provider.allUserData.lastLoggedInUser;
@@ -23,7 +23,7 @@ void main() {
   });
   test('test_allUsersData_lastLoggedInUser_matching_teacher', () async {
     final provider = AllUsersProvider();
-    final path = File('lib/tests/assets/allUsersData_lastLoggedInUser_matching_teacher_save.json').absolute.path;
+    final path = File('test/unit/assets/allUsersData_lastLoggedInUser_matching_teacher_save.json').absolute.path;
     print(path);
     await provider.loadUserData(path);
     UserData? lastLoggedInUser = provider.allUserData.lastLoggedInUser;
@@ -38,7 +38,7 @@ void main() {
   });
   test('test_allUsersData_lastLoggedInUser_null_isTeacher', () async {
     final provider = AllUsersProvider();
-    final path = File('lib/tests/assets/allUsersData_lastLoggedInUser_null_isTeacher_save.json').absolute.path;
+    final path = File('test/unit/assets/allUsersData_lastLoggedInUser_null_isTeacher_save.json').absolute.path;
     print(path);
     await provider.loadUserData(path);
     UserData? lastLoggedInUser = provider.allUserData.lastLoggedInUser;
@@ -46,7 +46,7 @@ void main() {
   });
   test('test_allUsersData_lastLoggedInUser_null_isTeacher_username', () async {
     final provider = AllUsersProvider();
-    final path = File('lib/tests/assets/allUsersData_lastLoggedInUser_null_isTeacher_username_save.json').absolute.path;
+    final path = File('test/unit/assets/allUsersData_lastLoggedInUser_null_isTeacher_username_save.json').absolute.path;
     print(path);
     await provider.loadUserData(path);
     UserData? lastLoggedInUser = provider.allUserData.lastLoggedInUser;
@@ -54,7 +54,7 @@ void main() {
   });
   test('test_allUsersData_lastLoggedInUser_null_username', () async {
     final provider = AllUsersProvider();
-    final path = File('lib/tests/assets/allUsersData_lastLoggedInUser_null_username_save.json').absolute.path;
+    final path = File('test/unit/assets/allUsersData_lastLoggedInUser_null_username_save.json').absolute.path;
     print(path);
     await provider.loadUserData(path);
     UserData? lastLoggedInUser = provider.allUserData.lastLoggedInUser;
