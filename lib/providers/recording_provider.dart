@@ -3,12 +3,19 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/widgets.dart';
-import 'package:just_audio/just_audio.dart';
+// import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
 // REMOVED: No longer needs a direct reference to SessionProvider
 // import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/utils/attempt.dart';
+// import 'package:record/record.dart';
+
+import 'package:mocktail/mocktail.dart';
 import 'package:record/record.dart';
+import 'package:just_audio/just_audio.dart';
+
+class MockAudioRecorder extends Mock implements AudioRecorder {}
+class MockAudioPlayer extends Mock implements AudioPlayer {}
 
 class RecordingProvider extends ChangeNotifier {
 
@@ -16,8 +23,12 @@ class RecordingProvider extends ChangeNotifier {
   // SessionProvider? generalProvider;
   // RecordingProvider(this.generalProvider);
 
-  final AudioRecorder recorder = AudioRecorder();
-  final AudioPlayer player = AudioPlayer();
+  AudioRecorder recorder;
+  AudioPlayer player;
+
+  RecordingProvider({AudioRecorder? recorder, AudioPlayer? player})
+      : recorder = recorder ?? AudioRecorder(),
+        player = player ?? AudioPlayer();
 
   bool recorderReady = false;
   bool isRecording = false;
