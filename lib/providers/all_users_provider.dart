@@ -11,18 +11,19 @@ class AllUsersProvider extends ChangeNotifier{
   // AllUserData allUserData = AllUserData(lastLoggedInUser: null, studentUserDataList: [], teacherUserDataList: []);
   AllUserData allUserData = AllUserData(lastLoggedInUserUsername: null, lastLoggedInUserIsTeacher: null, studentUserDataList: [], teacherUserDataList: []);
 
-  Future<void> saveUserData(AllUserData allUserData) async {
-    // TODO: Change this to not save to OneDrive/Documents
+  Future<String> getUserDataFilePath() async {
     final directory = await getApplicationDocumentsDirectory();
-
     final saveDir = Directory('${directory.path}/read_right/save_data');
-
     // Create directory if it doesn't exist
     if (!await saveDir.exists()) {
       await saveDir.create(recursive: true); // recursive = true creates parent dirs too
     }
 
-    final file = File('${saveDir.path}/all_user_data.json');
+    return '${saveDir.path}/all_user_data.json';
+  }
+
+  Future<void> saveUserData(AllUserData allUserData) async {
+    final file = File(await getUserDataFilePath());
     print("Saving data to ${file.path}");
 
     final jsonList = allUserData.toJson();
@@ -37,9 +38,7 @@ class AllUsersProvider extends ChangeNotifier{
   }
 
   Future<void> loadUserData() async {
-    // TODO: Change this to not save to OneDrive/Documents
-    final directory = await getApplicationDocumentsDirectory();
-    final file = File('${directory.path}/read_right/save_data/all_user_data.json');
+    final file = File(await getUserDataFilePath());
 
     if (!file.existsSync()) {
       print("File does not exist");
