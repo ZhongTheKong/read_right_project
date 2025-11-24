@@ -35,33 +35,59 @@ class _PracticeScreenState extends State<PracticeScreen> {
   Widget build(BuildContext context) {
 
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+    RecordingProvider recordingProvider1 = context.read<RecordingProvider>();
     bool isOnline = false;
 
     return Scaffold(
       backgroundColor: Colors.blue[800],
       appBar: AppBar(
         
-        title: Column(
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text("PRACTICE"),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Column(
               children: [
-                Container(
-                  width: 15,
-                  height: 15,
-                  decoration: BoxDecoration(
-                    color: isOnline ? Colors.green : Colors.red,
-                    shape: BoxShape.circle, // Makes the container circular
-                  ),
-                ),
-                SizedBox(width: 10,),
+                Text("PRACTICE"),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 15,
+                      height: 15,
+                      decoration: BoxDecoration(
+                        color: isOnline ? Colors.green : Colors.red,
+                        shape: BoxShape.circle, // Makes the container circular
+                      ),
+                    ),
+                    SizedBox(width: 10,),
+                    Text(
+                      isOnline ? "ONLINE" : "OFFLINE",
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+            SizedBox(width: 20,),
+            Row(
+              children: [
                 Text(
-                  isOnline ? "ONLINE" : "OFFLINE",
+                  "Save\nAudio",
                   style: TextStyle(
                     fontSize: 13,
-                    fontWeight: FontWeight.bold
+                    fontWeight: FontWeight.bold,
                   ),
+                ),
+                Switch(
+                  value: recordingProvider1.isAudioRetentionEnabled,
+                  onChanged: (value) {
+                    setState(() {
+                      recordingProvider1.isAudioRetentionEnabled = value;
+                    }); 
+                  }
                 ),
               ],
             )

@@ -38,6 +38,10 @@ class AllUsersProvider extends ChangeNotifier{
   }
 
   Future<void> loadUserData(String filePath) async {
+    // // Temporary code to clear json
+    // saveCurrentUserData();
+    // return;
+
     final file = File(filePath);
 
     if (!file.existsSync()) {
@@ -70,8 +74,8 @@ class AllUsersProvider extends ChangeNotifier{
 
   void clearLastUser() async {
     // allUserData.lastLoggedInUser = null;
-    // allUserData.lastLoggedInUserUsername = null;
-    // allUserData.lastLoggedInUserIsTeacher = null;
+    allUserData.lastLoggedInUserUsername = null;
+    allUserData.lastLoggedInUserIsTeacher = null;
     saveCurrentUserData();
     notifyListeners();
   }

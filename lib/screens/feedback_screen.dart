@@ -266,13 +266,17 @@ class FeedbackScreen extends StatelessWidget {
                 }
                 if (!recordingProvider.isAudioRetentionEnabled)
                 {
-                  String currentWord = sessionProvider.word_list[sessionProvider.index].text;
-                  String? lastFilePath = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[currentWord]?.last.filePath;
-                  (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[currentWord]?.removeLast();
+                  print("Removing current attempt from ${sessionProvider.word_list_name}");
+                  String? lastFilePath = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]?.last.filePath;
+                  (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]?.removeLast();
+                  allUsersProvider.saveCurrentUserData();
                   if (lastFilePath != null)
                   {
                     recordingProvider.deleteAudioFile(lastFilePath);
                   }
+                }
+                else {
+                  print("Keeping current attempt");
                 }
                 Navigator.pushReplacementNamed(context, AppRoutes.practice);
               },
