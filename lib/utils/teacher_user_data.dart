@@ -4,6 +4,8 @@ class TeacherUserData extends UserData {
   TeacherUserData({
     required super.username,
     required super.password,
+    required super.firstName,
+    required super.lastName,
     required super.isTeacher,
     required this.studentUsernames,
   });
@@ -11,20 +13,44 @@ class TeacherUserData extends UserData {
 
   // Deserialize
   factory TeacherUserData.fromJson(Map<String, dynamic> json) {
-    return TeacherUserData(
-      username: json['username'],
-      password: json['password'],
-      isTeacher: json['isTeacher'],
-      studentUsernames: (json['studentUsernames'] as List<dynamic>)
-          .map((e) => e.toString())
-          .toList(),
+    try
+    {
+      return TeacherUserData(
+        username: json['username'] ?? (throw Exception("TeacherUserData | Missing username")),
+        password: json['password'] ?? (throw Exception("TeacherUserData | Missing password")),
+        firstName: json['firstName'] ?? (throw Exception("TeacherUserData | Missing first name")),
+        lastName: json['lastName'] ?? (throw Exception("TeacherUserData | Missing last name")),
+        isTeacher: json['isTeacher'] ?? true,
+        studentUsernames: json['studentUsernames'] != null ? 
+          (json['studentUsernames'] as List<dynamic>)
+              .map((e) => e.toString())
+              .toList()
+          : (throw Exception("TeacherUserData | Missing student usernames"))
 
-      // isTeacher: json['isTeacher'],
-      // attempts: json['attempts'],
-      // attempts: (json['attempts'] as List<dynamic>)
-      //     .map((a) => Attempt.fromJson(a))
-      //     .toList(),
-    );
+        // username: json['username'] ?? "",
+        // password: json['password'] ?? "",
+        // firstName: json['firstName'] ?? "",
+        // lastName: json['lastName'] ?? "",
+        // isTeacher: json['isTeacher'] ?? true,
+        // studentUsernames: json['studentUsernames'] != null ? 
+        //   (json['studentUsernames'] as List<dynamic>)
+        //       .map((e) => e.toString())
+        //       .toList()
+        //   : []
+
+        // studentUsernames: (json['studentUsernames'] as List<dynamic>)
+        //       .map((e) => e.toString())
+        //       .toList()
+
+      );
+    }
+    on FormatException catch (e) {
+      // Happens when JSON is malformed
+      print("TeacherUserData.fromJSON | JSON format error: $e");
+
+      // Optionally: rename the bad file so user doesn't get stuck
+      throw Exception("Saved data file (TeacherUserData) is corrupted. ($e)");
+    }
   }
 
   // Serialize
@@ -32,6 +58,8 @@ class TeacherUserData extends UserData {
     return {
       'username': username,
       'password': password,
+      'firstName': firstName,
+      'lastName': lastName,
       'isTeacher': isTeacher,
       'studentUsernames': studentUsernames,
       // 'attempts': attempts.map((a) => a.toJson()).toList(),

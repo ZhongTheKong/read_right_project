@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/word.dart';
 
 class PracticeScreen extends StatefulWidget {
@@ -31,12 +33,43 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+    bool isOnline = false;
+
     return Scaffold(
       backgroundColor: Colors.blue[800],
       appBar: AppBar(
-        centerTitle: true,
-        title: const Text('PRACTICE'),
+        
+        title: Column(
+          children: [
+            Text("PRACTICE"),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  width: 15,
+                  height: 15,
+                  decoration: BoxDecoration(
+                    color: isOnline ? Colors.green : Colors.red,
+                    shape: BoxShape.circle, // Makes the container circular
+                  ),
+                ),
+                SizedBox(width: 10,),
+                Text(
+                  isOnline ? "ONLINE" : "OFFLINE",
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold
+                  ),
+                ),
+              ],
+            )
+          ],
+        )
+
       ),
+
       // Use FutureBuilder to handle the asynchronous loading of the word list.
       body: FutureBuilder<void>(
         future: _loadWordsFuture,
@@ -81,51 +114,88 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
               // Safely get the current Word object from the list.
               final Word currentWord = sessionProvider.word_list[sessionProvider.index];
-
+              final listComplete = sessionProvider.listComplete;
+              if (listComplete) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        width: 800,
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.blue[300],
+                            border: Border.all(color: Colors.blue, width: 2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'List Complete!',
+                                    style: const TextStyle(fontSize: 100),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      // sessionProvider.nextWord('Needs work', false);
+                                      sessionProvider.nextWord(false);
+                                      Navigator.pushNamed(context, '/practice');
+                                    },
+                                    child: const Text('Next List')
+                                  )
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                );
+              }
               return Center(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 10),
                     // WORD DISPLAY
-                    SizedBox(
-                      width: 800,
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: Colors.blue[300],
-                          border: Border.all(color: Colors.blue, width: 2),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Word #${sessionProvider.index + 1}\n'
-                                      'Grade: ${currentWord.grade}', // Use the 'grade' property
-                                  style: const TextStyle(fontSize: 20),
-                                ),
-                                const SizedBox(height: 5),
-                                Text(
-                                  currentWord.text, // Use the 'text' property
-                                  style: const TextStyle(fontSize: 40),
-                                ),
-                              ],
-                            ),
-                            Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.blue, width: 2),
+                    Expanded(
+                      child: SizedBox(
+                        width: 400,
+                        child: Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.blue[300],
+                            border: Border.all(color: Colors.blue, width: 2),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Word #${sessionProvider.index + 1}\n'
+                                        'Grade: ${currentWord.grade}', // Use the 'grade' property
+                                    style: const TextStyle(fontSize: 20),
+                                  ),
+                                  const SizedBox(height: 5),
+                                  Text(
+                                    currentWord.text, // Use the 'text' property
+                                    style: const TextStyle(fontSize: 40),
+                                  ),
+                                ],
                               ),
-                              child: IconButton(
-                                onPressed: () => sessionProvider.incrementIndex(1),
-                                icon: const Icon(Icons.arrow_right),
-                              ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -134,7 +204,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
                     // LINEAR PROGRESS INDICATOR
                     Container(
-                      width: 400,
+                      width: 350,
                       height: 10,
                       decoration: BoxDecoration(
                         color: Colors.grey[300],
@@ -143,6 +213,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: LinearProgressIndicator(
+                          // value: recordingProvider.progress,
                           value: recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
                           minHeight: 10,
                           backgroundColor: Colors.grey[300],
@@ -150,6 +221,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         ),
                       ),
                     ),
+
+                    // Slider(
+                    //   value: recordingProvider.currentPosition.inMilliseconds.toDouble(),
+                    //   max: recordingProvider.totalDuration.inMilliseconds.toDouble(),
+                    //   onChanged: (value) {
+                    //     recordingProvider.player.seek(Duration(milliseconds: value.toInt()));
+                    //   },
+                    // ),
 
                     // RECORDING CONTROLS
                     Container(
@@ -162,42 +241,112 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           ElevatedButton.icon(
-                            onPressed: () {
-                              recordingProvider.startRecording(
-                                currentWord.text, // Pass the word text
-                                sessionProvider.attempts,
-                              );
+                            onPressed: () async {
+
+                              final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
+                              final wordListName = sessionProvider.word_list_name;
+                              // Ensure the key exists
+                              studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+                              // Now it's safe to access
+                              final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+
+                              try {
+                                await recordingProvider.startRecording(
+                                  currentWord.text, // Pass the word text
+                                  attempts,
+                                  () { 
+                                    Navigator.pushReplacementNamed(context, AppRoutes.feedback); 
+                                  }
+                                );
+                                allUsersProvider.saveUserData(allUsersProvider.allUserData);
+
+                              } catch (e) {
+                                showDialog(
+                                  context: context, 
+                                  builder: (context) => AlertDialog(
+                                    title: Text("App Missing Microphone Permissions"),
+                                    content: Text("Microphone is disabled for this app. To utilize recording functionality, please enable microphone permissions for this app in device settings."),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        }, 
+                                        child: Text("Close")
+                                      ),
+                                    ],
+                                  )
+                                );
+                              }
                             },
                             icon: const Icon(Icons.mic),
                             label: const Text('Record'),
                           ),
-                          const SizedBox(width: 20),
+
                           ElevatedButton.icon(
-                            onPressed: () {
-                              recordingProvider.stopRecording(
+                            onPressed: () async {
+
+                              final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
+                              final wordListName = sessionProvider.word_list_name;
+                              // Ensure the key exists
+                              studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+                              // Now it's safe to access
+                              final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+
+                              // print("Before stop recording: $attempts");
+                              await recordingProvider.stopRecording(
                                 currentWord.text, // Pass the word text
-                                sessionProvider.attempts,
+                                // sessionProvider.attempts,
+                                attempts,
+                                () { 
+                                  Navigator.pushReplacementNamed(context, AppRoutes.feedback); 
+                                }
                               );
+                              // print("After stop recording: $attempts");
                               sessionProvider.selectedIndex = sessionProvider.index;
+                              allUsersProvider.saveUserData(allUsersProvider.allUserData);
+
                               setState(() {});
                             },
                             icon: const Icon(Icons.stop_circle_outlined),
                             label: const Text('Stop'),
                           ),
-                          const SizedBox(width: 20),
+
                           ElevatedButton.icon(
                             onPressed: () {
-                              // Playback logic
-                              if (sessionProvider.attempts.length > sessionProvider.index) {
-                                recordingProvider.play(sessionProvider.attempts[sessionProvider.index].filePath);
-                              }
-                            },
-                            icon: const Icon(Icons.play_arrow),
-                            label: const Text('Playback'),
-                          ),
+                              sessionProvider.nextWord(false);
+                            }, 
+                            icon: Icon(Icons.play_arrow),
+                            label: Text("Next (TEMP)")
+                          )
+
+                          // const SizedBox(width: 20),
+                          // ElevatedButton.icon(
+                          //   onPressed: () async {
+                              
+                          //     final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
+                          //     final wordListName = sessionProvider.word_list_name;
+                          //     // Ensure the key exists
+                          //     studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+                          //     // Now it's safe to access
+                          //     final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+                              
+                          //     // Playback logic
+                          //     // if (sessionProvider.attempts.length > sessionProvider.index) {
+                          //     if (attempts.isNotEmpty) {
+                          //       // recordingProvider.play(sessionProvider.attempts[sessionProvider.index].filePath);
+                          //       print("Attempting to play file at location: ${attempts[0].filePath}");
+                          //       allUsersProvider.saveUserData(allUsersProvider.allUserData);
+                          //       await recordingProvider.play(attempts[0].filePath);
+
+                          //     }
+                          //   },
+                          //   icon: const Icon(Icons.play_arrow),
+                          //   label: const Text('Playback'),
+                          // ),
+
                         ],
                       ),
                     ),
@@ -213,15 +362,15 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              sessionProvider.selectedIndex = sessionProvider.index;
-                              Navigator.pushNamed(context, AppRoutes.feedback);
-                            },
-                            child: const Text('Review Feedback'),
-                          ),
+                          // ElevatedButton(
+                          //   onPressed: () {
+                          //     sessionProvider.selectedIndex = sessionProvider.index;
+                          //     Navigator.pushNamed(context, AppRoutes.feedback);
+                          //   },
+                          //   child: const Text('Review Feedback'),
+                          // ),
                           ElevatedButton(
                             onPressed: () {
                               Navigator.pushNamed(context, AppRoutes.wordList);

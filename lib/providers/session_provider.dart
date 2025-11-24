@@ -28,7 +28,9 @@ class SessionProvider extends ChangeNotifier {
   int selectedIndex = 0;
   String grade = "Pre-Primer";
   bool _wordsLoaded = false;
+  bool listComplete = false;
 
+  String word_list_name = '';
 
   final List<Attempt> attempts = [];
   // static const int kMaxRecordMs = 7000;
@@ -57,11 +59,28 @@ class SessionProvider extends ChangeNotifier {
   /// Currently needed to get progress screen to persist
   SessionProvider() {
     loadUsername();
+    loadIndex();
   }
 
+  /// Functions to load and save the index in the word list
+  /// Likely will be replaced once attempt persistence is implemented
+  Future<void> loadIndex() async {
+    final prefs = await SharedPreferences.getInstance();
+    index = prefs.getInt('lastIndex') ?? 0;
+    notifyListeners();
+  }
+
+  Future<void> saveIndex() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('lastIndex', index);
+  }
+
+  /// Index saving was added. Likely will be replaced once attempt persistence
+  /// is added.
   // TODO: loadUsername and ready speech to text need to be initialized somewhere else
   Future<void> loadWordList(String path) async {
     if (_wordsLoaded) return;
+    await loadIndex();
     try {
       final fileData = await rootBundle.loadString(path);
       // Use CsvToListConverter to parse the CSV string.
@@ -84,6 +103,8 @@ class SessionProvider extends ChangeNotifier {
 
       // Update the state with the new list of Word objects.
       word_list = loadedWords;
+      word_list_name = path;
+      await saveIndex();
 
       // Notify listeners to rebuild widgets that use this provider.
       notifyListeners();
@@ -96,9 +117,39 @@ class SessionProvider extends ChangeNotifier {
   }
 
   void incrementIndex(int increment) {
-    // if (isRecording) return;
+    if (word_list.isEmpty) return;
     index = (index + increment) % word_list.length;
+    saveIndex();
+    print('Grade: ${word_list[index].grade} ${listComplete}');
     notifyListeners();
+  }
+
+  /// Moves to the next word to practice. Also keeps track of if a list has been
+  /// completed.
+  // void nextWord(String isCorrect, bool updateList) {
+    void nextWord(bool updateList) {
+    if (word_list.isEmpty) return;
+    if (!updateList) {
+      listComplete = false;
+      notifyListeners();
+    }
+    // if (isCorrect != 'Needs work') {
+      String prev = word_list[index].grade;
+      incrementIndex(1);
+      print('Next word: ${word_list[index].text}');
+      if (prev != word_list[index].grade) {
+        listComplete = true;
+        notifyListeners();
+      }
+      else {
+        listComplete = false;
+        notifyListeners();
+      }
+    // }
+    // else {
+    //   listComplete = false;
+    //   notifyListeners();
+    // }
   }
 
   // Load the username from local storage

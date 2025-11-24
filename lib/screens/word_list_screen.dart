@@ -14,27 +14,43 @@ class WordListScreen extends StatefulWidget {
 }
 
 class _WordListScreenState extends State<WordListScreen> {
+  // This Future will hold the loading operation and ensure it only runs once per screen visit.
+  Future<void>? _loadWordsFuture;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // We initialize the future here to ensure it's called only once.
+    // It has access to the provider context and runs before the first build.
+    if (_loadWordsFuture == null) {
+      final sessionProvider = Provider.of<SessionProvider>(context, listen: false);
+      // If the list is already loaded, complete immediately. Otherwise, load it.
+      if (sessionProvider.word_list.isEmpty) {
+        _loadWordsFuture = sessionProvider.loadWordList('assets/seed_words.csv');
+      } else {
+        _loadWordsFuture = Future.value(); // Already loaded, create a completed future.
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Use `watch` to rebuild the UI when data changes.
+    // Use `watch` to rebuild the UI when provider data changes.
     final allUsersProvider = context.watch<AllUsersProvider>();
     final sessionProvider = context.watch<SessionProvider>();
 
-    // --- FIX 1: Safely access the username ---
-    // Use a local variable with a null check to prevent crashing.
-    final String username = allUsersProvider.allUserData.lastLoggedInUser?.username ?? 'Guest';
-
-    // --- FIX 2: Safely access the current word ---
-    // Check if the word list is empty before trying to access an element.
-    final bool isWordListEmpty = sessionProvider.word_list.isEmpty;
-    final wordObject = isWordListEmpty ? null : sessionProvider.word_list[sessionProvider.index];
+    // Safely access the username with a null check.
+    // This should only be getting hit if going to word list from dev mode
+    String fullName = 'Guest';
+    if (allUsersProvider.allUserData.lastLoggedInUser != null)
+    {
+      fullName = "${allUsersProvider.allUserData.lastLoggedInUser!.firstName} ${allUsersProvider.allUserData.lastLoggedInUser!.lastName}";
+    }
+    // final String username = allUsersProvider.allUserData.lastLoggedInUser?.username ?? 'Guest';
 
     return Scaffold(
       backgroundColor: Colors.blue[800],
-      appBar: AppBar(
-          centerTitle: true,
-          title: const Text('Word List')
-      ),
+      appBar: AppBar(centerTitle: true, title: const Text('Word List')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -45,71 +61,88 @@ class _WordListScreenState extends State<WordListScreen> {
                   "Welcome Back",
                   style: TextStyle(
                     fontSize: 30,
-                    color: Colors.white, // Added for better visibility
+                    color: Colors.white,
                   ),
                 ),
                 Text(
-                  username, // Use the safe variable
+                  fullName, // Use the safe variable
                   style: const TextStyle(
                     fontSize: 60,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white, // Added for better visibility
+                    color: Colors.white,
                   ),
                 ),
               ],
             ),
 
-            // WORD DISPLAY
+            // --- FIX: WRAP THE WORD DISPLAY IN A FUTUREBUILDER ---
             SizedBox(
               width: 800,
-              child: Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.blue[300],
-                  border: Border.all(color: Colors.blue, width: 2),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                // --- FIX 3: Handle the case where the word list might be empty ---
-                child: isWordListEmpty
-                    ? const Center(
-                  child: Text(
-                    'Word list is loading or empty.\nPlease go to Practice first.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 22),
-                  ),
-                )
-                    : Column(
-                  children: [
-                    Text(
-                      'Word #${sessionProvider.index + 1}',
-                      style: const TextStyle(fontSize: 30),
+              height: 350, // Give it a fixed height to prevent layout jumps
+              child: FutureBuilder<void>(
+                future: _loadWordsFuture,
+                builder: (context, snapshot) {
+                  // While the future is waiting, show a loading spinner.
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(color: Colors.white),
+                    );
+                  }
+
+                  // If an error occurred during loading, display an error message.
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text(
+                        'Error: Failed to load words.',
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                    );
+                  }
+
+                  // Once the data is loaded, build the main UI.
+                  final wordObject = sessionProvider.word_list.isEmpty
+                      ? null
+                      : sessionProvider.word_list[sessionProvider.index];
+
+                  return Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.blue[300],
+                      border: Border.all(color: Colors.blue, width: 2),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    Text(
-                      'This is the word you must practice\n'
-                      // Access grade from the word object
-                          'Current grade: ${wordObject?.grade}',
-                      style: const TextStyle(fontSize: 22),
-                      textAlign: TextAlign.center,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Word #${sessionProvider.index + 1}',
+                          style: const TextStyle(fontSize: 30),
+                        ),
+                        Text(
+                          'This is the word you must practice\n'
+                              'Current grade: ${wordObject?.grade}',
+                          style: const TextStyle(fontSize: 22),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 5),
+                        Text(
+                          wordObject?.text ?? 'N/A',
+                          style: const TextStyle(fontSize: 100),
+                        ),
+                        const SizedBox(height: 10),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRoutes.practice);
+                          },
+                          child: const Text('Go Practice!'),
+                        ),
+                      ],
                     ),
-                    const SizedBox(height: 5),
-                    Text(
-                      // Access text from the word object
-                      wordObject?.text ?? 'N/A',
-                      style: const TextStyle(fontSize: 100),
-                    ),
-                    const SizedBox(height: 10),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.practice);
-                      },
-                      child: const Text('Go Practice!'),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
             ),
 
-            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
                 allUsersProvider.clearLastUser();

@@ -33,90 +33,206 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
     SessionProvider sessionProvider = context.read<SessionProvider>();
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
     final lastLoggedInUser = allUsersProvider.allUserData.lastLoggedInUser;
-    print("last logged in user username: ${lastLoggedInUser == null ? 'null' : lastLoggedInUser.username}");
-    print(lastLoggedInUser.runtimeType);
+    // print("last logged in user username: ${lastLoggedInUser == null ? 'null' : lastLoggedInUser.username}");
+    // print(lastLoggedInUser.runtimeType);
 
+    print("Role selection screen opened");
 
-    return Scaffold(
-      body: Column(
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  sessionProvider.isTeacher = false;
-                  if (lastLoggedInUser is StudentUserData) {
-                    Navigator.pushReplacementNamed(context, AppRoutes.wordList);
-                  }
-                  else {
-                    Navigator.pushReplacementNamed(context, AppRoutes.login);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  shape: LinearBorder()
-                ),
-                child: Center(
+    return FutureBuilder<void>(
+      future: allUsersProvider.loadUserData(),
+      builder: (context, snapshot) {
+        
+        //
+        // 1. WAITING
+        //
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          print("waiting");
+          return const MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          );
+        }
+
+        //
+        // 2. ERROR
+        //
+        if (snapshot.hasError) {
+          print("Snapshot has error");
+          return MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.child_care,
-                        size: 60,
-                        color: Colors.black,
-                      ),
                       Text(
-                        "Student",
+                        snapshot.error.toString(),
                         style: TextStyle(
-                          fontSize: 60,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black
+                          color: Colors.red,
+                          fontSize: 18,
                         ),
+                        textAlign: TextAlign.center,
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          // Force rebuild by creating a new future
+                          // (context as Element).markNeedsBuild();
+                          setState(() {});
+                        },
+                        child: Text("Retry"),
+                      ),
+                      SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          allUsersProvider.saveCurrentUserData();
+                          // Force rebuild by creating a new future
+                          // (context as Element).markNeedsBuild();
+                          setState(() {});
+                        },
+                        child: Text("Create New Save File"),
+                      ),
+                      SizedBox(height: 20,),
+                      ElevatedButton(
+                        onPressed: () {
+                          allUsersProvider.quarantineCorruptFile();
+                          // Force rebuild by creating a new future
+                          // (context as Element).markNeedsBuild();
+                          setState(() {});
+
+                        },
+                        child: Text("Move Save File To Corrupted"),
+                      ),
+                      SizedBox(height: 20,),
+                      ElevatedButton(
+                        onPressed: () {
+                          try
+                          {
+                          allUsersProvider.deleteUserData();
+                          }
+                          catch (e) {
+                            print("Error deleting user data: $e");
+                          }
+                          // Force rebuild by creating a new future
+                          setState(() {});
+
+                          // (context as Element).markNeedsBuild();
+                        },
+                        child: Text("Delete Save File"),
                       ),
                     ],
                   ),
                 ),
               ),
             ),
-            Expanded(
-              child: ElevatedButton(
-                onPressed: () {
-                  sessionProvider.isTeacher = true;
-                  if (lastLoggedInUser is TeacherUserData) {
-                    Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
-                  }
-                  else {
-                    Navigator.pushReplacementNamed(context, AppRoutes.login);
-                  }
-                  Navigator.pushReplacementNamed(context, AppRoutes.login);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.blue,
-                  shape: LinearBorder()
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.school,
-                        size: 60,
-                        color: Colors.black
+          );
+        }
+
+        // //
+        // // 3. SUCCESS
+        // //
+        // print("Snapshot has no error");
+        // return MaterialApp(
+        //   title: 'Navigation Demo',
+        //   debugShowCheckedModeBanner: false,
+        //   initialRoute: AppRoutes.role,
+        //   routes: appRoutes,
+        //   theme: ThemeData(
+        //     colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        //     useMaterial3: true,
+        //   ),
+        // );
+
+        return Scaffold(
+          body: Column(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      sessionProvider.isTeacher = false;
+                      if (lastLoggedInUser is StudentUserData) {
+                        Navigator.pushReplacementNamed(context, AppRoutes.wordList);
+                      }
+                      else {
+                        Navigator.pushReplacementNamed(context, AppRoutes.login);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      shape: LinearBorder()
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.child_care,
+                            size: 60,
+                            color: Colors.black,
+                          ),
+                          Text(
+                            "Student",
+                            style: TextStyle(
+                              fontSize: 60,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        "Teacher",
-                        style: TextStyle(
-                          fontSize: 60,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
-              ),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      sessionProvider.isTeacher = true;
+                      if (lastLoggedInUser is TeacherUserData) {
+                        Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
+                      }
+                      else {
+                        Navigator.pushReplacementNamed(context, AppRoutes.login);
+                      }
+                      Navigator.pushReplacementNamed(context, AppRoutes.login);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      shape: LinearBorder()
+                    ),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.school,
+                            size: 60,
+                            color: Colors.black
+                          ),
+                          Text(
+                            "Teacher",
+                            style: TextStyle(
+                              fontSize: 60,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+        );
+      },
     );
+
+
+
+    
   }
 }

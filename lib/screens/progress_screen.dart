@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
 import '../providers/session_provider.dart';
-
+import 'package:read_right_project/providers/all_users_provider.dart';
+import 'package:read_right_project/utils/attempt.dart';
 class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
 
@@ -19,9 +21,33 @@ class _ProgressScreenState extends State<ProgressScreen> {
   @override
   Widget build(BuildContext context) {
     RecordingProvider recordingProvider = context.watch<RecordingProvider>();
-
+    AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
     SessionProvider sessionProvider = context.watch<SessionProvider>();
 
+    final currentUser = allUsersProvider.allUserData.lastLoggedInUser;
+    final StudentUserData? student = currentUser is StudentUserData ? currentUser : null;
+
+    final String username = allUsersProvider.allUserData.lastLoggedInUser?.username ?? 'Guest';
+    final List<Attempt> attempts = student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
+
+    String mostMissedWord = '';
+    if (attempts.isNotEmpty) {
+      final missedWords = attempts
+          .where((attempt) => attempt.score < 0.70) // Define "missed" as less than 60% score
+          .map((attempt) => attempt.word)
+          .toList();
+
+      if (missedWords.isNotEmpty) {
+        // Count the frequency of each missed word
+        final wordCounts = <String, int>{};
+        for (var word in missedWords) {
+          wordCounts[word] = (wordCounts[word] ?? 0) + 1;
+        }
+
+        // Find the word with the highest count
+        mostMissedWord = wordCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+      }
+    }
 
     // return Consumer<SessionProvider>(
     //   builder: (context, sessionProvider, child) {
@@ -47,16 +73,20 @@ class _ProgressScreenState extends State<ProgressScreen> {
                       children: [
                         // Display the user's data from the provider
                         Text(
-                            'Username: ${sessionProvider.currentUser}',
-                            style: const TextStyle(fontSize: 18),
+                            'Username: $username',
+                            style: const TextStyle(fontSize: 14),
                         ),
                         Text(
-                            'Number of Attempts: ${sessionProvider.numberOfAttempts}',
-                            style: const TextStyle(fontSize: 18),
+                            'Number of Attempts: ${(allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]  != null ? (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]!.length : 0}',
+                            style: const TextStyle(fontSize: 14),
                         ),
                         Text(
-                            'Average Score: ${sessionProvider.averageScore.toStringAsFixed(2)}',
-                            style: const TextStyle(fontSize: 18),
+                            'Average Score: ${(allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.averageScore]?.toString ?? 'N/A'}',
+                            style: const TextStyle(fontSize: 14),
+                        ),
+                        Text(
+                            'Most Missed Word: $mostMissedWord',
+                            style: const TextStyle(fontSize: 14),
                         ),
                       ],
                     )
@@ -73,18 +103,20 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   ),
                   // child: Consumer<SessionProvider>(
                     // builder: (BuildContext context, SessionProvider recorder, Widget? child) => recorder.attempts.isEmpty
-                    child: sessionProvider.attempts.isEmpty
+                    child: (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name] == null || (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]!.isEmpty
                       ? const Center(
                           child: Text('No attempts yet')
                       )
                       : ClipRRect(
                         borderRadius: BorderRadiusGeometry.circular(8),
                         child: ListView.separated(
-                            itemCount: sessionProvider.attempts.length,
+                            // itemCount: sessionProvider.attempts.length,
+                            itemCount: (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]!.length,
                             separatorBuilder: (_, __) => const SizedBox(height: 8),
                             itemBuilder: (context, i) {
                             
-                              final iterAttempt = sessionProvider.attempts[i];
+                              // final iterAttempt = sessionProvider.attempts[i];
+                              final iterAttempt = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]![i];
                               final exists = File(iterAttempt.filePath).existsSync();
                             
                               return Material(
@@ -153,14 +185,14 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   onPressed: () {
                     Navigator.pushNamed(context, '/teacherDashboard');
                   },
-                  child: const Text('Backdoor to techer dashbrorad'),
+                  child: const Text('Backdoor to teacher dashboard'),
                 ),
                 const SizedBox(height: 20),
 
                 ElevatedButton(
                   onPressed: () {
                     // Navigate back to main screen and clear previous routes
-                    Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
+                    Navigator.pushNamed(context, '/wordList');
                   },
                   child: const Text('Back to Main Screen'),
                 ),

@@ -34,14 +34,15 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
   }
   */
 
-  final lists = ['Math', 'Science', 'History'];
+  final lists = ['1st Grade', '2nd Grade', '3rd Grade'];
   final classOverview = [
-    {'name': 'Alice', 'list': 'Math', 'date': '2025-11-15'},
-    {'name': 'Bob', 'list': 'Science', 'date': '2025-11-16'},
-    {'name': 'Charlie', 'list': 'History', 'date': '2025-11-17'},
+    {'name': 'Alice', 'list': '1st Grade', 'date': '2025-11-15'},
+    {'name': 'Bob', 'list': '2nd Grade', 'date': '2025-11-16'},
+    {'name': 'Charlie', 'list': '3rd Grade', 'date': '2025-11-17'},
   ];
 
   // Filter function
+  //Testing push
   List<Map<String, String>> get filteredOverview {
     return classOverview.where((item) {
       final matchStudent = selectedStudent == null || item['name'] == selectedStudent;

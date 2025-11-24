@@ -56,11 +56,42 @@ Milestone 1 Progress
 -Data successfully shared via provider
 -Improved CSV file
 
-Future Goals
--Find a way to get STT to work on Windows Android Emulator
--Implement STT into feedback
--Save feedback using local storage
--Save attempts list locally
--Allow sorting via username for attempts
--Allow importing word lists directly from CSV files into code
--Touch up UI and naviagation
+Milestone 2 Progress
+-Separate providers used to maintain data for users, recording, and sessions
+-Word list reads from CSV file
+-Sync manager logic for audio transcription ready
+-App home screen now forces user to login as a student or teacher
+-Implemented different flow for students and teacheres
+-Wrote logic for Teacher Dashboard
+-Implemented a placeholder teacher dashboard
+-Word list tracks categories for practice words
+-Practice screen indicates when a list of words is complete
+-Wrote system where students must score well to advance through the word list
+-Placeholder implementation for advancing through the word list
+-Improved feedback screen
+-Last logged in user, teachers, students and their attempts for word lists are saved to and loaded from json
+-Role->Login->Word List->Practice->Feedback->Progress done
+https://www.loom.com/share/cfcc6f2ced1a4ee780b94fa3f2b50da4
+
+SETUP NOTES:
+-If you want to use your own CSV file, name it "seed_words.csv" and format it 
+in the same way as the current file in our assets folder before adding it to the assets folder.
+-When running the app, sign in as a student. Make an account and enter the required information.
+-Log in with your new account. 
+-Click Go Practice to go to the practice screen. Or, you can sign out from here.
+-You can hit record to make a new attempt (Does not work on windows and requires "virtual microphone uses host audio input" enabled)
+-Hit stop to end the recording early
+-You will be sent to the feedback screen which shows you your score
+-If you get a low score, hit Retry Word to go back
+-If you get a high score, hit Next Word to progress to next word in list
+-Click View Progress to go to the progress screen
+-Click Next(temp) to advance to the next word. Eventually you will finish the list and recieve a message.
+-Click Go to Word List to go back to the main screen.
+
+KNOWN ISSUES and Future Goals:
+-Get STT and Azure AI to work with Android Studio
+-Touch up UI
+-Save progress in word list separately per student
+-Implement Teacher Dashboard with real/json data
+-Export CSV/JSON with date ranges from Teacher Dashboard/Progress Screen
+-Fix bug that requires users to delete/overwrite account information if their json format is outdated

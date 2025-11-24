@@ -8,9 +8,8 @@ import 'providers/session_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   final AllUsersProvider allUsersProvider = AllUsersProvider();
-  //await allUsersProvider.loadUserData();
+  // await allUsersProvider.loadUserData();
 
   runApp(
     MultiProvider(
@@ -33,6 +32,7 @@ void main() async {
         // ),
 
         ChangeNotifierProvider(
+          // create: (_) => AllUsersProvider(),
           create: (_) => allUsersProvider,
         ),
       ],
@@ -47,7 +47,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: 'Navigation Demo',
       debugShowCheckedModeBanner: false,
@@ -58,5 +57,6 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
     );
+
   }
 }

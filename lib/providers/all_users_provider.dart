@@ -10,30 +10,6 @@ class AllUsersProvider extends ChangeNotifier{
 
   AllUserData allUserData = AllUserData(lastLoggedInUser: null, studentUserDataList: [], teacherUserDataList: []);
 
-  // UserData? lastLoggedInUser;
-  // List<UserData> loadedUserDataList = [];
-
-  // Future<UserData> getLoadedLastLoggedInUser() async {
-  //   if (lastLoggedInUser == null) {
-  //     await loadUserData();
-  //   }
-  //   return lastLoggedInUser!;
-  // }
-
-  // Future<List<UserData>> getloadedUserDataList() async {
-  //   if (loadedUserDataList.isEmpty) {
-  //     await loadUserData();
-  //   }
-  //   return loadedUserDataList;
-  // }
-
-  // Future<AllUserData> getAllUserData() async {
-  //   if (allUserData == null) {
-  //     await loadUserData();
-  //   }
-  //   return allUserData!;
-  // }
-
   Future<void> saveUserData(AllUserData allUserData) async {
     // TODO: Change this to not save to OneDrive/Documents
     final directory = await getApplicationDocumentsDirectory();
@@ -53,7 +29,10 @@ class AllUsersProvider extends ChangeNotifier{
     final prettyString = encoder.convert(jsonList);
 
     await file.writeAsString(prettyString);
-    // await file.writeAsString(jsonEncode(jsonList));
+  }
+
+  Future<void> saveCurrentUserData() async {
+    await saveUserData(allUserData);
   }
 
   Future<void> loadUserData() async {
@@ -63,78 +42,95 @@ class AllUsersProvider extends ChangeNotifier{
 
     if (!file.existsSync()) {
       print("File does not exist");
-      return;
+      throw Exception("User data file does not exist.");
     }
 
-    final content = await file.readAsString();
-    print("Loaded json:\n$content");
-    final data = jsonDecode(content);
+    try
+    {
+      final content = await file.readAsString();
+      print("Loaded json:\n$content");
+      final data = jsonDecode(content);
 
-    allUserData = AllUserData.fromJson(data);
-    // return UserData.fromJson(jsonDecode(content));
+      allUserData = AllUserData.fromJson(data);
+      // return UserData.fromJson(jsonDecode(content));
+    } on FormatException catch (e) {
+      // Happens when JSON is malformed
+      print("JSON format error: $e");
+
+      // Optionally: rename the bad file so user doesn't get stuck
+      await _quarantineCorruptFile(file);
+      throw Exception("Saved data file is corrupted. ($e)");
+    } catch (e, stack) {
+      // Catch-all (e.g. fromJson exceptions)
+      print("Unexpected error loading user data: $e\n$stack");
+      rethrow;
+      // throw Exception("Unexpected error loading user data: $e");
+    }
   }
-
-  // Future<void> saveUserData(List<UserData> allUserData) async {
-  //   // TODO: Change this to not save to OneDrive/Documents
-  //   final directory = await getApplicationDocumentsDirectory();
-
-  //   final saveDir = Directory('${directory.path}/read_right/save_data');
-
-  //   // Create directory if it doesn't exist
-  //   if (!await saveDir.exists()) {
-  //     await saveDir.create(recursive: true); // recursive = true creates parent dirs too
-  //   }
-
-  //   final file = File('${saveDir.path}/all_user_data.json');
-  //   print("Saving data to ${file.path}");
-
-  //   final jsonList = allUserData.map((u) => u.toJson()).toList();
-  //   const encoder = JsonEncoder.withIndent('  ');
-  //   final prettyString = encoder.convert(jsonList);
-
-  //   await file.writeAsString(prettyString);
-  //   // await file.writeAsString(jsonEncode(jsonList));
-  // }
-
-  // Future<void> loadUserData() async {
-  //   // TODO: Change this to not save to OneDrive/Documents
-  //   final directory = await getApplicationDocumentsDirectory();
-  //   final file = File('${directory.path}/read_right/save_data/userdata.json');
-
-  //   if (!file.existsSync()) return;
-
-  //   final content = await file.readAsString();
-  //   final data = jsonDecode(content) as List<dynamic>;
-
-  //   loadedAllUserData = data.map((u) => UserData.fromJson(u)).toList();
-  //   // return UserData.fromJson(jsonDecode(content));
-  // }
-
-  // Load the username from local storage
-  // Future<void> loadLastUser() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   _username = prefs.getString('lastUser_username') ?? 'Guest';
-  //   isTeacher = prefs.getBool('lastUser_isTeacher') ?? false;
-  //   notifyListeners();
-  //   // return _username;
-  // }
 
   void clearLastUser() async {
     allUserData.lastLoggedInUser = null;
-    saveUserData(allUserData!);
+    saveUserData(allUserData);
     notifyListeners();
   }
 
   // Save the username to local storage
   Future<void> saveLastUser(UserData lastUser) async {
     allUserData.lastLoggedInUser = lastUser;
-    saveUserData(allUserData!);
-    // final prefs = await SharedPreferences.getInstance();
-    // await prefs.setString('lastUser_username', username);
-    // await prefs.setBool('lastUser_isTeacher', isTeacher);
-    // _username = username;
-    // isTeacher = isTeacher;
+    saveUserData(allUserData);
     notifyListeners();
   }
+
+  Future<void> _quarantineCorruptFile(File file) async {
+    final corruptPath = file.path + ".corrupt_${DateTime.now().millisecondsSinceEpoch}";
+    await file.rename(corruptPath);
+    print("Corrupt JSON moved to: $corruptPath");
+  }
+
+  Future<void> quarantineCorruptFile() async {
+    final directory = await getApplicationDocumentsDirectory();
+
+    final file = File('${directory.path}/read_right/save_data/all_user_data.json');
+
+    if (!file.existsSync()) {
+      print("File does not exist");
+      // throw Exception("User data file does not exist.");
+      return;
+    }
+    final corruptPath = file.path + ".corrupt_${DateTime.now().millisecondsSinceEpoch}";
+    await file.rename(corruptPath);
+    print("Corrupt JSON moved to: $corruptPath");
+  }
+
+  Future<void> deleteUserData() async {
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final saveDir = Directory('${directory.path}/read_right/save_data');
+      final file = File('${saveDir.path}/all_user_data.json');
+
+      if (!await file.exists()) {
+        throw Exception("No user data file found to delete.");
+      }
+
+      await file.delete();
+      print("User data deleted at: ${file.path}");
+
+    } catch (e) {
+      print("Error deleting user data: $e");
+      throw Exception("Failed to delete user data: $e");
+    }
+  }
+
+  Future<bool> doesSaveFileExist() async {
+    final directory = await getApplicationDocumentsDirectory();
+    final saveDir = Directory('${directory.path}/read_right/save_data');
+    final file = File('${saveDir.path}/all_user_data.json');
+
+    if (!await file.exists()) {
+      return false;
+    }
+    return true;
+  }
+
 
 }

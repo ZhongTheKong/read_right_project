@@ -20,7 +20,8 @@ class Attempt {
       score: json['score'],
       filePath: json['filePath'],
       durationMs: json['durationMs'],
-      createdAt: json['createdAt'],
+      // createdAt: json['createdAt'],
+      createdAt: DateTime.parse(json['createdAt']),
     );
   }
 
@@ -31,7 +32,7 @@ class Attempt {
       'score': score,
       'filePath': filePath,
       'durationMs': durationMs,
-      'createdAt': createdAt,
+      'createdAt': createdAt.toIso8601String(),
     };
   }
 }
