@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
@@ -8,6 +7,9 @@ import 'package:read_right_project/utils/student_user_data.dart';
 import '../providers/session_provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/utils/attempt.dart';
+// Somewhere at the top of your file
+import '../utils/speech_service.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
 
@@ -15,8 +17,44 @@ class ProgressScreen extends StatefulWidget {
   State<ProgressScreen> createState() => _ProgressScreenState();
 }
 
+
 class _ProgressScreenState extends State<ProgressScreen> {
-  
+  final SpeechService azureService = SpeechService(
+    key: dotenv.env['AZURE_SPEECH_KEY']!,
+    region: dotenv.env['AZURE_SPEECH_REGION']!,
+  );
+
+  // Optional: cache results locally to avoid repeated calls
+  final Map<String, String> _azureResultsCache = {};
+
+  Future<String> getAzureResult(String wavPath, String referenceText) async {
+    if (_azureResultsCache.containsKey(wavPath)) {
+      return _azureResultsCache[wavPath]!;
+    }
+
+    try {
+      final resultObj = await azureService.assessPronunciation(
+        File(wavPath),
+        referenceText,
+      );
+
+      if (resultObj != null &&
+          resultObj['RecognitionStatus'] == 'Success' &&
+          resultObj['NBest'] != null &&
+          resultObj['NBest'].isNotEmpty) {
+        final nbest = resultObj['NBest'][0];
+
+        String formattedResult =
+            "Accuracy: ${nbest['AccuracyScore']}, Pronunciation: ${nbest['PronScore']}";
+        _azureResultsCache[wavPath] = formattedResult;
+        return formattedResult;
+      }
+    } catch (e) {
+      print("Azure assessment error: $e");
+    }
+
+    return "No result";
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,192 +65,56 @@ class _ProgressScreenState extends State<ProgressScreen> {
     final currentUser = allUsersProvider.allUserData.lastLoggedInUser;
     final StudentUserData? student = currentUser is StudentUserData ? currentUser : null;
 
-    final String username = allUsersProvider.allUserData.lastLoggedInUser?.username ?? 'Guest';
-    final List<Attempt> attempts = student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
+    final List<Attempt> attempts =
+        student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
 
-    String mostMissedWord = '';
-    if (attempts.isNotEmpty) {
-      final missedWords = attempts
-          .where((attempt) => attempt.score < 0.70) // Define "missed" as less than 60% score
-          .map((attempt) => attempt.word)
-          .toList();
+    return Scaffold(
+      appBar: AppBar(title: const Text('Progress Screen')),
+      body: attempts.isEmpty
+          ? const Center(child: Text('No attempts yet'))
+          : ListView.builder(
+              itemCount: attempts.length,
+              itemBuilder: (context, i) {
+                final iterAttempt = attempts[i];
+                final exists = File(iterAttempt.filePath).existsSync();
 
-      if (missedWords.isNotEmpty) {
-        // Count the frequency of each missed word
-        final wordCounts = <String, int>{};
-        for (var word in missedWords) {
-          wordCounts[word] = (wordCounts[word] ?? 0) + 1;
-        }
-
-        // Find the word with the highest count
-        mostMissedWord = wordCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
-      }
-    }
-
-    // return Consumer<SessionProvider>(
-    //   builder: (context, sessionProvider, child) {
-
-
-        return Scaffold(
-          appBar: AppBar(title: const Text('Progress Screen')),
-          body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'This is the Progress Screen. Here, you can see how well you are doing with your practice',
-                  style: TextStyle(fontSize: 18),
-                ),
-                const SizedBox(height: 20),
-
-                SizedBox(
-                    height: 100,
-                    width: 200,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Display the user's data from the provider
-                        Text(
-                            'Username: $username',
-                            style: const TextStyle(fontSize: 14),
-                        ),
-                        Text(
-                            'Number of Attempts: ${(allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]  != null ? (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]!.length : 0}',
-                            style: const TextStyle(fontSize: 14),
-                        ),
-                        Text(
-                            'Average Score: ${(allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.averageScore]?.toString ?? 'N/A'}',
-                            style: const TextStyle(fontSize: 14),
-                        ),
-                        Text(
-                            'Most Missed Word: $mostMissedWord',
-                            style: const TextStyle(fontSize: 14),
-                        ),
-                      ],
-                    )
-                ),
-                const SizedBox(height: 20),
-
-                Expanded(
-                child: Container(
-                  margin: EdgeInsets.all(20),
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blue, width: 3),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  // child: Consumer<SessionProvider>(
-                    // builder: (BuildContext context, SessionProvider recorder, Widget? child) => recorder.attempts.isEmpty
-                    child: (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name] == null || (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]!.isEmpty
-                      ? const Center(
-                          child: Text('No attempts yet')
-                      )
-                      : ClipRRect(
-                        borderRadius: BorderRadiusGeometry.circular(8),
-                        child: ListView.separated(
-                            // itemCount: sessionProvider.attempts.length,
-                            itemCount: (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]!.length,
-                            separatorBuilder: (_, __) => const SizedBox(height: 8),
-                            itemBuilder: (context, i) {
-                            
-                              // final iterAttempt = sessionProvider.attempts[i];
-                              final iterAttempt = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]![i];
-                              final exists = File(iterAttempt.filePath).existsSync();
-                            
-                              return Material(
-                                color: Colors.transparent,
-                                child: ListTile(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                    side: const BorderSide(width: 1),
-                                  ),
-                                  title: Text(iterAttempt.word),
-                                                            
-                                  subtitle: Text(
-                                      'Attempt ${sessionProvider.attempts.length - i}\nDate: ${iterAttempt.createdAt.toLocal()}\nDuration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s'),
-                                                            
-                                  trailing: Row(
-                                    mainAxisSize: MainAxisSize.min, 
-                                    children: [
-                                      IconButton(
-                                        tooltip: 'Play',
-                                        onPressed: (!exists || recordingProvider.isPlaying)
-                                            ? null
-                                            : () => recordingProvider.play(iterAttempt.filePath),
-                                        icon: const Icon(Icons.play_arrow),
-                                      ),
-                                      
-                                      IconButton(
-                                        tooltip: 'Stop',
-                                                            
-                                        // TODO: CREATE A BETTER PLAY ATTEMPT BUTTON CALLBACK
-                                        onPressed: recordingProvider.isPlaying
-                                            ? () => recordingProvider.player.stop().then(
-                                                (_) => setState(() => recordingProvider.isPlaying = false))
-                                            : null,
-                                                            
-                                        icon: const Icon(Icons.stop),
-                                      ),
-                                                        
-                                      IconButton(
-                                        onPressed: () {
-                                          sessionProvider.selectedIndex = i;
-                                          Navigator.pushNamed(context, AppRoutes.feedback);
-                                        }, 
-                                        icon: Icon(Icons.feedback)
-                                      )
-                                    ]
-                                  ),
-                                ),
-                              );
-                            
-                              
-                            },
-                          ),
+                return ListTile(
+                  title: Text(iterAttempt.word),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Attempt ${attempts.length - i}, Duration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s',
                       ),
+                      // Display Azure results
+                      FutureBuilder<String>(
+                        future: getAzureResult(iterAttempt.filePath, iterAttempt.word),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.waiting) {
+                            return const Text("Loading Azure result...");
+                          } else if (snapshot.hasError) {
+                            return Text("Error: ${snapshot.error}");
+                          } else {
+                            return Text("Azure: ${snapshot.data}");
+                          }
+                        },
+                      ),
+                    ],
                   ),
-                ),
-              // ),
-
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/practice');
-                  },
-                  child: const Text('Practice'),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/teacherDashboard');
-                  },
-                  child: const Text('Backdoor to teacher dashboard'),
-                ),
-                const SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/pronunciation');
-                  },
-                  child: const Text('Backdoor to pronunciation'),
-                ),
-                const SizedBox(height: 20),
-
-                ElevatedButton(
-                  onPressed: () {
-                    // Navigate back to main screen and clear previous routes
-                    Navigator.pushNamed(context, '/wordList');
-                  },
-                  child: const Text('Back to Main Screen'),
-                ),
-                const SizedBox(height: 12),
-              ],
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.play_arrow),
+                        onPressed: (!exists || recordingProvider.isPlaying)
+                            ? null
+                            : () => recordingProvider.play(iterAttempt.filePath),
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-          ),
-        );
-
-
-    //   },
-    // );
-
-
+    );
   }
 }

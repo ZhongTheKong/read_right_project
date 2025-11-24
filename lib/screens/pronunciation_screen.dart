@@ -20,24 +20,55 @@ class _PronunciationScreenState extends State<PronunciationScreen> {
 
   Future<void> runTest() async {
     try {
-      // ----- Load WAV from assets -----
+      // Load WAV from assets
       final byteData = await rootBundle.load('assets/test.wav');
       final bytes = byteData.buffer.asUint8List();
 
-      // ----- Create real temp file -----
+      // Create temp file
       final tempDir = Directory.systemTemp;
       final tempPath = '${tempDir.path}/temp_test.wav';
       final tempFile = File(tempPath);
       await tempFile.writeAsBytes(bytes);
 
-      // ----- Send to Azure -----
-      final jsonResult =
-          await service.assessPronunciation(tempFile, referenceText);
+      // Send to Azure
+      final resultObj = await service.assessPronunciation(
+        tempFile,
+        referenceText,
+      );
+
+      String formattedResult = "";
+
+      if (resultObj != null &&
+          resultObj['RecognitionStatus'] == 'Success' &&
+          resultObj['NBest'] != null &&
+          resultObj['NBest'].isNotEmpty) {
+        final nbest = resultObj['NBest'][0];
+
+        formattedResult =
+            """
+Reference Text: ${resultObj['DisplayText'] ?? referenceText}
+
+Overall Scores:
+  Accuracy: ${nbest['AccuracyScore']}
+  Fluency: ${nbest['FluencyScore']}
+  Completeness: ${nbest['CompletenessScore']}
+  Pronunciation: ${nbest['PronScore']}
+""";
+
+        if (nbest['Words'] != null && nbest['Words'].isNotEmpty) {
+          formattedResult += "\nWord-level Scores:\n";
+          for (var word in nbest['Words']) {
+            formattedResult +=
+                "  ${word['Word']}: Accuracy ${word['AccuracyScore']}, ErrorType ${word['ErrorType']}\n";
+          }
+        }
+      } else {
+        formattedResult = "No valid pronunciation assessment returned.";
+      }
 
       setState(() {
-        result = jsonResult.toString();
+        result = formattedResult;
       });
-
     } catch (e) {
       setState(() {
         result = "Error: $e";
@@ -54,7 +85,9 @@ class _PronunciationScreenState extends State<PronunciationScreen> {
         child: Column(
           children: [
             TextField(
-              decoration: const InputDecoration(labelText: "Reference sentence"),
+              decoration: const InputDecoration(
+                labelText: "Reference sentence",
+              ),
               onChanged: (val) => referenceText = val,
             ),
             const SizedBox(height: 20),
@@ -63,11 +96,7 @@ class _PronunciationScreenState extends State<PronunciationScreen> {
               child: const Text("Send to Azure"),
             ),
             const SizedBox(height: 20),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Text(result),
-              ),
-            ),
+            Expanded(child: SingleChildScrollView(child: Text(result))),
           ],
         ),
       ),
