@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
@@ -8,6 +8,7 @@ import 'package:read_right_project/utils/student_user_data.dart';
 import '../providers/session_provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/utils/attempt.dart';
+
 class ProgressScreen extends StatefulWidget {
   const ProgressScreen({super.key});
 
@@ -49,6 +50,28 @@ class _ProgressScreenState extends State<ProgressScreen> {
       }
     }
 
+    double averageScore = 0.0;
+    double recentScore = 0.0;
+    String improvement = 'N/A';
+
+    if (attempts.isNotEmpty) {
+      // Calculate overall average
+      averageScore = attempts.fold(0.0, (sum, item) => sum + item.score) / attempts.length;
+
+      // Calculate average of the last 5 attempts
+      final recentAttempts = attempts.take(min(5, attempts.length)).toList();
+      recentScore = recentAttempts.fold(0.0, (sum, item) => sum + item.score) / recentAttempts.length;
+
+      final difference = recentScore - averageScore;
+
+      if (difference > 0.01) { // Threshold for significant improvement
+        improvement = '+${(difference * 100).toStringAsFixed(1)}%';
+      } else if (difference < -0.01) { // Threshold for significant decline
+        improvement = '-${(difference * 100).toStringAsFixed(1)}%';
+      } else {
+        improvement = '0.0';
+      }
+    }
     // return Consumer<SessionProvider>(
     //   builder: (context, sessionProvider, child) {
 
@@ -86,6 +109,10 @@ class _ProgressScreenState extends State<ProgressScreen> {
                         ),
                         Text(
                             'Most Missed Word: $mostMissedWord',
+                            style: const TextStyle(fontSize: 14),
+                        ),
+                        Text(
+                            'Recent Improvements: $improvement',
                             style: const TextStyle(fontSize: 14),
                         ),
                       ],
