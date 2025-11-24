@@ -32,7 +32,6 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
 
     SessionProvider sessionProvider = context.read<SessionProvider>();
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
-    final lastLoggedInUser = allUsersProvider.allUserData.lastLoggedInUser;
     // print("last logged in user username: ${lastLoggedInUser == null ? 'null' : lastLoggedInUser.username}");
     // print(lastLoggedInUser.runtimeType);
 
@@ -154,10 +153,13 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       sessionProvider.isTeacher = false;
-                      if (lastLoggedInUser is StudentUserData) {
+                      
+                      if (allUsersProvider.allUserData.lastLoggedInUser is StudentUserData) {
+                        print("Last logged in user recognized as a student");
                         Navigator.pushReplacementNamed(context, AppRoutes.wordList);
                       }
                       else {
+                        print("Last logged in user not recognized as a student");
                         Navigator.pushReplacementNamed(context, AppRoutes.login);
                       }
                     },
@@ -191,10 +193,12 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                   child: ElevatedButton(
                     onPressed: () {
                       sessionProvider.isTeacher = true;
-                      if (lastLoggedInUser is TeacherUserData) {
+                      if (allUsersProvider.allUserData.lastLoggedInUser is TeacherUserData) {
+                        // print("Last logged in user recognized as a student");
                         Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
                       }
                       else {
+                        // print("Last logged in user not recognized as a teacher");
                         Navigator.pushReplacementNamed(context, AppRoutes.login);
                       }
                       Navigator.pushReplacementNamed(context, AppRoutes.login);

@@ -8,7 +8,8 @@ import 'package:read_right_project/utils/user_data.dart';
 
 class AllUsersProvider extends ChangeNotifier{
 
-  AllUserData allUserData = AllUserData(lastLoggedInUser: null, studentUserDataList: [], teacherUserDataList: []);
+  // AllUserData allUserData = AllUserData(lastLoggedInUser: null, studentUserDataList: [], teacherUserDataList: []);
+  AllUserData allUserData = AllUserData(lastLoggedInUserUsername: null, lastLoggedInUserIsTeacher: null, studentUserDataList: [], teacherUserDataList: []);
 
   Future<void> saveUserData(AllUserData allUserData) async {
     // TODO: Change this to not save to OneDrive/Documents
@@ -69,14 +70,18 @@ class AllUsersProvider extends ChangeNotifier{
   }
 
   void clearLastUser() async {
-    allUserData.lastLoggedInUser = null;
+    // allUserData.lastLoggedInUser = null;
+    // allUserData.lastLoggedInUserUsername = null;
+    // allUserData.lastLoggedInUserIsTeacher = null;
     saveUserData(allUserData);
     notifyListeners();
   }
 
   // Save the username to local storage
   Future<void> saveLastUser(UserData lastUser) async {
-    allUserData.lastLoggedInUser = lastUser;
+    // allUserData.lastLoggedInUser = lastUser;
+    allUserData.lastLoggedInUserUsername = lastUser.username;
+    allUserData.lastLoggedInUserIsTeacher = lastUser.isTeacher;
     saveUserData(allUserData);
     notifyListeners();
   }

@@ -69,13 +69,51 @@ import 'package:read_right_project/utils/user_data.dart';
 
 class AllUserData {
   AllUserData({
-    this.lastLoggedInUser,
+    // this.lastLoggedInUser,
+    this.lastLoggedInUserUsername,
+    this.lastLoggedInUserIsTeacher,
     List<StudentUserData>? studentUserDataList,
     List<TeacherUserData>? teacherUserDataList,
   })  : studentUserDataList = studentUserDataList ?? [],
         teacherUserDataList = teacherUserDataList ?? [];
 
-  UserData? lastLoggedInUser;
+  String? lastLoggedInUserUsername;
+  bool? lastLoggedInUserIsTeacher;
+  UserData? get lastLoggedInUser {
+    if (_lastLoggedInUser == null && 
+        lastLoggedInUserUsername != null && 
+        lastLoggedInUserIsTeacher != null)
+    {
+      print("Searching for last logged in user");
+      if (lastLoggedInUserIsTeacher!)
+      {
+        _lastLoggedInUser = teacherUserDataList.firstWhere( (t) => t.username == lastLoggedInUserUsername);
+      }
+      else
+      {
+        _lastLoggedInUser = studentUserDataList.firstWhere( (s) => s.username == lastLoggedInUserUsername);
+      }
+    }
+    // else
+    // {
+    //   print("Cannot search for last logged in user");
+    //   if (_lastLoggedInUser != null)
+    //   {
+    //     print("Last logged in user already found");
+    //   }
+    //   if (lastLoggedInUserUsername == null)
+    //   {
+    //     print("Last logged in username is missing");
+    //   }
+    //   if (lastLoggedInUserIsTeacher == null)
+    //   {
+    //     print("Last logged in isTeacher is missing");
+    //   }
+    // }
+    return _lastLoggedInUser;
+  }
+  UserData? _lastLoggedInUser;
+  // UserData? lastLoggedInUser;
   final List<StudentUserData> studentUserDataList;
   final List<TeacherUserData> teacherUserDataList;
 
@@ -84,34 +122,40 @@ class AllUserData {
 
     try
     {
-    // Handle lastLoggedInUser safely
-    UserData? lastLoggedInUser;
-    if (json['lastLoggedInUser'] != null) {
-      final lastJson = json['lastLoggedInUser'] as Map<String, dynamic>;
-      if (lastJson['isTeacher'] == true) {
-        lastLoggedInUser = TeacherUserData.fromJson(lastJson);
-      } else {
-        lastLoggedInUser = StudentUserData.fromJson(lastJson);
-      }
-    }
+      // Handle lastLoggedInUser safely
+      // UserData? lastLoggedInUser;
+      // if (json['lastLoggedInUser'] != null) {
+      //   final lastJson = json['lastLoggedInUser'] as Map<String, dynamic>;
+      //   if (lastJson['isTeacher'] == true) {
+      //     lastLoggedInUser = TeacherUserData.fromJson(lastJson);
+      //   } else {
+      //     lastLoggedInUser = StudentUserData.fromJson(lastJson);
+      //   }
+      // }
+      String? lastLoggedInUserUsername = json['lastLoggedInUserUsername'];
+      // print("AllUserData.fromJson: lastLoggedInUserUsername = ${lastLoggedInUserUsername}");
+      bool? lastLoggedInUserIsTeacher = json['lastLoggedInUserIsTeacher'];
+      // print("AllUserData.fromJson: lastLoggedInUserIsTeacher = ${lastLoggedInUserIsTeacher}");
 
-    // Handle studentUserDataList safely
-    final studentList = (json['studentUserDataList'] as List<dynamic>?)
-            ?.map((a) => StudentUserData.fromJson(a as Map<String, dynamic>))
-            .toList() ??
-        [];
+      // Handle studentUserDataList safely
+      final studentList = (json['studentUserDataList'] as List<dynamic>?)
+              ?.map((a) => StudentUserData.fromJson(a as Map<String, dynamic>))
+              .toList() ??
+          [];
 
-    // Handle teacherUserDataList safely
-    final teacherList = (json['teacherUserDataList'] as List<dynamic>?)
-            ?.map((a) => TeacherUserData.fromJson(a as Map<String, dynamic>))
-            .toList() ??
-        [];
+      // Handle teacherUserDataList safely
+      final teacherList = (json['teacherUserDataList'] as List<dynamic>?)
+              ?.map((a) => TeacherUserData.fromJson(a as Map<String, dynamic>))
+              .toList() ??
+          [];
 
-    return AllUserData(
-      lastLoggedInUser: lastLoggedInUser,
-      studentUserDataList: studentList,
-      teacherUserDataList: teacherList,
-    );
+      return AllUserData(
+        // lastLoggedInUser: lastLoggedInUser,
+        lastLoggedInUserUsername: lastLoggedInUserUsername,
+        lastLoggedInUserIsTeacher: lastLoggedInUserIsTeacher,
+        studentUserDataList: studentList,
+        teacherUserDataList: teacherList,
+      );
     }
     on FormatException catch (e) {
       // Happens when JSON is malformed
@@ -125,7 +169,9 @@ class AllUserData {
   // Serialize
   Map<String, dynamic> toJson() {
     return {
-      'lastLoggedInUser': lastLoggedInUser?.toJson(),
+      // 'lastLoggedInUser': lastLoggedInUser?.toJson(),
+      'lastLoggedInUserUsername': lastLoggedInUserUsername,
+      'lastLoggedInUserIsTeacher': lastLoggedInUserIsTeacher,
       'studentUserDataList':
           studentUserDataList.map((a) => a.toJson()).toList(),
       'teacherUserDataList':
