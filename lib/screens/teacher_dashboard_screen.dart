@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/attempt.dart';
+import 'package:read_right_project/utils/routes.dart';
+
 
 class TeacherDashboardScreen extends StatefulWidget {
   @override
@@ -118,18 +120,37 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                 ),
               ],
             ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () {
-                  setState(() {
-                    selectedStudent = null;
-                    selectedList = null;
-                    selectedDate = null;
-                  });
-                },
-                child: Text("Clear Filters"),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        selectedStudent = null;
+                        selectedList = null;
+                        selectedDate = null;
+                      });
+                      Navigator.pushNamed(context, AppRoutes.role);
+                    },
+                    child: Text("Sign Out"),
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () {
+                      setState(() {
+                        selectedStudent = null;
+                        selectedList = null;
+                        selectedDate = null;
+                      });
+                    },
+                    child: Text("Clear Filters"),
+                  ),
+                ),
+              ]
             ),
 
             SizedBox(height: 10),
