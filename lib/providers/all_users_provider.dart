@@ -85,6 +85,10 @@ class AllUsersProvider extends ChangeNotifier{
     // allUserData.lastLoggedInUser = lastUser;
     allUserData.lastLoggedInUserUsername = lastUser.username;
     allUserData.lastLoggedInUserIsTeacher = lastUser.isTeacher;
+    allUserData.isLastLoggedInUserOutdated = true;
+
+    print("Last logged in user username = ${allUserData.lastLoggedInUserUsername}");
+    print("Last logged in user isTeacher = ${allUserData.lastLoggedInUserIsTeacher}");
     saveCurrentUserData();
     notifyListeners();
   }

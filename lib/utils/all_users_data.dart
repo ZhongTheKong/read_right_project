@@ -79,11 +79,14 @@ class AllUserData {
 
   String? lastLoggedInUserUsername;
   bool? lastLoggedInUserIsTeacher;
+
+  bool isLastLoggedInUserOutdated = true;
   UserData? get lastLoggedInUser {
-    if (_lastLoggedInUser == null && 
+    if (isLastLoggedInUserOutdated && 
         lastLoggedInUserUsername != null && 
         lastLoggedInUserIsTeacher != null)
     {
+      isLastLoggedInUserOutdated = false;
       print("Searching for last logged in user");
       if (lastLoggedInUserIsTeacher!)
       {

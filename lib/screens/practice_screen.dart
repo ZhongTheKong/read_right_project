@@ -269,6 +269,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
                           Flexible(
                             child: ElevatedButton.icon(
                               onPressed: () async {
+
+                                print("start recording button pressed");
                             
                                 final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
                                 final wordListName = sessionProvider.word_list_name;

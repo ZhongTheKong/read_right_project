@@ -32,6 +32,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
 
     SessionProvider sessionProvider = context.read<SessionProvider>();
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+    allUsersProvider.allUserData.isLastLoggedInUserOutdated = true;
     // print("last logged in user username: ${lastLoggedInUser == null ? 'null' : lastLoggedInUser.username}");
     // print(lastLoggedInUser.runtimeType);
 
