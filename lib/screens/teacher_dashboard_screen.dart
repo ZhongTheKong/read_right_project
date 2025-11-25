@@ -1,6 +1,8 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
+import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/attempt.dart';
 import 'package:read_right_project/utils/routes.dart';
@@ -67,6 +69,8 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
     AllUsersProvider allUsersProvider = context.watch<AllUsersProvider>();
     studentUsers = allUsersProvider.allUserData.studentUserDataList;
     final studentNames = studentUsers.map((student) => student.username).toList();
+    RecordingProvider recordingProvider = context.watch<RecordingProvider>();
+
 
     return Scaffold(
       appBar: AppBar(
@@ -161,6 +165,7 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                 itemCount: filteredAttempts.length,
                 itemBuilder: (context, index) {
                   final attempt = filteredAttempts[index];
+                  final exists = File(attempt.filePath).existsSync();
                   return Card(
                     child: ListTile(
                       leading: CircleAvatar(
@@ -171,6 +176,13 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                       title: Text(attempt.word, style: TextStyle(fontWeight: FontWeight.bold)),
                       subtitle: Text('Date: ${attempt.createdAt.toLocal().toString().substring(0, 16)}'),
                       // You could add a play button here later if needed
+                      trailing: IconButton(
+                        icon: const Icon(Icons.play_arrow),
+                        tooltip: 'Play Recording',
+                        onPressed: (!exists || recordingProvider.isPlaying)
+                            ? null // Disable button if file doesn't exist or already playing
+                            : () => recordingProvider.play(attempt.filePath),
+                      ),
                     ),
                   );
                 },
