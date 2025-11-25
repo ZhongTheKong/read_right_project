@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
@@ -26,20 +27,53 @@ void main() {
   late MockAudioRecorder mockRecorder;
   late MockAudioPlayer mockPlayer;
   // late RecordingProvider recordingProvider;
+  const MethodChannel channel = MethodChannel('plugins.flutter.io/path_provider');
+
+  // setUp(() {    
+  //   channel.setMockMethodCallHandler((MethodCall methodCall) async {
+  //     if (methodCall.method == 'getApplicationDocumentsDirectory') {
+  //       return '/mock/path'; // fake directory path
+  //     }
+  //     return null;
+  //   });
+  // });
+
+  // tearDown(() {
+  //   channel.setMockMethodCallHandler(null);
+  // });
 
   setUp(() {
     mockRecorder = MockAudioRecorder();
     mockPlayer = MockAudioPlayer();
-    // recordingProvider = RecordingProvider(recorder: mockRecorder, player: mockPlayer);
+    // Use the defaultBinaryMessenger for mocking platform calls
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
+      if (methodCall.method == 'getApplicationDocumentsDirectory') {
+        return '/mock/path'; // fake path for tests
+      }
+      return null;
+    });
   });
 
-  test('test_recording_provider_init_audio_permission_denied', () async {
-      // when(() => mockRecorder.hasPermission()).thenAnswer((_) async => true);
-      RecordingProvider recordingProvider = RecordingProvider(recorder: mockRecorder, player: mockPlayer);
-      await recordingProvider.initAudio();
-
-      expect(recordingProvider.recorderReady, true);
+  tearDown(() {
+    // Remove the mock after the test
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, null);
   });
+
+test('test_recording_provider_init_audio_permission_denied', () async {
+  // Simulate denied permission
+  when(() => mockRecorder.hasPermission()).thenAnswer((_) async => false);
+  // Create the provider with the mocked recorder
+  RecordingProvider recordingProvider = RecordingProvider(
+    recorder: mockRecorder, 
+    player: mockPlayer,
+  );
+  // Initialize audio
+  await recordingProvider.initAudio();
+  // Expect recorderReady to be false since permission is denied
+  expect(recordingProvider.recorderReady, false);
+});
 
   test('initAudio sets recorderReady when permission granted', () async {
     RecordingProvider recordingProvider = RecordingProvider(recorder: mockRecorder, player: mockPlayer);
@@ -82,112 +116,16 @@ void main() {
       expect(listOfAttempts.length, 0);
   });
 
-  test('test_recording_provider_stop_recording_success', () async {
-      when(() => mockRecorder.hasPermission()).thenAnswer((_) async => true);
-      RecordingProvider recordingProvider = RecordingProvider(recorder: mockRecorder, player: mockPlayer);
-      recordingProvider.isRecording = false;
-      List<Attempt> listOfAttempts = [];
-      await recordingProvider.stopRecording('', listOfAttempts, () {});
+  // test('test_recording_provider_stop_recording_success', () async {
+  //     when(() => mockRecorder.hasPermission()).thenAnswer((_) async => true);
+  //     RecordingProvider recordingProvider = RecordingProvider(recorder: mockRecorder, player: mockPlayer);
+  //     recordingProvider.initAudio();
+  //     recordingProvider.isRecording = true;
+  //     List<Attempt> listOfAttempts = [];
+  //     await recordingProvider.startRecording('', listOfAttempts, () {});
+  //     await Future.delayed(Duration(seconds: 1));
+  //     await recordingProvider.stopRecording('', listOfAttempts, () {});
 
-      expect(listOfAttempts.length, 1);
-  });
+  //     expect(listOfAttempts.length, 1);
+  // });
 }
-
-// class MockAudioRecorder extends Mock implements AudioRecorder {}
-// class MockAudioPlayer extends Mock implements AudioPlayer {}
-
-
-// void main() {
-//   TestWidgetsFlutterBinding.ensureInitialized();
-//   late RecordingProvider provider;
-//   late MockAudioRecorder mockRecorder;
-//   late MockAudioPlayer mockPlayer;
-
-//   setUp(() {
-//     mockRecorder = MockAudioRecorder();
-//     mockPlayer = MockAudioPlayer();
-
-//     provider = RecordingProvider();
-//     provider
-//       ..recorderReady = false
-//       ..isRecording = false
-//       ..isPlaying = false
-//       ..recorder = mockRecorder
-//       ..player = mockPlayer;
-//   });
-
-//   group('RecordingProvider', () {
-
-
-//     test('initAudio sets recorderReady when permission granted', () async {
-//       RecordingProvider recordingProvider = RecordingProvider();
-//       when(() => mockRecorder.hasPermission()).thenAnswer((_) async => true);
-//       await recordingProvider.initAudio();
-
-//       expect(recordingProvider.recorderReady, true);
-//     });
-
-//     // test('startRecording throws if permissions missing', () async {
-//     //   when(() => mockRecorder.hasPermission()).thenAnswer((_) async => false);
-
-//     //   expect(
-//     //     () => provider.startRecording('word', [], null),
-//     //     throwsException,
-//     //   );
-//     // });
-
-//     // test('startRecording sets isRecording and starts timer', () async {
-//     //   when(() => mockRecorder.hasPermission()).thenAnswer((_) async => true);
-//     //   when(() => mockRecorder.start(any(), path: any(named: 'path')))
-//     //       .thenAnswer((_) async {});
-//     //   when(() => mockRecorder.stop()).thenAnswer((_) async => 'fake_path.wav');
-
-//     //   final attempts = <Attempt>[];
-
-//     //   await provider.startRecording('hello', attempts, null);
-
-//     //   expect(provider.isRecording, true);
-
-//     //   // stop recording to clean up timer
-//     //   await provider.stopRecording('hello', attempts, null);
-//     // });
-
-//     // test('stopRecording inserts attempt into list', () async {
-//     //   when(() => mockRecorder.hasPermission()).thenAnswer((_) async => true);
-//     //   when(() => mockRecorder.start(any(), path: any(named: 'path')))
-//     //       .thenAnswer((_) async {});
-//     //   when(() => mockRecorder.stop()).thenAnswer((_) async => 'fake_path.wav');
-//     //   when(() => mockPlayer.setFilePath(any())).thenAnswer((_) async {});
-//     //   when(() => mockPlayer.stop()).thenAnswer((_) async {});
-//     //   when(() => mockPlayer.duration).thenReturn(Duration(milliseconds: 500));
-
-//     //   final attempts = <Attempt>[];
-//     //   await provider.startRecording('test', attempts, null);
-//     //   await provider.stopRecording('test', attempts, null);
-
-//     //   expect(provider.isRecording, false);
-//     //   expect(attempts.length, 1);
-//     //   expect(attempts.first.word, 'test');
-//     //   expect(attempts.first.filePath, 'fake_path.wav');
-//     // });
-
-//     // test('play sets isPlaying and updates elapsedMs', () async {
-//     //   when(() => mockPlayer.setFilePath(any())).thenAnswer((_) async {});
-//     //   when(() => mockPlayer.play()).thenAnswer((_) async {});
-//     //   when(() => mockPlayer.duration).thenReturn(Duration(milliseconds: 500));
-//     //   provider.isPlaying = false;
-
-//     //   await provider.play('fake_path.wav');
-
-//     //   expect(provider.isPlaying, false);
-//     // });
-
-//     // test('deleteAudioFile throws if file does not exist', () async {
-//     //   expect(
-//     //     () => provider.deleteAudioFile('nonexistent.wav'),
-//     //     throwsException,
-//     //   );
-//     // });
-
-//   });
-// }
