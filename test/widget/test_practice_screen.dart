@@ -1,135 +1,143 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_test/flutter_test.dart';
-// import 'package:provider/provider.dart';
-// import 'package:read_right_project/providers/all_users_provider.dart';
-// import 'package:read_right_project/providers/session_provider.dart';
-// import 'package:read_right_project/providers/recording_provider.dart';
-// import 'package:read_right_project/screens/practice_screen.dart';
-// import 'package:read_right_project/utils/word.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
+import 'package:provider/provider.dart';
+import 'package:read_right_project/providers/all_users_provider.dart';
+import 'package:read_right_project/providers/session_provider.dart';
+import 'package:read_right_project/providers/recording_provider.dart';
+import 'package:read_right_project/screens/practice_screen.dart';
+import 'package:read_right_project/utils/all_users_data.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
+import 'package:read_right_project/utils/word.dart';
 
-// // ----- FAKE PROVIDERS -----
-// class FakeRecordingProvider extends RecordingProvider {
-//   @override
-//   bool isAudioRetentionEnabled = true;
+// Mock classes
+class MockRecordingProvider extends Mock implements RecordingProvider {}
+class MockSessionProvider extends Mock implements SessionProvider {}
+class MockAllUsersProvider extends Mock implements AllUsersProvider {}
 
-//   @override
-//   bool isRecording = false;
+// flutter test test/widget/test_practice_screen.dart
 
-//   @override
-//   int elapsedMs = 0;
+void main() {
+  late MockRecordingProvider mockRecordingProvider;
+  late MockSessionProvider mockSessionProvider;
+  late MockAllUsersProvider mockAllUsersProvider;
 
-//   @override
-//   Future<void> initAudio() async {
-//     // simulate audio initialization
-//     return;
-//   }
+  setUp(() {
+    mockRecordingProvider = MockRecordingProvider();
+    mockSessionProvider = MockSessionProvider();
+    mockAllUsersProvider = MockAllUsersProvider();
 
-//   @override
-//   Future<void> startRecording(String word, List attempts, VoidCallback? onFinish) async {
-//     isRecording = true;
-//     notifyListeners();
-//   }
+    // Default stubs
+    when(() => mockRecordingProvider.initAudio()).thenAnswer((_) async {});
+    when(() => mockRecordingProvider.startRecording(any(), any(), any())).thenAnswer(
+      (_) async { 
+        await Future.delayed(const Duration(seconds: 1));
+      }
+    );
+    when(() => mockRecordingProvider.stopRecording(any(), any(), any())).thenAnswer(
+      (_) async { 
+        await Future.delayed(const Duration(seconds: 1));
+      }
+    );
+    when(() => mockRecordingProvider.isAudioRetentionEnabled).thenReturn(true);
+    when(() => mockRecordingProvider.elapsedMs).thenReturn(0);
 
-//   @override
-//   Future<void> stopRecording(String word, List attempts, VoidCallback? onFinish) async {
-//     isRecording = false;
-//     notifyListeners();
-//   }
-// }
+    when(() => mockSessionProvider.word_list).thenReturn([
+      // Minimal dummy Word object
+      Word(grade: 'Great', text: "Bob")
+    ]);
+    when(() => mockSessionProvider.index).thenReturn(0);
+    when(() => mockSessionProvider.word_list_name).thenReturn("Test List");
+    when(() => mockSessionProvider.listComplete).thenReturn(false);
 
-// class FakeSessionProvider extends SessionProvider {
-//   @override
-//   List<Word> word_list = [Word(text: 'apple', grade: 'A')];
-//   @override
-//   int index = 0;
+    when(() => mockAllUsersProvider.allUserData).thenReturn(
+      AllUserData(
+        lastLoggedInUserIsTeacher: null, 
+        lastLoggedInUserUsername: null, 
+        studentUserDataList: [StudentUserData(firstName: '', lastName: '', username: '', password: '', isTeacher: false, word_list_attempts: {})], 
+        teacherUserDataList: []
+      )
+    );
 
-//   @override
-//   bool listComplete = false;
+    when(() => mockSessionProvider.loadWordList(any()))
+      .thenAnswer(
+        (_) async { 
+          await Future.delayed(const Duration(seconds: 1));
+        }
+      ); // returns a Future<void>
+  });
 
-//   @override
-//   String word_list_name = 'seed_words.csv';
+  testWidgets('Record button triggers startRecording', (tester) async {
+    await tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          ChangeNotifierProvider<RecordingProvider>.value(value: mockRecordingProvider),
+          ChangeNotifierProvider<SessionProvider>.value(value: mockSessionProvider),
+          ChangeNotifierProvider<AllUsersProvider>.value(value: mockAllUsersProvider),
+        ],
+        child: MaterialApp(home: PracticeScreen()),
+      ),
+    );
 
-//   @override
-//   Future<void> loadWordList(String path) async {
-//     return;
-//   }
+    // Wait for FutureBuilders to complete
+    await tester.pumpAndSettle();
+    // await Future.delayed(const Duration(seconds: 1));
 
-//   @override
-//   void nextWord(bool something) {
-//     index++;
-//   }
+    final recordButton = find.widgetWithText(ElevatedButton, 'Record');
+    expect(recordButton, findsOneWidget);
 
-//   @override
-//   int selectedIndex = 0;
-// }
+    await tester.tap(recordButton);
+    await tester.pump();
 
-// class FakeAllUsersProvider extends AllUsersProvider {
-//   // @override
-//   // dynamic allUserData = {
-//   //   'lastLoggedInUser': StudentUserData()
-//   // };
+    verify(() => mockRecordingProvider.startRecording(any(), any(), any())).called(1);
+  });
 
-//   // @override
-//   // void saveCurrentUserData() {}
-// }
+  // testWidgets('Stop button triggers stopRecording', (tester) async {
+  //   await tester.pumpWidget(
+  //     MultiProvider(
+  //       providers: [
+  //         ChangeNotifierProvider<RecordingProvider>.value(value: mockRecordingProvider),
+  //         ChangeNotifierProvider<SessionProvider>.value(value: mockSessionProvider),
+  //         ChangeNotifierProvider<AllUsersProvider>.value(value: mockAllUsersProvider),
+  //       ],
+  //       child: MaterialApp(home: PracticeScreen()),
+  //     ),
+  //   );
 
-// // ----- WIDGET TESTS -----
-// void main() {
-//   Widget makeTestableWidget(Widget child) {
-//     return MultiProvider(
-//       providers: [
-//         ChangeNotifierProvider<RecordingProvider>(
-//           create: (_) => FakeRecordingProvider(),
-//         ),
-//         ChangeNotifierProvider<SessionProvider>(
-//           create: (_) => FakeSessionProvider(),
-//         ),
-//         ChangeNotifierProvider<AllUsersProvider>(
-//           create: (_) => FakeAllUsersProvider(),
-//         ),
-//       ],
-//       child: MaterialApp(
-//       home: MediaQuery(
-//         data: const MediaQueryData(size: Size(800, 1200)), // make test screen bigger
-//         child: child,
-//       ),
-//     ),
-//     );
-//   }
+  //   await tester.pumpAndSettle();
 
-//   testWidgets('Displays word and grade', (WidgetTester tester) async {
-//     await tester.pumpWidget(makeTestableWidget(const PracticeScreen()));
-//     await tester.pumpAndSettle();
+  //   final stopButton = find.widgetWithText(ElevatedButton, 'Stop');
+  //   expect(stopButton, findsOneWidget);
 
-//     expect(find.text('Word #1\nGrade: A'), findsOneWidget);
-//     expect(find.text('apple'), findsOneWidget);
-//   });
+  //   await tester.tap(stopButton);
+  //   await tester.pump();
 
-//   testWidgets('Record button sets isRecording to true', (WidgetTester tester) async {
-//     await tester.pumpWidget(makeTestableWidget(const PracticeScreen()));
-//     await tester.pumpAndSettle();
+  //   verify(() => mockRecordingProvider.stopRecording(any(), any(), any())).called(1);
+  // });
 
-//     final recordButton = find.widgetWithIcon(ElevatedButton, Icons.mic);
-//     expect(recordButton, findsOneWidget);
+  // testWidgets('Progress button navigates to progress screen', (tester) async {
+  //   await tester.pumpWidget(
+  //     MultiProvider(
+  //       providers: [
+  //         ChangeNotifierProvider<RecordingProvider>.value(value: mockRecordingProvider),
+  //         ChangeNotifierProvider<SessionProvider>.value(value: mockSessionProvider),
+  //         ChangeNotifierProvider<AllUsersProvider>.value(value: mockAllUsersProvider),
+  //       ],
+  //       child: MaterialApp(
+  //         routes: {'/progress': (_) => const Scaffold(body: Text('Progress Screen'))},
+  //         home: PracticeScreen(),
+  //       ),
+  //     ),
+  //   );
 
-//     await tester.tap(recordButton);
-//     await tester.pump(); // rebuild after state change
+  //   await tester.pumpAndSettle();
 
-//     final recordingProvider = tester.widget<ChangeNotifierProvider<RecordingProvider>>(find.byType(ChangeNotifierProvider<RecordingProvider>)) as FakeRecordingProvider;
-//     expect(recordingProvider.isRecording, true);
-//   });
+  //   final progressButton = find.widgetWithText(ElevatedButton, 'View Progress');
+  //   expect(progressButton, findsOneWidget);
 
-//   testWidgets('Switch toggles audio retention', (WidgetTester tester) async {
-//     await tester.pumpWidget(makeTestableWidget(const PracticeScreen()));
-//     await tester.pumpAndSettle();
+  //   await tester.tap(progressButton);
+  //   await tester.pumpAndSettle();
 
-//     final switchFinder = find.byType(Switch);
-//     expect(switchFinder, findsOneWidget);
-
-//     await tester.tap(switchFinder);
-//     await tester.pump();
-
-//     final recordingProvider = tester.widget<ChangeNotifierProvider<RecordingProvider>>(find.byType(ChangeNotifierProvider<RecordingProvider>)) as FakeRecordingProvider;
-//     expect(recordingProvider.isAudioRetentionEnabled, false);
-//   });
-// }
+  //   expect(find.text('Progress Screen'), findsOneWidget);
+  // });
+}

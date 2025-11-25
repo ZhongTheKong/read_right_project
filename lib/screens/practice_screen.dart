@@ -146,8 +146,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      SizedBox(
-                        width: 800,
+                      Flexible(
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
@@ -193,7 +192,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
                     // WORD DISPLAY
                     Expanded(
                       child: SizedBox(
-                        width: 400,
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
@@ -258,7 +256,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
                     // RECORDING CONTROLS
                     Container(
-                      width: 450,
                       padding: const EdgeInsets.all(10),
                       margin: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -269,83 +266,89 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          ElevatedButton.icon(
-                            onPressed: () async {
+                          Flexible(
+                            child: ElevatedButton.icon(
+                              onPressed: () async {
+                            
+                                final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
+                                final wordListName = sessionProvider.word_list_name;
+                                // Ensure the key exists
+                                studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+                                // Now it's safe to access
+                                final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+                            
+                                try {
+                                  await recordingProvider.startRecording(
+                                    currentWord.text, // Pass the word text
+                                    attempts,
+                                    () { 
+                                      Navigator.pushReplacementNamed(context, AppRoutes.feedback); 
+                                    }
+                                  );
+                                  allUsersProvider.saveCurrentUserData();
+                            
+                                } catch (e) {
+                                  showDialog(
+                                    context: context, 
+                                    builder: (context) => AlertDialog(
+                                      title: Text("App Missing Microphone Permissions"),
+                                      content: Text("Microphone is disabled for this app. To utilize recording functionality, please enable microphone permissions for this app in device settings."),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          }, 
+                                          child: Text("Close")
+                                        ),
+                                      ],
+                                    )
+                                  );
+                                }
+                              },
+                              icon: const Icon(Icons.mic),
+                              label: const Text('Record'),
+                            ),
+                          ),
 
-                              final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
-                              final wordListName = sessionProvider.word_list_name;
-                              // Ensure the key exists
-                              studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
-                              // Now it's safe to access
-                              final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
-
-                              try {
-                                await recordingProvider.startRecording(
+                          Flexible(
+                            child: ElevatedButton.icon(
+                              onPressed: () async {
+                            
+                                final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
+                                final wordListName = sessionProvider.word_list_name;
+                                // Ensure the key exists
+                                studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+                                // Now it's safe to access
+                                final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+                            
+                                // print("Before stop recording: $attempts");
+                                await recordingProvider.stopRecording(
                                   currentWord.text, // Pass the word text
+                                  // sessionProvider.attempts,
                                   attempts,
                                   () { 
                                     Navigator.pushReplacementNamed(context, AppRoutes.feedback); 
                                   }
                                 );
+                                // print("After stop recording: $attempts");
+                                sessionProvider.selectedIndex = sessionProvider.index;
                                 allUsersProvider.saveCurrentUserData();
-
-                              } catch (e) {
-                                showDialog(
-                                  context: context, 
-                                  builder: (context) => AlertDialog(
-                                    title: Text("App Missing Microphone Permissions"),
-                                    content: Text("Microphone is disabled for this app. To utilize recording functionality, please enable microphone permissions for this app in device settings."),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        }, 
-                                        child: Text("Close")
-                                      ),
-                                    ],
-                                  )
-                                );
-                              }
-                            },
-                            icon: const Icon(Icons.mic),
-                            label: const Text('Record'),
+                            
+                                setState(() {});
+                              },
+                              icon: const Icon(Icons.stop_circle_outlined),
+                              label: const Text('Stop'),
+                            ),
                           ),
 
-                          ElevatedButton.icon(
-                            onPressed: () async {
-
-                              final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
-                              final wordListName = sessionProvider.word_list_name;
-                              // Ensure the key exists
-                              studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
-                              // Now it's safe to access
-                              final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
-
-                              // print("Before stop recording: $attempts");
-                              await recordingProvider.stopRecording(
-                                currentWord.text, // Pass the word text
-                                // sessionProvider.attempts,
-                                attempts,
-                                () { 
-                                  Navigator.pushReplacementNamed(context, AppRoutes.feedback); 
-                                }
-                              );
-                              // print("After stop recording: $attempts");
-                              sessionProvider.selectedIndex = sessionProvider.index;
-                              allUsersProvider.saveCurrentUserData();
-
-                              setState(() {});
-                            },
-                            icon: const Icon(Icons.stop_circle_outlined),
-                            label: const Text('Stop'),
-                          ),
-
-                          ElevatedButton.icon(
-                            onPressed: () {
-                              sessionProvider.nextWord(false);
-                            }, 
-                            icon: Icon(Icons.play_arrow),
-                            label: Text("Next (TEMP)")
+                          Flexible(
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                sessionProvider.nextWord(false);
+                              }, 
+                              icon: Icon(Icons.play_arrow),
+                              label: Text("Next (TEMP)")
+                            ),
                           )
 
                           // const SizedBox(width: 20),
@@ -379,7 +382,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
                     // FEEDBACK CONTROLS
                     Container(
-                      width: 500,
                       padding: const EdgeInsets.all(10),
                       margin: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -397,17 +399,21 @@ class _PracticeScreenState extends State<PracticeScreen> {
                           //   },
                           //   child: const Text('Review Feedback'),
                           // ),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, AppRoutes.wordList);
-                            },
-                            child: const Text('Go to Word List'),
+                          Flexible(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, AppRoutes.wordList);
+                              },
+                              child: const Text('Go to Word List'),
+                            ),
                           ),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, AppRoutes.progress);
-                            },
-                            child: const Text('View Progress'),
+                          Flexible(
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pushNamed(context, AppRoutes.progress);
+                              },
+                              child: const Text('View Progress'),
+                            ),
                           ),
                         ],
                       ),

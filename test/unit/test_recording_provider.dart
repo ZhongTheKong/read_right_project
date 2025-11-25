@@ -14,6 +14,8 @@ import 'package:just_audio/just_audio.dart';
 import 'package:read_right_project/utils/attempt.dart';
 import 'dart:async';
 
+// flutter test test/unit/test_recording_provider.dart
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   // test('test_recording_provider_init_audio_permission_granted', () async {
