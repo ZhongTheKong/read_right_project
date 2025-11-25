@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
-import 'package:read_right_project/utils/user_data.dart';
+import 'package:read_right_project/utils/attempt.dart';
 
 class TeacherDashboardScreen extends StatefulWidget {
   @override
@@ -20,25 +20,35 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
   // This hardcoded list will be replaced
   final lists = ['Primer', 'Pre-Primer', 'First', 'Second', 'Third'];
 
-  // --- REPLACED: This now filters the real student data ---
-  List<StudentUserData> get filteredStudents {
-    if (studentUsers.isEmpty) return [];
 
-    return studentUsers.where((student) {
-      // Match by student username
-      final matchStudent = selectedStudent == null || student.username == selectedStudent;
 
-      // Match by word list (This is a more complex filter for later)
-      // For now, we'll just check if the student has any attempts.
-      final matchList = selectedList == null || student.word_list_attempts.keys.any((key) => key.contains(selectedList!));
+  List<Attempt> get filteredAttempts {
+    if (studentUsers.isEmpty || selectedStudent == null) {
+      return []; // Return an empty list if no student is selected
+    }
 
-      // Match by date of any attempt (This is also complex)
-      // For now, we will just return the student if the other filters match.
-      // A more detailed implementation would iterate through all attempts.
-      final matchDate = selectedDate == null; // Simplified for now
+    // Use a try-catch block to safely find the student ---
+    try {
+      final student = studentUsers.firstWhere((s) => s.username == selectedStudent);
+      List<Attempt> allAttempts = student.word_list_attempts.values.expand((list) => list).toList();
+      // Data Filter
+      if (selectedDate != null) {
+        allAttempts = allAttempts.where((attempt) {
+          final attemptDate = attempt.createdAt;
+          // Compare year, month, and day to match the entire day
+          return attemptDate.year == selectedDate!.year &&
+              attemptDate.month == selectedDate!.month &&
+              attemptDate.day == selectedDate!.day;
+        }).toList();
+      }
 
-      return matchStudent; //&& matchList && matchDate;
-    }).toList();
+      allAttempts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      return allAttempts;
+    } catch (e) {
+      // If firstWhere throws an error (student not found), catch it and return an empty list.
+      print("Could not find the selected student: $selectedStudent. Error: $e");
+      return [];
+    }
   }
 
   Future<void> _pickDate(BuildContext context) async {
@@ -57,13 +67,8 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // --- FIX 1: Get the AllUsersProvider ---
     AllUsersProvider allUsersProvider = context.watch<AllUsersProvider>();
-
-    // --- FIX 2: Get the list of actual student users ---
     studentUsers = allUsersProvider.allUserData.studentUserDataList;
-
-    // Create a list of student names for the dropdown
     final studentNames = studentUsers.map((student) => student.username).toList();
 
     return Scaffold(
@@ -78,7 +83,6 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                // --- FIX 3: Use the dynamic list of student names ---
                 DropdownButton<String>(
                   hint: Text('Select Student'),
                   value: selectedStudent,
@@ -117,28 +121,38 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                 ),
               ],
             ),
-            SizedBox(height: 20),
-            // Class Overview
-            Expanded(
-              // --- FIX 4: Build the list from the filtered real data ---
-              child: ListView.builder(
-                itemCount: filteredStudents.length,
-                itemBuilder: (context, index) {
-                  final student = filteredStudents[index];
-                  // You can now access any property of the StudentUserData object
-                  // For example, let's find the total number of attempts.
-                  final totalAttempts = student.word_list_attempts.values
-                      .fold(0, (sum, list) => sum + list.length);
+            Align(
+              alignment: Alignment.centerRight,
+              child: TextButton(
+                onPressed: () {
+                  setState(() {
+                    selectedStudent = null;
+                    selectedList = null;
+                    selectedDate = null;
+                  });
+                },
+                child: Text("Clear Filters"),
+              ),
+            ),
 
+            SizedBox(height: 10),
+            Expanded(
+              child: selectedStudent == null
+                  ? Center(child: Text('Please select a student to see their attempts.'))
+                  : ListView.builder(
+                itemCount: filteredAttempts.length,
+                itemBuilder: (context, index) {
+                  final attempt = filteredAttempts[index];
                   return Card(
                     child: ListTile(
-                      title: Text(student.username),
-                      subtitle: Text('Total Attempts: $totalAttempts'),
-                      // You could add a trailing icon or button to navigate to a detailed view
-                      trailing: Icon(Icons.arrow_forward_ios),
-                      onTap: () {
-                        // TODO: Navigate to a detailed progress screen for this student
-                      },
+                      leading: CircleAvatar(
+                        child: Text('${(attempt.score * 100).toStringAsFixed(0)}'),
+                        backgroundColor: attempt.score > 0.7 ? Colors.green : Colors.orange,
+                        foregroundColor: Colors.white,
+                      ),
+                      title: Text(attempt.word, style: TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle: Text('Date: ${attempt.createdAt.toLocal().toString().substring(0, 16)}'),
+                      // You could add a play button here later if needed
                     ),
                   );
                 },
