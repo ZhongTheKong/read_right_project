@@ -73,9 +73,23 @@ Milestone 2 Progress
 -Role->Login->Word List->Practice->Feedback->Progress done
 https://www.loom.com/share/cfcc6f2ced1a4ee780b94fa3f2b50da4
 
+Milestone 3 Progress
+-STT and Azure Speech Services are fully implemented
+-Teacher Dashboard is functional with real data
+-Updated Progress Screen's UI
+-Progress Screen shows more detailed analytics
+-General UI and navigation cleanup
+-General code improvements
+-Word list can now be navigated properly during practice
+-Unit Tests made and widget tests drafted
+
 SETUP NOTES:
 -If you want to use your own CSV file, name it "seed_words.csv" and format it 
 in the same way as the current file in our assets folder before adding it to the assets folder.
+-In the root directory, go into the "assets folder" and add a file named ".env". The file's contents should look like this:
+    AZURE_SPEECH_KEY="AZURE SPEECH SERVICE KEY"
+    AZURE_SPEECH_REGION="REGION"
+
 -When running the app, sign in as a student. Make an account and enter the required information.
 -Log in with your new account. 
 -Click Go Practice to go to the practice screen. Or, you can sign out from here.
@@ -87,6 +101,8 @@ in the same way as the current file in our assets folder before adding it to the
 -Click View Progress to go to the progress screen
 -Click Next(temp) to advance to the next word. Eventually you will finish the list and recieve a message.
 -Click Go to Word List to go back to the main screen.
+-From the main screen, you can sign in as a teacher to go to the teacher dashboard
+-You can view the attempts of various students here
 
 KNOWN ISSUES and Future Goals:
 -Get STT and Azure AI to work with Android Studio
