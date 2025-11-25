@@ -14,19 +14,14 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
   String? selectedList;
   DateTime? selectedDate;
 
-  // This will be populated from the provider
   List<StudentUserData> studentUsers = [];
 
-  // This hardcoded list will be replaced
   final lists = ['Primer', 'Pre-Primer', 'First', 'Second', 'Third'];
-
-
 
   List<Attempt> get filteredAttempts {
     if (studentUsers.isEmpty || selectedStudent == null) {
       return []; // Return an empty list if no student is selected
     }
-
     // Use a try-catch block to safely find the student ---
     try {
       final student = studentUsers.firstWhere((s) => s.username == selectedStudent);
@@ -146,8 +141,8 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                   return Card(
                     child: ListTile(
                       leading: CircleAvatar(
-                        child: Text('${(attempt.score * 100).toStringAsFixed(0)}'),
-                        backgroundColor: attempt.score > 0.7 ? Colors.green : Colors.orange,
+                        child: Text('${(attempt.score).toStringAsFixed(0)}'),
+                        backgroundColor: attempt.score > 70 ? Colors.green : Colors.orange,
                         foregroundColor: Colors.white,
                       ),
                       title: Text(attempt.word, style: TextStyle(fontWeight: FontWeight.bold)),
