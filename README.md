@@ -105,9 +105,10 @@ in the same way as the current file in our assets folder before adding it to the
 -You can view the attempts of various students here
 
 KNOWN ISSUES and Future Goals:
--Get STT and Azure AI to work with Android Studio
 -Touch up UI
--Save progress in word list separately per student
--Implement Teacher Dashboard with real/json data
+-Save index in word list separately per student
 -Export CSV/JSON with date ranges from Teacher Dashboard/Progress Screen
--Fix bug that requires users to delete/overwrite account information if their json format is outdated
+-Get widget tests to work properly
+-Add additional accessability options
+-Add samples for words
+-Add minimal pairs
