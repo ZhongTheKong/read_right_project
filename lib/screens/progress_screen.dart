@@ -70,12 +70,13 @@ class _ProgressScreenState extends State<ProgressScreen> {
 
     int numberOfAttempts = attempts.length;
     double highestScore = 0.0;
+    double averageScore = 0.0;
     String mostMissedWord = 'N/A';
 
     if (attempts.isNotEmpty) {
       // Calculate Highest Score
       highestScore = attempts.map((a) => a.score).reduce((a, b) => a > b ? a : b);
-
+      averageScore = attempts.fold(0.0, (sum, item) => sum + item.score) / attempts.length;
       final missedWords = attempts
           .where((attempt) => attempt.score < 70)
           .map((attempt) => attempt.word)
@@ -117,13 +118,12 @@ class _ProgressScreenState extends State<ProgressScreen> {
                       ],
                     ),
                     const SizedBox(height: 12),
-                    const Text(
-                      'Most Missed Word:',
-                      style: TextStyle(fontSize: 16, color: Colors.black54),
-                    ),
-                    Text(
-                      mostMissedWord,
-                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.redAccent),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildStatColumn('Most Missed Word:', mostMissedWord),
+                        _buildStatColumn('Average Score', '${averageScore.toStringAsFixed(0)}%'),
+                      ],
                     ),
                   ],
                 ),
