@@ -18,7 +18,7 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
   List<StudentUserData> studentUsers = [];
 
   // This hardcoded list will be replaced
-  final lists = ['Pre-Primer, Primer, First, Second, Third'];
+  final lists = ['Primer', 'Pre-Primer', 'First', 'Second', 'Third'];
 
   // --- REPLACED: This now filters the real student data ---
   List<StudentUserData> get filteredStudents {
