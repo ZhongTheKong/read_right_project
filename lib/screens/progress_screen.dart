@@ -68,54 +68,126 @@ class _ProgressScreenState extends State<ProgressScreen> {
     final List<Attempt> attempts =
         student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
 
+    int numberOfAttempts = attempts.length;
+    double highestScore = 0.0;
+    String mostMissedWord = 'N/A';
+
+    if (attempts.isNotEmpty) {
+      // Calculate Highest Score
+      highestScore = attempts.map((a) => a.score).reduce((a, b) => a > b ? a : b);
+
+      final missedWords = attempts
+          .where((attempt) => attempt.score < 70)
+          .map((attempt) => attempt.word)
+          .toList();
+
+      if (missedWords.isNotEmpty) {
+        final wordCounts = <String, int>{};
+        for (var word in missedWords) {
+          wordCounts[word] = (wordCounts[word] ?? 0) + 1;
+        }
+        mostMissedWord = wordCounts.entries.reduce((a, b) => a.value > b.value ? a : b).key;
+      }
+    }
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Progress Screen')),
-      body: attempts.isEmpty
-          ? const Center(child: Text('No attempts yet'))
-          : ListView.builder(
+      appBar: AppBar(title: const Text('Your Progress Summary')),
+      body: Column(
+        children: [
+          // --- 3. Display Statistics in a Summary Card ---
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Card(
+              elevation: 4,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'Hi, ${student?.firstName ?? "Student"}!',
+                      style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildStatColumn('Attempts', '$numberOfAttempts'),
+                        _buildStatColumn('Highest Score', '${(highestScore).toStringAsFixed(0)}%'),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Most Missed Word:',
+                      style: TextStyle(fontSize: 16, color: Colors.black54),
+                    ),
+                    Text(
+                      mostMissedWord,
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.redAccent),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const Divider(thickness: 1),
+          const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Text(
+              "Attempt History",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+          ),
+          // --- 4. Display List of Attempts ---
+          Expanded(
+            child: attempts.isEmpty
+                ? const Center(child: Text('No attempts yet. Time to practice!'))
+                : ListView.builder(
               itemCount: attempts.length,
               itemBuilder: (context, i) {
                 final iterAttempt = attempts[i];
                 final exists = File(iterAttempt.filePath).existsSync();
 
                 return ListTile(
-                  title: Text(iterAttempt.word),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Attempt ${ (student?.word_list_attempts[sessionProvider.word_list_name]?.length ?? 0) - i}, Duration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s',
-                      ),
-                      Text("Azure: ${iterAttempt.score}"),
-                      // Display Azure results
-                      // FutureBuilder<String>(
-                      //   future: getAzureResult(iterAttempt.filePath, iterAttempt.word),
-                      //   builder: (context, snapshot) {
-                      //     if (snapshot.connectionState == ConnectionState.waiting) {
-                      //       return const Text("Loading Azure result...");
-                      //     } else if (snapshot.hasError) {
-                      //       return Text("Error: ${snapshot.error}");
-                      //     } else {
-                      //       return Text("Azure: ${snapshot.data}");
-                      //     }
-                      //   },
-                      // ),
-                    ],
+                  leading: CircleAvatar(
+                    child: Text('${(iterAttempt.score).toStringAsFixed(0)}'),
+                    backgroundColor: iterAttempt.score > 70 ? Colors.green : Colors.orange,
+                    foregroundColor: Colors.white,
                   ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.play_arrow),
-                        onPressed: (!exists || recordingProvider.isPlaying)
-                            ? null
-                            : () => recordingProvider.play(iterAttempt.filePath),
-                      ),
-                    ],
+                  title: Text(iterAttempt.word, style: const TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text(
+                    'Duration: ~${(iterAttempt.durationMs / 1000).toStringAsFixed(1)}s',
+                  ),
+                  trailing: IconButton(
+                    icon: const Icon(Icons.play_arrow),
+                    tooltip: 'Play Recording',
+                    onPressed: (!exists || recordingProvider.isPlaying)
+                        ? null // Disable button if file doesn't exist or already playing
+                        : () => recordingProvider.play(iterAttempt.filePath),
                   ),
                 );
               },
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Helper widget for displaying a statistic
+  Widget _buildStatColumn(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: const TextStyle(fontSize: 16, color: Colors.black54),
+        ),
+        Text(
+          value,
+          style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
+      ],
     );
   }
 }
