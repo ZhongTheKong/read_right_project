@@ -16,7 +16,7 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
 
   List<StudentUserData> studentUsers = [];
 
-  final lists = ['Primer', 'Pre-Primer', 'First', 'Second', 'Third'];
+  //final lists = ['Primer', 'Pre-Primer', 'First', 'Second', 'Third'];
 
   List<Attempt> get filteredAttempts {
     if (studentUsers.isEmpty || selectedStudent == null) {
@@ -93,6 +93,7 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                     });
                   },
                 ),
+                /*
                 DropdownButton<String>(
                   hint: Text('Select List'),
                   value: selectedList,
@@ -108,6 +109,7 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                     });
                   },
                 ),
+                */
                 ElevatedButton(
                   onPressed: () => _pickDate(context),
                   child: Text(selectedDate == null
