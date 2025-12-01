@@ -151,90 +151,119 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
         // );
 
         return Scaffold(
-          body: Column(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      sessionProvider.isTeacher = false;
-                      
-                      if (allUsersProvider.allUserData.lastLoggedInUser is StudentUserData) {
-                        print("Last logged in user recognized as a student");
-                        Navigator.pushReplacementNamed(context, AppRoutes.wordList);
-                      }
-                      else {
-                        print("Last logged in user not recognized as a student");
-                        Navigator.pushReplacementNamed(context, AppRoutes.login);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      shape: LinearBorder()
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.child_care,
-                            size: 60,
-                            color: Colors.black,
+          body: Stack(
+            children: [
+              
+              Column(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          sessionProvider.isTeacher = false;
+                          
+                          if (allUsersProvider.allUserData.lastLoggedInUser is StudentUserData) {
+                            print("Last logged in user recognized as a student");
+                            Navigator.pushReplacementNamed(context, AppRoutes.wordList);
+                          }
+                          else {
+                            print("Last logged in user not recognized as a student");
+                            Navigator.pushReplacementNamed(context, AppRoutes.login);
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          shape: LinearBorder()
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.child_care,
+                                size: 60,
+                                color: Colors.black,
+                              ),
+                              Text(
+                                "Student",
+                                style: TextStyle(
+                                  fontSize: 60,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
-                            "Student",
-                            style: TextStyle(
-                              fontSize: 60,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      sessionProvider.isTeacher = true;
-                      if (allUsersProvider.allUserData.lastLoggedInUser is TeacherUserData) {
-                        // print("Last logged in user recognized as a student");
-                        Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
-                      }
-                      else {
-                        // print("Last logged in user not recognized as a teacher");
-                        Navigator.pushReplacementNamed(context, AppRoutes.login);
-                      }
-                      Navigator.pushReplacementNamed(context, AppRoutes.login);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      shape: LinearBorder()
-                    ),
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.school,
-                            size: 60,
-                            color: Colors.black
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          sessionProvider.isTeacher = true;
+                          if (allUsersProvider.allUserData.lastLoggedInUser is TeacherUserData) {
+                            // print("Last logged in user recognized as a student");
+                            Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
+                          }
+                          else {
+                            // print("Last logged in user not recognized as a teacher");
+                            Navigator.pushReplacementNamed(context, AppRoutes.login);
+                          }
+                          Navigator.pushReplacementNamed(context, AppRoutes.login);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          shape: LinearBorder()
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.school,
+                                size: 60,
+                                color: Colors.black
+                              ),
+                              Text(
+                                "Teacher",
+                                style: TextStyle(
+                                  fontSize: 60,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
-                            "Teacher",
-                            style: TextStyle(
-                              fontSize: 60,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ),
+                  ],
+                ),
+
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    // crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {}, 
+                        label: Text(
+                          "SAVE"
+                        ),
+                        icon: Icon(Icons.save)
+                      ),
+                      SizedBox(width: 20,),
+                      ElevatedButton.icon(
+                        onPressed: () {}, 
+                        label: Text(
+                          "UPLOAD"
+                        ),
+                        icon: Icon(Icons.upload)
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+            ],
+          ),
         );
       },
     );

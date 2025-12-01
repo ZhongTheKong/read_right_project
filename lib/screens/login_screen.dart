@@ -136,6 +136,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 Navigator.pushReplacementNamed(context, AppRoutes.create_account);
               },
               child: Text("Create account"),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, AppRoutes.role);
+              },
+              child: Text("Change Roles"),
             )
           ],
         ),
