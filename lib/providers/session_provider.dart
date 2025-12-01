@@ -4,7 +4,10 @@ import 'package:flutter/services.dart' show rootBundle; // Import rootBundle
 import 'package:csv/csv.dart'; // Import the CSV package
 import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/utils/attempt.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
+import 'package:read_right_project/utils/word_list_progression_data.dart';
 import 'package:record/record.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -136,6 +139,16 @@ class SessionProvider extends ChangeNotifier {
     // if (isCorrect != 'Needs work') {
       String prev = word_list[index].grade;
       incrementIndex(1);
+      // AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+      // final currentUser = allUsersProvider.allUserData.lastLoggedInUser;
+      // final StudentUserData? student = currentUser is StudentUserData ? currentUser : null;
+      // final WordListProgressionData? wordListProgressionData =
+      //     // student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
+      //     student?.word_list_progression_data[word_list_name];
+      // if (wordListProgressionData != null) {
+      //   wordListProgressionData.currIndex++;
+      // }
+          
       print('Next word: ${word_list[index].text}');
       if (prev != word_list[index].grade) {
         listComplete = true;
