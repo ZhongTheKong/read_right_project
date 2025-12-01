@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:audio_session/audio_session.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
+import 'package:read_right_project/utils/save_file_to_folder.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/teacher_user_data.dart';
 import 'package:read_right_project/utils/user_data.dart';
@@ -245,7 +247,9 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                     // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ElevatedButton.icon(
-                        onPressed: () {}, 
+                        onPressed: () async {
+                          await saveExistingJsonToUserLocation(context, await allUsersProvider.getUserDataFilePath(), 'saveFileCopy.json');
+                        }, 
                         label: Text(
                           "SAVE"
                         ),
@@ -253,7 +257,9 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                       ),
                       SizedBox(width: 20,),
                       ElevatedButton.icon(
-                        onPressed: () {}, 
+                        onPressed: () async {
+                          await importJsonFile(context, await allUsersProvider.getUserDataFilePath());
+                        }, 
                         label: Text(
                           "UPLOAD"
                         ),
