@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
@@ -21,6 +24,40 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
   Future<void> _configureAudioSession() async {
     final session = await AudioSession.instance;
     await session.configure(const AudioSessionConfiguration.speech());
+  }
+
+  Future<void> replaceSaveFileWithSample() async {
+    AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+
+    // 1. Load bytes from the asset file
+    final byteData = await rootBundle.load('assets/sample_data.json');
+
+    // // 2. Get the save file path
+    // final directory = await getApplicationDocumentsDirectory();
+    // final saveDir = Directory('${directory.path}/read_right/save_data');
+
+    // Make sure folder exists
+    // if (!await saveDir.exists()) {
+    //   await saveDir.create(recursive: true);
+    // }
+    // final saveFile = File('${saveDir.path}/all_user_data.json');
+
+
+    final saveDirPath = await allUsersProvider.getUserDataFilePath();
+    final saveFile = File(saveDirPath);
+
+
+
+    // 3. Write bytes into the save file (overwrite if it already exists)
+    await saveFile.writeAsBytes(
+      byteData.buffer.asUint8List(
+        byteData.offsetInBytes,
+        byteData.lengthInBytes,
+      ),
+      flush: true,
+    );
+
+    print("Save file replaced: ${saveFile.path}");
   }
 
   @override
@@ -246,6 +283,19 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          await replaceSaveFileWithSample();
+                          setState(() {
+                            
+                          });
+                        }, 
+                        label: Text(
+                          "SAMPLE"
+                        ),
+                        icon: Icon(Icons.check_box_outline_blank)
+                      ),
+                      SizedBox(width: 20,),
                       ElevatedButton.icon(
                         onPressed: () async {
                           await saveExistingJsonToUserLocation(context, await allUsersProvider.getUserDataFilePath(), 'saveFileCopy.json');

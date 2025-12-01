@@ -42,4 +42,5 @@ flutter:
     - assets/seed_words.csv
     - assets/test.wav
     - assets/.env
+    - assets/sample_data.json
 

@@ -1,0 +1,191 @@
+{
+  "lastLoggedInUserUsername": null,
+  "lastLoggedInUserIsTeacher": null,
+  "studentUserDataList": [
+    {
+      "username": "johndoe",
+      "password": "1234",
+      "firstName": "John",
+      "lastName": "Doe",
+      "isTeacher": false,
+      "word_list_progression_data": {
+        "assets/seed_words.csv":  {
+          "wordListName": "assets/seed_words.csv",
+          "wordListPath": "assets/seed_words.csv",
+          "currIndex": 0,
+          "attempts": [
+            {
+            "word": "a",
+            "score": 88.0,
+            "filePath": "/data/user/0/com.example.read_right_project/app_flutter/readright_a_1764626806987.wav",
+            "durationMs": 2554,
+            "createdAt": "2025-12-01T17:06:50.505625"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "username": "janedoe",
+      "password": "1234",
+      "firstName": "Jane",
+      "lastName": "Doe",
+      "isTeacher": false,
+      "word_list_progression_data": {
+        "assets/seed_words.csv":  {
+          "wordListName": "assets/seed_words.csv",
+          "wordListPath": "assets/seed_words.csv",
+          "currIndex": 0,
+          "attempts": [
+            {
+            "word": "a",
+            "score": 88.0,
+            "filePath": "/data/user/0/com.example.read_right_project/app_flutter/readright_a_1764626806987.wav",
+            "durationMs": 2554,
+            "createdAt": "2025-12-01T17:06:50.505625"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "username": "guoyizhong",
+      "password": "1234",
+      "firstName": "Guoyi",
+      "lastName": "Zhong",
+      "isTeacher": false,
+      "word_list_progression_data": {
+        "assets/seed_words.csv":  {
+          "wordListName": "assets/seed_words.csv",
+          "wordListPath": "assets/seed_words.csv",
+          "currIndex": 0,
+          "attempts": [
+            {
+            "word": "a",
+            "score": 88.0,
+            "filePath": "/data/user/0/com.example.read_right_project/app_flutter/readright_a_1764626806987.wav",
+            "durationMs": 2554,
+            "createdAt": "2025-12-01T17:06:50.505625"
+            }
+          ]
+        }
+      }
+    },
+
+    {
+      "username": "parkerestes",
+      "password": "1234",
+      "firstName": "Parker",
+      "lastName": "Estes",
+      "isTeacher": false,
+      "word_list_progression_data": {
+        "assets/seed_words.csv":  {
+          "wordListName": "assets/seed_words.csv",
+          "wordListPath": "assets/seed_words.csv",
+          "currIndex": 0,
+          "attempts": [
+            {
+            "word": "a",
+            "score": 88.0,
+            "filePath": "/data/user/0/com.example.read_right_project/app_flutter/readright_a_1764626806987.wav",
+            "durationMs": 2554,
+            "createdAt": "2025-12-01T17:06:50.505625"
+            }
+          ]
+        }
+      }
+    },
+
+    {
+      "username": "maxyagel",
+      "password": "1234",
+      "firstName": "Max",
+      "lastName": "Yagel",
+      "isTeacher": false,
+      "word_list_progression_data": {
+        "assets/seed_words.csv":  {
+          "wordListName": "assets/seed_words.csv",
+          "wordListPath": "assets/seed_words.csv",
+          "currIndex": 0,
+          "attempts": [
+            {
+            "word": "a",
+            "score": 88.0,
+            "filePath": "/data/user/0/com.example.read_right_project/app_flutter/readright_a_1764626806987.wav",
+            "durationMs": 2554,
+            "createdAt": "2025-12-01T17:06:50.505625"
+            }
+          ]
+        }
+      }
+    },
+
+    {
+      "username": "lucasanderson",
+      "password": "1234",
+      "firstName": "Lucas",
+      "lastName": "Anderson",
+      "isTeacher": false,
+      "word_list_progression_data": {}
+    },
+    {
+      "username": "emilycarter",
+      "password": "1234",
+      "firstName": "Emily",
+      "lastName": "Carter",
+      "isTeacher": false,
+      "word_list_progression_data": {}
+    },
+    {
+      "username": "michaelporter",
+      "password": "1234",
+      "firstName": "Michael",
+      "lastName": "Porter",
+      "isTeacher": false,
+      "word_list_progression_data": {}
+    },
+    {
+      "username": "sophiahughes",
+      "password": "1234",
+      "firstName": "Sophia",
+      "lastName": "Hughes",
+      "isTeacher": false,
+      "word_list_progression_data": {}
+    },
+    {
+      "username": "danielreed",
+      "password": "1234",
+      "firstName": "Daniel",
+      "lastName": "Reed",
+      "isTeacher": false,
+      "word_list_progression_data": {}
+    },
+    {
+      "username": "avagriffin",
+      "password": "1234",
+      "firstName": "Ava",
+      "lastName": "Griffin",
+      "isTeacher": false,
+      "word_list_progression_data": {}
+    },
+    {
+      "username": "liamspencer",
+      "password": "1234",
+      "firstName": "Liam",
+      "lastName": "Spencer",
+      "isTeacher": false,
+      "word_list_progression_data": {}
+    }
+
+  ],
+  "teacherUserDataList": [
+    {
+      "username": "danwooster",
+      "password": "1234",
+      "firstName": "Dan",
+      "lastName": "Wooster",
+      "isTeacher": true,
+      "studentUsernames": []
+    }
+  ]
+}
