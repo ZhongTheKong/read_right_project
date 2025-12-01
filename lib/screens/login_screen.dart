@@ -23,8 +23,9 @@ class _LoginScreenState extends State<LoginScreen> {
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
     AllUserData allUserData = allUsersProvider.allUserData;
 
-    try {
       UserData userWithMatchingUsername;
+
+    try {
       if (isTeacher)
       {
         userWithMatchingUsername = allUserData.teacherUserDataList.firstWhere((u) => u.username == username);
@@ -35,20 +36,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
         userWithMatchingUsername = allUserData.studentUserDataList.firstWhere((u) => u.username == username);
       }
-      // UserData userWithMatchingUsername = allUserData.userDataList.firstWhere((u) => u.username == username && u.isTeacher == isTeacher);
-      if (userWithMatchingUsername.password == password)
-      {
-        return userWithMatchingUsername;
-      }
-      else
-      {
-        throw PasswordIncorrectException();
-        // return null;
-      }
     } catch (e) {
       // If no user is found, return null
       throw UserNotFoundException(username);
 
+      // return null;
+    }
+    // UserData userWithMatchingUsername = allUserData.userDataList.firstWhere((u) => u.username == username && u.isTeacher == isTeacher);
+    if (userWithMatchingUsername.password == password)
+    {
+      return userWithMatchingUsername;
+    }
+    else
+    {
+      throw PasswordIncorrectException();
       // return null;
     }
   }
@@ -75,17 +76,29 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       appBar: AppBar(
-          title: sessionProvider.isTeacher ? const Text('Teacher Login Screen') : const Text('Student Login Screen')
+          // title: sessionProvider.isTeacher ? const Text('Teacher Login Screen') : const Text('Student Login Screen')
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(sessionProvider.isTeacher ? 'Teacher Login Screen' : 'Student Login Screen'),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pushReplacementNamed(context, AppRoutes.role);
+                },
+                child: Text("Change Roles"),
+              )
+            ],
+          )
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Hello, World! This is the Login Screen.',
-              style: TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 20),
+            // const Text(
+            //   'Hello, World! This is the Login Screen.',
+            //   style: TextStyle(fontSize: 18),
+            // ),
+            // const SizedBox(height: 20),
 
             LabelledLoginTextField(
                 textEditingController: usernameTextEditingController,
@@ -121,10 +134,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
                 on UserNotFoundException catch(e)
                 {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Username not recognized')),
+                  );
                   print("User not found: $e");
                 }
                 on PasswordIncorrectException catch(e)
                 {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Incorrect password')),
+                  );
                   print("Incorrect password: $e");
                 }
               },
@@ -138,12 +157,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Text("Create account"),
             ),
             const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.role);
-              },
-              child: Text("Change Roles"),
-            )
+            
           ],
         ),
       ),
