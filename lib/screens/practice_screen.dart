@@ -6,6 +6,7 @@ import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/word.dart';
+import 'package:read_right_project/utils/word_list_progression_data.dart';
 
 class PracticeScreen extends StatefulWidget {
   const PracticeScreen({super.key});
@@ -275,9 +276,17 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                 final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
                                 final wordListName = sessionProvider.word_list_name;
                                 // Ensure the key exists
-                                studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+                                // studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+                                studentData.word_list_progression_data.putIfAbsent(wordListName, () => WordListProgressionData(
+                                  wordListName: wordListName, 
+                                  wordListPath: wordListName, 
+                                  currIndex: 0, 
+                                  attempts: []
+                                ));
                                 // Now it's safe to access
-                                final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+                                // final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+                                final attempts = studentData.word_list_progression_data[wordListName]!.attempts; // non-nullable
+
                             
                                 try {
                                   await recordingProvider.startRecording(
@@ -319,9 +328,17 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                 final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
                                 final wordListName = sessionProvider.word_list_name;
                                 // Ensure the key exists
-                                studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+                                // studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+                                studentData.word_list_progression_data.putIfAbsent(wordListName, () => WordListProgressionData(
+                                  wordListName: wordListName, 
+                                  wordListPath: wordListName, 
+                                  currIndex: 0, 
+                                  attempts: []
+                                ));
                                 // Now it's safe to access
-                                final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+                                // final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+                                final attempts = studentData.word_list_progression_data[wordListName]!.attempts; // non-nullable
+
                             
                                 // print("Before stop recording: $attempts");
                                 await recordingProvider.stopRecording(

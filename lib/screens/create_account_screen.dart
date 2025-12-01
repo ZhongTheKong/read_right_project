@@ -117,7 +117,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     lastName: lastName,
                     isTeacher: false, 
                     // attempts: [],
-                    word_list_attempts: {},
+                    // word_list_attempts: {},
+                    word_list_progression_data: {}
                   ));
                 }
                 // allUserData.userDataList.add(UserData(username: username, password: password, isTeacher: sessionProvider.isTeacher, attempts: []));

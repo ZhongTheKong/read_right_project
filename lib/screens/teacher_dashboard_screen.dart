@@ -29,7 +29,9 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
     // Use a try-catch block to safely find the student ---
     try {
       final student = studentUsers.firstWhere((s) => s.username == selectedStudent);
-      List<Attempt> allAttempts = student.word_list_attempts.values.expand((list) => list).toList();
+      // List<Attempt> allAttempts = student.word_list_attempts.values.expand((list) => list).toList();
+      List<Attempt> allAttempts = student.word_list_progression_data.values.expand((list) => list.attempts).toList();
+
       // Data Filter
       if (selectedDate != null) {
         allAttempts = allAttempts.where((attempt) {

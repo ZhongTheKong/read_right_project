@@ -5,6 +5,7 @@ import 'package:read_right_project/providers/recording_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
+import 'package:read_right_project/utils/word_list_progression_data.dart';
 
 class FeedbackScreen extends StatelessWidget {
   const FeedbackScreen({super.key});
@@ -19,9 +20,17 @@ class FeedbackScreen extends StatelessWidget {
     final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
     final wordListName = sessionProvider.word_list_name;
     // Ensure the key exists
-    studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+    // studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
+    studentData.word_list_progression_data.putIfAbsent(wordListName, () => WordListProgressionData(
+      wordListName: wordListName, 
+      wordListPath: wordListName, 
+      currIndex: 0, 
+      attempts: []
+    ));
+
     // Now it's safe to access
-    final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+    // final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
+    final attempts = studentData.word_list_progression_data[wordListName]!.attempts; // non-nullable
 
     /// Catch empty attempts list
     if (attempts.isEmpty) {
@@ -267,8 +276,12 @@ class FeedbackScreen extends StatelessWidget {
                 if (!recordingProvider.isAudioRetentionEnabled)
                 {
                   print("Removing current attempt from ${sessionProvider.word_list_name}");
-                  String? lastFilePath = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]?.last.filePath;
-                  (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]?.removeLast();
+                  // String? lastFilePath = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]?.last.filePath;
+                  String? lastFilePath = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.word_list_name]?.attempts.last.filePath;
+
+                  // (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]?.removeLast();
+                  (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.word_list_name]?.attempts.removeLast();
+
                   allUsersProvider.saveCurrentUserData();
                   if (lastFilePath != null)
                   {

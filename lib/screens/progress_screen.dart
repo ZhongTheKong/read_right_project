@@ -66,7 +66,9 @@ class _ProgressScreenState extends State<ProgressScreen> {
     final StudentUserData? student = currentUser is StudentUserData ? currentUser : null;
 
     final List<Attempt> attempts =
-        student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
+        // student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
+        student?.word_list_progression_data[sessionProvider.word_list_name]?.attempts ?? [];
+
 
     int numberOfAttempts = attempts.length;
     double highestScore = 0.0;

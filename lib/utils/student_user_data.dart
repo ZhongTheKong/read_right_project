@@ -1,5 +1,6 @@
 import 'package:read_right_project/utils/attempt.dart';
 import 'package:read_right_project/utils/user_data.dart';
+import 'package:read_right_project/utils/word_list_progression_data.dart';
 
 class StudentUserData extends UserData {
   StudentUserData({
@@ -9,10 +10,12 @@ class StudentUserData extends UserData {
     required super.lastName,
     required super.isTeacher,
     // required this.attempts,
-    required this.word_list_attempts,
+    // required this.word_list_attempts,
+    required this.word_list_progression_data
   });
   // final List<Attempt> attempts;
-  final Map<String, List<Attempt>> word_list_attempts;
+  // final Map<String, List<Attempt>> word_list_attempts;
+  final Map<String, WordListProgressionData> word_list_progression_data;
 
   // Deserialize
   factory StudentUserData.fromJson(Map<String, dynamic> json) {
@@ -23,16 +26,27 @@ class StudentUserData extends UserData {
         firstName: json['firstName'] ?? (throw Exception("StudentUserData | Missing first name")),
         lastName: json['lastName'] ?? (throw Exception("StudentUserData | Missing last name")),
         isTeacher: json['isTeacher'] ?? false,
-        word_list_attempts: json['word_list_attempts'] != null ? 
-          (json['word_list_attempts'] as Map<String, dynamic>).map(
+        // word_list_attempts: json['word_list_attempts'] != null ? 
+        //   (json['word_list_attempts'] as Map<String, dynamic>).map(
+        //     (key, value) {
+        //       var list = (value as List)
+        //           .map((item) => Attempt.fromJson(item))
+        //           .toList();
+        //       return MapEntry(key, list);
+        //     },
+        //   )
+        //   : (throw Exception("StudentUserData | Missing word list attempts"))
+        
+        word_list_progression_data: json['word_list_progression_data'] != null ? 
+          (json['word_list_progression_data'] as Map<String, dynamic>).map(
             (key, value) {
-              var list = (value as List)
-                  .map((item) => Attempt.fromJson(item))
-                  .toList();
-              return MapEntry(key, list);
+              // var list = (value as List)
+              //     .map((item) => WordListProgressionData.fromJson(item))
+              //     .toList();
+              return MapEntry(key, WordListProgressionData.fromJson(value));
             },
           )
-          : (throw Exception("StudentUserData | Missing word list attempts"))
+          : (throw Exception("StudentUserData | Missing word_list_progression_data"))
 
         // username: json['username'] ?? "",
         // password: json['password'] ?? "",
@@ -82,8 +96,13 @@ class StudentUserData extends UserData {
       'lastName': lastName,
       'isTeacher': isTeacher,
       // 'attempts': attempts.map((a) => a.toJson()).toList(),
-      'word_list_attempts': word_list_attempts.map((key, value) {
-        return MapEntry(key, value.map((e) => e.toJson()).toList());
+      // 'word_list_attempts': word_list_attempts.map((key, value) {
+      //   return MapEntry(key, value.map((e) => e.toJson()).toList());
+      // }),
+      'word_list_progression_data': word_list_progression_data.map((key, value) {
+        // return MapEntry(key, value.map((e) => e.toJson()).toList());
+        return MapEntry(key, value.toJson());
+
       }),
     };
   }

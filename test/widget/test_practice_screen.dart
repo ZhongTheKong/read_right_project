@@ -54,7 +54,9 @@ void main() {
       AllUserData(
         lastLoggedInUserIsTeacher: null, 
         lastLoggedInUserUsername: null, 
-        studentUserDataList: [StudentUserData(firstName: '', lastName: '', username: '', password: '', isTeacher: false, word_list_attempts: {})], 
+        // studentUserDataList: [StudentUserData(firstName: '', lastName: '', username: '', password: '', isTeacher: false, word_list_attempts: {})], 
+        studentUserDataList: [StudentUserData(firstName: '', lastName: '', username: '', password: '', isTeacher: false, word_list_progression_data: {})], 
+
         teacherUserDataList: []
       )
     );

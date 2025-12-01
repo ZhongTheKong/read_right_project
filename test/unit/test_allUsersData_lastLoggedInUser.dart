@@ -19,7 +19,9 @@ void main() {
     expect(lastLoggedInUser.isTeacher, false);
     expect(lastLoggedInUser.username, "jdoe");
     expect(lastLoggedInUser.password, "1234");
-    expect((lastLoggedInUser as StudentUserData).word_list_attempts, {});
+    // expect((lastLoggedInUser as StudentUserData).word_list_attempts, {});
+    expect((lastLoggedInUser as StudentUserData).word_list_progression_data, {});
+
   });
   test('test_allUsersData_lastLoggedInUser_matching_teacher', () async {
     final provider = AllUsersProvider();
