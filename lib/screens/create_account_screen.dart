@@ -42,17 +42,26 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       appBar: AppBar(
         // title: sessionProvider.isTeacher ? const Text('Teacher Login Screen') : const Text('Student Login Screen')
         backgroundColor: Colors.blue,
-        title: Center(
-          child: Container(
-            // color: Colors.white,
-            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-            decoration: BoxDecoration(
-              // shape: BoxShape.circle,
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10)
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              // color: Colors.white,
+              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              decoration: BoxDecoration(
+                // shape: BoxShape.circle,
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10)
+              ),
+              child: Text('Create Account')
             ),
-            child: Text('Create Account')
-          ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, AppRoutes.login);
+              }, 
+              child: Text("EXIT")
+            )
+          ],
         ),
       ),
       body: Center(
@@ -176,7 +185,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               },
               child: const Text('Create Account'),
             ),
-            const SizedBox(height: 20),
+            
 
             // ElevatedButton(
             //   onPressed: () {

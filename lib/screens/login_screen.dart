@@ -107,66 +107,101 @@ class _LoginScreenState extends State<LoginScreen> {
             //   'Hello, World! This is the Login Screen.',
             //   style: TextStyle(fontSize: 18),
             // ),
-            // const SizedBox(height: 20),
 
-            LabelledLoginTextField(
-                textEditingController: usernameTextEditingController,
-                fieldIcon: Icons.face,
-                labelText: "Username"
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LabelledLoginTextField(
+                      textEditingController: usernameTextEditingController,
+                      fieldIcon: Icons.face,
+                      labelText: "Username"
+                  ),
+                  
+                  const SizedBox(height: 20),
+              
+                  LabelledLoginTextField(
+                    textEditingController: passwordTextEditingController,
+                    fieldIcon: Icons.key,
+                    labelText: "Password"
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 20),
-
-            LabelledLoginTextField(
-                textEditingController: passwordTextEditingController,
-                fieldIcon: Icons.key,
-                labelText: "Password"
-            ),
-            const SizedBox(height: 20),
-
-            ElevatedButton(
-              onPressed: () async {
-                final username = usernameTextEditingController.text;
-                final password = passwordTextEditingController.text;
-
-                try
-                {
-                  UserData matchingUser = await getMatchingUserData(context, sessionProvider.isTeacher, username, password);
-                  allUsersProvider.saveLastUser(matchingUser);
-                  if (sessionProvider.isTeacher)
-                  {
-                    Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
-                  }
-                  else
-                  {
-                    Navigator.pushReplacementNamed(context, AppRoutes.wordList);
-                  }
-                }
-                on UserNotFoundException catch(e)
-                {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Username not recognized')),
-                  );
-                  print("User not found: $e");
-                }
-                on PasswordIncorrectException catch(e)
-                {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Incorrect password')),
-                  );
-                  print("Incorrect password: $e");
-                }
-              },
-              child: const Text('LOGIN'),
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.create_account);
-              },
-              child: Text("Create account"),
-            ),
-            const SizedBox(height: 20),
             
+            // const SizedBox(height: 100,),
+
+            Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          final username = usernameTextEditingController.text;
+                          final password = passwordTextEditingController.text;
+                      
+                          try
+                          {
+                            UserData matchingUser = await getMatchingUserData(context, sessionProvider.isTeacher, username, password);
+                            allUsersProvider.saveLastUser(matchingUser);
+                            if (sessionProvider.isTeacher)
+                            {
+                              Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
+                            }
+                            else
+                            {
+                              Navigator.pushReplacementNamed(context, AppRoutes.wordList);
+                            }
+                          }
+                          on UserNotFoundException catch(e)
+                          {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Username not recognized')),
+                            );
+                            print("User not found: $e");
+                          }
+                          on PasswordIncorrectException catch(e)
+                          {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Incorrect password')),
+                            );
+                            print("Incorrect password: $e");
+                          }
+                        },
+                        child: const Text(
+                          'LOGIN',
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold
+                
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pushReplacementNamed(context, AppRoutes.create_account);
+                        },
+                        child: Text(
+                          "CREATE ACCOUNT",
+                          style: TextStyle(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ],
         ),
       ),
