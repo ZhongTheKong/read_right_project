@@ -139,15 +139,7 @@ class SessionProvider extends ChangeNotifier {
     // if (isCorrect != 'Needs work') {
       String prev = word_list[index].grade;
       incrementIndex(1);
-      // AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
-      // final currentUser = allUsersProvider.allUserData.lastLoggedInUser;
-      // final StudentUserData? student = currentUser is StudentUserData ? currentUser : null;
-      // final WordListProgressionData? wordListProgressionData =
-      //     // student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
-      //     student?.word_list_progression_data[word_list_name];
-      // if (wordListProgressionData != null) {
-      //   wordListProgressionData.currIndex++;
-      // }
+
           
       print('Next word: ${word_list[index].text}');
       if (prev != word_list[index].grade) {

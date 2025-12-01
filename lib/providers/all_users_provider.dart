@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:read_right_project/utils/all_users_data.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/user_data.dart';
+import 'package:read_right_project/utils/word_list_progression_data.dart';
 
 class AllUsersProvider extends ChangeNotifier{
 
@@ -142,6 +144,34 @@ class AllUsersProvider extends ChangeNotifier{
       return false;
     }
     return true;
+  }
+
+  int getWordListCurrIndex(String wordListFileName) {
+    StudentUserData? student;
+    if (
+      allUserData.lastLoggedInUser != null && 
+      allUserData.lastLoggedInUser! is StudentUserData
+    ) {
+      student = allUserData.lastLoggedInUser as StudentUserData;
+    }
+    final WordListProgressionData? wordListProgressionData = student?.word_list_progression_data[wordListFileName];
+    int wordIndex = 0;
+    if (wordListProgressionData != null) {
+      wordIndex = wordListProgressionData.currIndex;
+    }
+    return wordIndex;
+  }
+
+  void incrementCurrIndex(String wordListFileName) {
+    final currentUser = allUserData.lastLoggedInUser;
+    final StudentUserData? student = currentUser is StudentUserData ? currentUser : null;
+    final WordListProgressionData? wordListProgressionData =
+        // student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
+        student?.word_list_progression_data[wordListFileName];
+    if (wordListProgressionData != null) {
+      wordListProgressionData.currIndex++;
+    }
+    notifyListeners();
   }
 
 

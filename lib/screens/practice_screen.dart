@@ -140,7 +140,11 @@ class _PracticeScreenState extends State<PracticeScreen> {
               // recordingProvider.initAudio(mounted);
 
               // Safely get the current Word object from the list.
-              final Word currentWord = sessionProvider.word_list[sessionProvider.index];
+              int currWordInWordListIndex = allUsersProvider.getWordListCurrIndex(sessionProvider.word_list_name);
+
+              // final Word currentWord = sessionProvider.word_list[sessionProvider.index];
+              final Word currentWord = sessionProvider.word_list[currWordInWordListIndex];
+
               final listComplete = sessionProvider.listComplete;
               if (listComplete) {
                 return Center(
@@ -170,6 +174,17 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                   ElevatedButton(
                                     onPressed: () {
                                       // sessionProvider.nextWord('Needs work', false);
+
+                                      // AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+                                      // final currentUser = allUsersProvider.allUserData.lastLoggedInUser;
+                                      // final StudentUserData? student = currentUser is StudentUserData ? currentUser : null;
+                                      // final WordListProgressionData? wordListProgressionData =
+                                      //     // student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
+                                      //     student?.word_list_progression_data[sessionProvider.word_list_name];
+                                      // if (wordListProgressionData != null) {
+                                      //   wordListProgressionData.currIndex++;
+                                      // }
+                                      allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
                                       sessionProvider.nextWord(false);
                                       Navigator.pushNamed(context, '/practice');
                                     },
@@ -208,7 +223,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'Word #${sessionProvider.index + 1}\n'
+                                    // 'Word #${sessionProvider.index + 1}\n'
+                                    'Word #${currWordInWordListIndex + 1}\n'
+
                                         'Grade: ${currentWord.grade}', // Use the 'grade' property
                                     style: const TextStyle(fontSize: 20),
                                   ),
@@ -350,7 +367,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                   }
                                 );
                                 // print("After stop recording: $attempts");
-                                sessionProvider.selectedIndex = sessionProvider.index;
+                                // sessionProvider.selectedIndex = sessionProvider.index;
+                                sessionProvider.selectedIndex = currWordInWordListIndex;
+
                                 allUsersProvider.saveCurrentUserData();
                             
                                 setState(() {});
@@ -360,15 +379,15 @@ class _PracticeScreenState extends State<PracticeScreen> {
                             ),
                           ),
 
-                          Flexible(
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                sessionProvider.nextWord(false);
-                              }, 
-                              icon: Icon(Icons.play_arrow),
-                              label: Text("Next (TEMP)")
-                            ),
-                          )
+                          // Flexible(
+                          //   child: ElevatedButton.icon(
+                          //     onPressed: () {
+                          //       sessionProvider.nextWord(false);
+                          //     }, 
+                          //     icon: Icon(Icons.play_arrow),
+                          //     label: Text("Next (TEMP)")
+                          //   ),
+                          // )
 
                           // const SizedBox(width: 20),
                           // ElevatedButton.icon(

@@ -271,6 +271,7 @@ class FeedbackScreen extends StatelessWidget {
               onPressed: () {
                 if (score > 80)
                 {
+                  allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
                   sessionProvider.nextWord(true);
                 }
                 if (!recordingProvider.isAudioRetentionEnabled)

@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
+import 'package:read_right_project/utils/word_list_progression_data.dart';
 
 class WordListScreen extends StatefulWidget {
   const WordListScreen({super.key});
@@ -99,10 +101,15 @@ class _WordListScreenState extends State<WordListScreen> {
                     );
                   }
 
+                  int currWordInWordListIndex = allUsersProvider.getWordListCurrIndex(sessionProvider.word_list_name);
+
                   // Once the data is loaded, build the main UI.
+                  // final wordObject = sessionProvider.word_list.isEmpty
+                  //     ? null
+                  //     : sessionProvider.word_list[sessionProvider.index];
                   final wordObject = sessionProvider.word_list.isEmpty
                       ? null
-                      : sessionProvider.word_list[sessionProvider.index];
+                      : sessionProvider.word_list[currWordInWordListIndex];
 
                   return Container(
                     padding: const EdgeInsets.all(10),
@@ -115,7 +122,9 @@ class _WordListScreenState extends State<WordListScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Word #${sessionProvider.index + 1}',
+                          // 'Word #${sessionProvider.index + 1}',
+                          'Word #${currWordInWordListIndex + 1}',
+
                           style: const TextStyle(fontSize: 30),
                         ),
                         Text(
