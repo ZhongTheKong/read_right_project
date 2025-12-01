@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
@@ -93,6 +94,8 @@ class FeedbackScreen extends StatelessWidget {
     // SessionProvider sessionProvider = context.watch<SessionProvider>();
     recordingProvider.initAudio();
 
+    FlutterTts flutterTts = FlutterTts();
+
     return Scaffold(
       appBar: AppBar(
           centerTitle: true,
@@ -133,7 +136,12 @@ class FeedbackScreen extends StatelessWidget {
                         Text(
                             "Word"
                         ),
-                        IconButton(onPressed: (){}, icon: Icon(Icons.volume_up))
+                        IconButton(
+                          onPressed: () async {
+                            await flutterTts.speak(attempts[0].word);
+                          }, 
+                          icon: Icon(Icons.volume_up)
+                        )
                       ],
                     ),
                     SizedBox(width: 50,),
@@ -142,7 +150,12 @@ class FeedbackScreen extends StatelessWidget {
                         Text(
                             "Sentence"
                         ),
-                        IconButton(onPressed: (){}, icon: Icon(Icons.volume_up))
+                        IconButton(
+                          onPressed: () async {
+                            await flutterTts.speak(attempts[0].word);
+                          }, 
+                          icon: Icon(Icons.volume_up)
+                        )
                       ],
                     ),
                   ],

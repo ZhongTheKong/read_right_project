@@ -35,7 +35,7 @@ class SessionProvider extends ChangeNotifier {
 
   String word_list_name = '';
 
-  final List<Attempt> attempts = [];
+  // final List<Attempt> attempts = [];
   // static const int kMaxRecordMs = 7000;
   // Timer? recordTimer;
   // int elapsedMs = 0;
@@ -46,18 +46,18 @@ class SessionProvider extends ChangeNotifier {
   // static const int intervalMs = 50;
 
   // Calculate average score
-  double get averageScore {
-    if (attempts.isEmpty) return 0.0;
-    final totalScore = attempts.fold(0.0, (sum, attempt) => sum + attempt.score);
-    return totalScore / attempts.length;
-  }
+  // double get averageScore {
+  //   if (attempts.isEmpty) return 0.0;
+  //   final totalScore = attempts.fold(0.0, (sum, attempt) => sum + attempt.score);
+  //   return totalScore / attempts.length;
+  // }
 
-  int get numberOfAttempts => attempts.length;
+  // int get numberOfAttempts => attempts.length;
 
-  String get currentUser => _username;
+  // String get currentUser => _username;
 
-  String get word => word_list[index].text;
-  String get grade_level => word_list[index].grade;
+  // String get word => word_list[index].text;
+  // String get grade_level => word_list[index].grade;
 
   /// Currently needed to get progress screen to persist
   SessionProvider() {

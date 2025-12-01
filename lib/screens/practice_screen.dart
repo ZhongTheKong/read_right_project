@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
@@ -7,6 +9,7 @@ import 'package:read_right_project/utils/routes.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/word.dart';
 import 'package:read_right_project/utils/word_list_progression_data.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class PracticeScreen extends StatefulWidget {
   const PracticeScreen({super.key});
@@ -19,6 +22,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
   // This Future will hold the loading operation and ensure it only runs once.
   Future<void>? _loadWordsFuture;
   bool _isAudioInitialized = false;
+  bool isOnline = false;
+  bool isSynced = false;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -32,12 +38,44 @@ class _PracticeScreenState extends State<PracticeScreen> {
     }
   }
 
+  Future<bool> isConnectedToWifi() async {
+    final connectivityResult = await (Connectivity().checkConnectivity());
+    if (connectivityResult.contains(ConnectivityResult.wifi)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // Connectivity().onConnectivityChanged.listen((status) {
+  //   final isOnline = status != ConnectivityResult.none;
+  //   print("Online? $online");
+  // });
+
+  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
+
+  @override
+  void initState() {
+    super.initState();
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
+      setState(() {
+        isOnline = result.contains(ConnectivityResult.wifi);
+      });
+    });
+    // isOnline = await isConnectedToWifi();
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
 
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
     RecordingProvider recordingProvider1 = context.read<RecordingProvider>();
-    bool isOnline = false;
 
     return Scaffold(
       backgroundColor: Colors.blue[800],
@@ -47,26 +85,57 @@ class _PracticeScreenState extends State<PracticeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text("PRACTICE"),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(
-                      width: 15,
-                      height: 15,
-                      decoration: BoxDecoration(
-                        color: isOnline ? Colors.green : Colors.red,
-                        shape: BoxShape.circle, // Makes the container circular
-                      ),
+
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 15,
+                          height: 15,
+                          decoration: BoxDecoration(
+                            color: isOnline ? Colors.green : Colors.red,
+                            shape: BoxShape.circle, // Makes the container circular
+                          ),
+                        ),
+                        SizedBox(width: 10,),
+                        Text(
+                          isOnline ? "ONLINE" : "OFFLINE",
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ],
                     ),
+
                     SizedBox(width: 10,),
-                    Text(
-                      isOnline ? "ONLINE" : "OFFLINE",
-                      style: TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.bold
-                      ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 15,
+                          height: 15,
+                          decoration: BoxDecoration(
+                            color: isSynced ? Colors.green : Colors.red,
+                            shape: BoxShape.circle, // Makes the container circular
+                          ),
+                        ),
+                        SizedBox(width: 10,),
+                        Text(
+                          isSynced ? "SYNC" : "NOT SYNC",
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 )
@@ -379,15 +448,16 @@ class _PracticeScreenState extends State<PracticeScreen> {
                             ),
                           ),
 
-                          // Flexible(
-                          //   child: ElevatedButton.icon(
-                          //     onPressed: () {
-                          //       sessionProvider.nextWord(false);
-                          //     }, 
-                          //     icon: Icon(Icons.play_arrow),
-                          //     label: Text("Next (TEMP)")
-                          //   ),
-                          // )
+                          Flexible(
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
+                                sessionProvider.nextWord(false);
+                              }, 
+                              icon: Icon(Icons.play_arrow),
+                              label: Text("Next (TEMP)")
+                            ),
+                          )
 
                           // const SizedBox(width: 20),
                           // ElevatedButton.icon(
