@@ -37,6 +37,10 @@ read_right_project
 |
 |-main (app starter)
 
+## Data Model Diagram
+
+![Data Model](assets/dataModelDiagram.png)
+
 Milestone 0 Progress
 -placeholder ccreens
 -placeholder navigation
