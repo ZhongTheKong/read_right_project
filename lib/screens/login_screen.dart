@@ -76,19 +76,28 @@ class _LoginScreenState extends State<LoginScreen> {
 
     return Scaffold(
       appBar: AppBar(
-          // title: sessionProvider.isTeacher ? const Text('Teacher Login Screen') : const Text('Student Login Screen')
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(sessionProvider.isTeacher ? 'Teacher Login Screen' : 'Student Login Screen'),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.role);
-                },
-                child: Text("Change Roles"),
-              )
-            ],
-          )
+        backgroundColor: sessionProvider.isTeacher ? Colors.blue : Colors.red,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              // color: Colors.white,
+              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              decoration: BoxDecoration(
+                // shape: BoxShape.circle,
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10)
+              ),
+              child: Text(sessionProvider.isTeacher ? 'Teacher Login Screen' : 'Student Login Screen')
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, AppRoutes.role);
+              },
+              child: Text("Change Roles"),
+            )
+          ],
+        )
       ),
       body: Center(
         child: Column(

@@ -24,23 +24,43 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     TextEditingController passwordTextEditingController = TextEditingController();
     TextEditingController firstNameTextEditingController = TextEditingController();
     TextEditingController lastNameTextEditingController = TextEditingController();
+    TextEditingController emailTextEditingController = TextEditingController();
+    TeacherUserData? selectedTeacher;
+
 
 
 
     SessionProvider sessionProvider = context.read<SessionProvider>();
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
 
+    // List<String> teacherUsernames = allUsersProvider.allUserData.teacherUserDataList
+    //   .map((teacher) => '${teacher.firstName} ${teacher.lastName}')
+    //   .toList();
+
+
     return Scaffold(
       appBar: AppBar(
         // title: sessionProvider.isTeacher ? const Text('Teacher Login Screen') : const Text('Student Login Screen')
-        title: Text('Create Account'),
+        backgroundColor: Colors.blue,
+        title: Center(
+          child: Container(
+            // color: Colors.white,
+            padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+            decoration: BoxDecoration(
+              // shape: BoxShape.circle,
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10)
+            ),
+            child: Text('Create Account')
+          ),
+        ),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Hello, World! This is the Create Account Screen.',
+              'Personal Information',
               style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
@@ -56,6 +76,34 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 textEditingController: lastNameTextEditingController,
                 fieldIcon: Icons.key,
                 labelText: "Last Name"
+            ),
+            const SizedBox(height: 20),
+
+            LabelledLoginTextField(
+                textEditingController: emailTextEditingController,
+                fieldIcon: Icons.key,
+                labelText: "Email"
+            ),
+            const SizedBox(height: 20),
+
+            SizedBox(
+              width: 250,
+              child: DropdownButton(
+                isExpanded: true,
+                hint: Text("Instructor"),
+                items: allUsersProvider.allUserData.teacherUserDataList.map((teacherUserData) {
+                  return DropdownMenuItem<TeacherUserData>(
+                    value: teacherUserData,
+                    child: Text('${teacherUserData.firstName} ${teacherUserData.lastName}'),
+                  );
+                }).toList(),
+                onChanged: (value) { selectedTeacher = value; }
+              ),
+            ),
+
+            const Text(
+              'Credentials',
+              style: TextStyle(fontSize: 18),
             ),
             const SizedBox(height: 20),
 
