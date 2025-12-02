@@ -220,7 +220,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Flexible(
+                      Expanded(
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
@@ -273,45 +273,52 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 10),
-                    // WORD DISPLAY
-                    Expanded(
-                      child: SizedBox(
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                            color: Colors.blue[300],
-                            border: Border.all(color: Colors.blue, width: 2),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    // 'Word #${sessionProvider.index + 1}\n'
-                                    'Word #${currWordInWordListIndex + 1}\n'
 
-                                        'Grade: ${currentWord.grade}', // Use the 'grade' property
-                                    style: const TextStyle(fontSize: 20),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    currentWord.text, // Use the 'text' property
-                                    style: const TextStyle(fontSize: 40),
-                                  ),
-                                ],
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(10,10,10,5),
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                        color: Colors.blue[300],
+                        border: Border.all(color: Colors.blue, width: 2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                // 'Word #${sessionProvider.index + 1}\n'
+                                'Word #${currWordInWordListIndex + 1}\n'
+                                'Grade: ${currentWord.grade}', // Use the 'grade' property
+                                style: const TextStyle(fontSize: 20),
                               ),
                             ],
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // WORD DISPLAY
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.fromLTRB(10,5,10,10),
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: Colors.blue[300],
+                          border: Border.all(color: Colors.blue, width: 2),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Center(
+                          child: Text(
+                            currentWord.text, // Use the 'text' property
+                            style: const TextStyle(fontSize: 60),
                           ),
                         ),
                       ),
                     ),
-
-                    const SizedBox(height: 10),
 
                     // LINEAR PROGRESS INDICATOR
                     Container(
