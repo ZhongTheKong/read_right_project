@@ -42,7 +42,7 @@ class RecordingProvider extends ChangeNotifier {
   // int index = 0;
   // int selectedIndex = 0;
 
-  static const int kMaxRecordMs = 7000;
+  static const int kMaxRecordMs = 3000;
   Timer? recordTimer;
   int elapsedMs = 0;
 
@@ -95,7 +95,7 @@ class RecordingProvider extends ChangeNotifier {
     try {
       final config = RecordConfig(
         encoder: AudioEncoder.wav,
-        sampleRate: 44100,
+        sampleRate: 48000,
         bitRate: 128000,
       );
 

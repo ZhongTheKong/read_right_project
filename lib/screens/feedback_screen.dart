@@ -144,20 +144,20 @@ class FeedbackScreen extends StatelessWidget {
                         )
                       ],
                     ),
-                    SizedBox(width: 50,),
-                    Column(
-                      children: [
-                        Text(
-                            "Sentence"
-                        ),
-                        IconButton(
-                          onPressed: () async {
-                            await flutterTts.speak(attempts[0].word);
-                          }, 
-                          icon: Icon(Icons.volume_up)
-                        )
-                      ],
-                    ),
+                    // SizedBox(width: 50,),
+                    // Column(
+                    //   children: [
+                    //     Text(
+                    //         "Sentence"
+                    //     ),
+                    //     IconButton(
+                    //       onPressed: () async {
+                    //         await flutterTts.speak(attempts[0].word);
+                    //       }, 
+                    //       icon: Icon(Icons.volume_up)
+                    //     )
+                    //   ],
+                    // ),
                   ],
                 )
               ],
@@ -270,14 +270,26 @@ class FeedbackScreen extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 40),
-          Text(
-            "Transcript",
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold
-            ),
-          ),
+
+          // TODO: Store transcribed text in attempt
+          // const SizedBox(height: 40),
+          // Text(
+          //   "Transcript",
+          //   style: TextStyle(
+          //       fontSize: 18,
+          //       fontWeight: FontWeight.bold
+          //   ),
+          // ),
+          // Expanded(
+          //   child: Container(
+          //     decoration: BoxDecoration(
+          //       border: Border.all(
+          //         color: Colors.black
+          //       )
+          //     ),
+          //     child: Text("data"),
+          //   )
+          // ),
 
           const SizedBox(height: 20),
           TextButton(
