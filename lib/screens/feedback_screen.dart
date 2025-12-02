@@ -294,7 +294,7 @@ class FeedbackScreen extends StatelessWidget {
                   String? lastFilePath = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.word_list_name]?.attempts.last.filePath;
 
                   // (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]?.removeLast();
-                  (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.word_list_name]?.attempts.removeLast();
+                  // (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.word_list_name]?.attempts.removeLast();
 
                   allUsersProvider.saveCurrentUserData();
                   if (lastFilePath != null)

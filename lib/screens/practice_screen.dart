@@ -23,7 +23,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
   Future<void>? _loadWordsFuture;
   bool _isAudioInitialized = false;
   bool isOnline = false;
-  bool isSynced = false;
 
   @override
   void didChangeDependencies() {
@@ -74,7 +73,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
   @override
   Widget build(BuildContext context) {
 
-    AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+    AllUsersProvider allUsersProvider = context.watch<AllUsersProvider>();
     RecordingProvider recordingProvider1 = context.read<RecordingProvider>();
 
     return Scaffold(
@@ -123,13 +122,13 @@ class _PracticeScreenState extends State<PracticeScreen> {
                           width: 15,
                           height: 15,
                           decoration: BoxDecoration(
-                            color: isSynced ? Colors.green : Colors.red,
+                            color: allUsersProvider.isSynced ? Colors.green : Colors.red,
                             shape: BoxShape.circle, // Makes the container circular
                           ),
                         ),
                         SizedBox(width: 10,),
                         Text(
-                          isSynced ? "SYNC" : "NOT SYNC",
+                          allUsersProvider.isSynced ? "SYNC" : "NOT SYNC",
                           style: TextStyle(
                             fontSize: 13,
                             fontWeight: FontWeight.bold
@@ -197,6 +196,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
               }
               // After a successful load, double-check that the list is not empty.
               if (sessionProvider.word_list.isEmpty) {
+                
+                // print("End of word list reached");
+
                 return const Center(
                   child: Text(
                     'No words found in the file.',
@@ -213,8 +215,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
               // final Word currentWord = sessionProvider.word_list[sessionProvider.index];
               final Word currentWord = sessionProvider.word_list[currWordInWordListIndex];
-
               final listComplete = sessionProvider.listComplete;
+
               if (listComplete) {
                 return Center(
                   child: Column(
@@ -222,45 +224,46 @@ class _PracticeScreenState extends State<PracticeScreen> {
                     children: [
                       Expanded(
                         child: Container(
-                          padding: const EdgeInsets.all(10),
+                          margin: EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(15),
                           decoration: BoxDecoration(
                             color: Colors.blue[300],
                             border: Border.all(color: Colors.blue, width: 2),
                             borderRadius: BorderRadius.circular(8),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'List Complete!',
-                                    style: const TextStyle(fontSize: 100),
-                                  ),
-                                  const SizedBox(height: 8),
-                                  ElevatedButton(
-                                    onPressed: () {
-                                      // sessionProvider.nextWord('Needs work', false);
-
-                                      // AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
-                                      // final currentUser = allUsersProvider.allUserData.lastLoggedInUser;
-                                      // final StudentUserData? student = currentUser is StudentUserData ? currentUser : null;
-                                      // final WordListProgressionData? wordListProgressionData =
-                                      //     // student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
-                                      //     student?.word_list_progression_data[sessionProvider.word_list_name];
-                                      // if (wordListProgressionData != null) {
-                                      //   wordListProgressionData.currIndex++;
-                                      // }
-                                      allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
-                                      sessionProvider.nextWord(false);
-                                      Navigator.pushNamed(context, '/practice');
-                                    },
-                                    child: const Text('Next List')
-                                  )
-                                ],
+                              Text(
+                                'List\nComplete!',
+                                style: const TextStyle(fontSize: 60),
                               ),
+                              const SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        // sessionProvider.nextWord('Needs work', false);
+                                    
+                                        // AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+                                        // final currentUser = allUsersProvider.allUserData.lastLoggedInUser;
+                                        // final StudentUserData? student = currentUser is StudentUserData ? currentUser : null;
+                                        // final WordListProgressionData? wordListProgressionData =
+                                        //     // student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
+                                        //     student?.word_list_progression_data[sessionProvider.word_list_name];
+                                        // if (wordListProgressionData != null) {
+                                        //   wordListProgressionData.currIndex++;
+                                        // }
+                                        allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
+                                        sessionProvider.nextWord(false);
+                                        Navigator.pushNamed(context, '/practice');
+                                      },
+                                      child: const Text('Next List')
+                                    ),
+                                  ),
+                                ],
+                              )
                             ],
                           ),
                         ),
@@ -459,7 +462,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                             child: ElevatedButton.icon(
                               onPressed: () {
                                 allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
-                                sessionProvider.nextWord(false);
+                                sessionProvider.nextWord(true);
                               }, 
                               icon: Icon(Icons.play_arrow),
                               label: Text("Next (TEMP)")

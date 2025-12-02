@@ -12,6 +12,7 @@ class AllUsersProvider extends ChangeNotifier{
 
   // AllUserData allUserData = AllUserData(lastLoggedInUser: null, studentUserDataList: [], teacherUserDataList: []);
   AllUserData allUserData = AllUserData(lastLoggedInUserUsername: null, lastLoggedInUserIsTeacher: null, studentUserDataList: [], teacherUserDataList: []);
+  bool isSynced = false;
 
   Future<String> getUserDataFilePath() async {
     final directory = await getApplicationDocumentsDirectory();
@@ -72,6 +73,8 @@ class AllUsersProvider extends ChangeNotifier{
       rethrow;
       // throw Exception("Unexpected error loading user data: $e");
     }
+    isSynced = true;
+    notifyListeners();
   }
 
   void clearLastUser() async {
