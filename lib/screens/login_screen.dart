@@ -4,7 +4,6 @@ import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/utils/all_users_data.dart';
 import 'package:read_right_project/utils/routes.dart';
 import 'package:read_right_project/utils/user_data.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:provider/provider.dart';
 import '../providers/session_provider.dart';
 
@@ -40,9 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // If no user is found, return null
       throw UserNotFoundException(username);
 
-      // return null;
     }
-    // UserData userWithMatchingUsername = allUserData.userDataList.firstWhere((u) => u.username == username && u.isTeacher == isTeacher);
     if (userWithMatchingUsername.password == password)
     {
       return userWithMatchingUsername;
@@ -50,7 +47,6 @@ class _LoginScreenState extends State<LoginScreen> {
     else
     {
       throw PasswordIncorrectException();
-      // return null;
     }
   }
 
@@ -63,17 +59,6 @@ class _LoginScreenState extends State<LoginScreen> {
     SessionProvider sessionProvider = context.read<SessionProvider>();
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
 
-    // return FutureBuilder<void>(
-    //   future: allUsersProvider.loadUserData(),
-    //   builder: (context, snapshot) {
-    //     if (snapshot.connectionState == ConnectionState.waiting) {
-    //       return const CircularProgressIndicator();
-    //     } else if (snapshot.hasError) {
-    //       return Text('Error: ${snapshot.error}');
-    //     } else {
-    //       // final String lastLoggedInUsername = allUsersProvider.allUserData!.lastLoggedInUser!.username;
-    // final UserData? lastLoggedInUser = allUsersProvider.allUserData.lastLoggedInUser;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: sessionProvider.isTeacher ? Colors.blue : Colors.red,
@@ -81,10 +66,8 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              // color: Colors.white,
               padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
               decoration: BoxDecoration(
-                // shape: BoxShape.circle,
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(10)
               ),
@@ -103,11 +86,6 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // const Text(
-            //   'Hello, World! This is the Login Screen.',
-            //   style: TextStyle(fontSize: 18),
-            // ),
-
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -128,9 +106,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ],
               ),
             ),
-            
-            // const SizedBox(height: 100,),
-
             Column(
               children: [
                 Row(

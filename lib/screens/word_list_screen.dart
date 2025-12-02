@@ -5,8 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
-import 'package:read_right_project/utils/student_user_data.dart';
-import 'package:read_right_project/utils/word_list_progression_data.dart';
 
 class WordListScreen extends StatefulWidget {
   const WordListScreen({super.key});
@@ -50,7 +48,6 @@ class _WordListScreenState extends State<WordListScreen> {
     {
       fullName = "${allUsersProvider.allUserData.lastLoggedInUser!.firstName} ${allUsersProvider.allUserData.lastLoggedInUser!.lastName}";
     }
-    // final String username = allUsersProvider.allUserData.lastLoggedInUser?.username ?? 'Guest';
 
     return Scaffold(
       backgroundColor: Colors.blue[800],
@@ -60,10 +57,8 @@ class _WordListScreenState extends State<WordListScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              // color: Colors.white,
               padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
               decoration: BoxDecoration(
-                // shape: BoxShape.circle,
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(10)
               ),
@@ -120,7 +115,6 @@ class _WordListScreenState extends State<WordListScreen> {
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
                       color: Colors.blue[900],
-                      // borderRadius: BorderRadius.circular(10)
                     ),
                     child: Text(
                       "CURRENT WORD LIST: $currentWordListPath",
@@ -153,11 +147,6 @@ class _WordListScreenState extends State<WordListScreen> {
                 )
               ],
             ),
-
-            // --- FIX: WRAP THE WORD DISPLAY IN A FUTUREBUILDER ---
-            // SizedBox(
-            //   width: 800,
-            //   height: 350, // Give it a fixed height to prevent layout jumps
             Expanded(
               child: Row(
                 children: [
@@ -185,9 +174,6 @@ class _WordListScreenState extends State<WordListScreen> {
                         int currWordInWordListIndex = allUsersProvider.getWordListCurrIndex(sessionProvider.word_list_name);
                   
                         // Once the data is loaded, build the main UI.
-                        // final wordObject = sessionProvider.word_list.isEmpty
-                        //     ? null
-                        //     : sessionProvider.word_list[sessionProvider.index];
                         final wordObject = sessionProvider.word_list.isEmpty
                             ? null
                             : sessionProvider.word_list[currWordInWordListIndex];
@@ -196,8 +182,6 @@ class _WordListScreenState extends State<WordListScreen> {
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             color: Colors.blue[300],
-                            // border: Border.all(color: Colors.blue, width: 2),
-                            // borderRadius: BorderRadius.circular(8),
                           ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -205,7 +189,6 @@ class _WordListScreenState extends State<WordListScreen> {
                               Column(
                                 children: [
                                   Text(
-                                    // 'Word #${sessionProvider.index + 1}',
                                     'Word #${currWordInWordListIndex + 1}',
                                                     
                                     style: const TextStyle(fontSize: 30),

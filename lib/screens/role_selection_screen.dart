@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
@@ -11,7 +10,6 @@ import 'package:read_right_project/utils/routes.dart';
 import 'package:read_right_project/utils/save_file_to_folder.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/teacher_user_data.dart';
-import 'package:read_right_project/utils/user_data.dart';
 
 class RoleSelectionScreen extends StatefulWidget {
   const RoleSelectionScreen({super.key});
@@ -29,26 +27,11 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
   Future<void> replaceSaveFileWithSample() async {
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
 
-    // 1. Load bytes from the asset file
     final byteData = await rootBundle.load('assets/sample_data.json');
-
-    // // 2. Get the save file path
-    // final directory = await getApplicationDocumentsDirectory();
-    // final saveDir = Directory('${directory.path}/read_right/save_data');
-
-    // Make sure folder exists
-    // if (!await saveDir.exists()) {
-    //   await saveDir.create(recursive: true);
-    // }
-    // final saveFile = File('${saveDir.path}/all_user_data.json');
-
-
     final saveDirPath = await allUsersProvider.getUserDataFilePath();
     final saveFile = File(saveDirPath);
 
-
-
-    // 3. Write bytes into the save file (overwrite if it already exists)
+    // Write bytes into the save file (overwrite if it already exists)
     await saveFile.writeAsBytes(
       byteData.buffer.asUint8List(
         byteData.offsetInBytes,
@@ -72,9 +55,6 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
     SessionProvider sessionProvider = context.read<SessionProvider>();
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
     allUsersProvider.allUserData.isLastLoggedInUserOutdated = true;
-    // print("last logged in user username: ${lastLoggedInUser == null ? 'null' : lastLoggedInUser.username}");
-    // print(lastLoggedInUser.runtimeType);
-
     print("Role selection screen opened");
 
     return FutureBuilder<void>(
@@ -174,21 +154,6 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
           );
         }
 
-        // //
-        // // 3. SUCCESS
-        // //
-        // print("Snapshot has no error");
-        // return MaterialApp(
-        //   title: 'Navigation Demo',
-        //   debugShowCheckedModeBanner: false,
-        //   initialRoute: AppRoutes.role,
-        //   routes: appRoutes,
-        //   theme: ThemeData(
-        //     colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        //     useMaterial3: true,
-        //   ),
-        // );
-
         return Scaffold(
           body: Stack(
             children: [
@@ -240,11 +205,9 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                         onPressed: () {
                           sessionProvider.isTeacher = true;
                           if (allUsersProvider.allUserData.lastLoggedInUser is TeacherUserData) {
-                            // print("Last logged in user recognized as a student");
                             Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
                           }
                           else {
-                            // print("Last logged in user not recognized as a teacher");
                             Navigator.pushReplacementNamed(context, AppRoutes.login);
                           }
                           Navigator.pushReplacementNamed(context, AppRoutes.login);
@@ -281,7 +244,6 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                 Center(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       ElevatedButton.icon(
                         onPressed: () async {
@@ -323,9 +285,5 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
         );
       },
     );
-
-
-
-    
   }
 }

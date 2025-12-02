@@ -8,7 +8,6 @@ import 'package:read_right_project/utils/all_users_data.dart';
 import 'package:read_right_project/utils/routes.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/teacher_user_data.dart';
-import 'package:read_right_project/utils/user_data.dart';
 
 class CreateAccountScreen extends StatefulWidget {
   const CreateAccountScreen({super.key});
@@ -32,10 +31,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
 
     SessionProvider sessionProvider = context.read<SessionProvider>();
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
-
-    // List<String> teacherUsernames = allUsersProvider.allUserData.teacherUserDataList
-    //   .map((teacher) => '${teacher.firstName} ${teacher.lastName}')
-    //   .toList();
 
 
     return Scaffold(
@@ -136,22 +131,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 final password = passwordTextEditingController.text;
                 final firstName = firstNameTextEditingController.text;
                 final lastName = lastNameTextEditingController.text;
-                // Navigate back to main screen and clear previous routes
-                // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-                // if (LoginData.isValidLoginData(username, password) == true)
-                // {
-                //   print("successful login");
-                //   sessionProvider.saveUsername(username);
-                //   /// Share data with provider
-                //   // Provider.of<SessionProvider>(context, listen: false).saveUsername(username);
-                //   // Navigator.pushNamedAndRemoveUntil(context, AppRoutes.practice, (route) => false);
-                //   Navigator.pushReplacementNamed(context, AppRoutes.practice);
-                //   // Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-                // }
-                // else
-                // {
-                //   print("incorrect login");
-                // }
+
                 // TODO: Check for unique username
                 AllUserData allUserData = allUsersProvider.allUserData;
                 if (sessionProvider.isTeacher)
@@ -178,24 +158,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                     word_list_progression_data: {}
                   ));
                 }
-                // allUserData.userDataList.add(UserData(username: username, password: password, isTeacher: sessionProvider.isTeacher, attempts: []));
                 allUsersProvider.saveCurrentUserData();
                 Navigator.pushReplacementNamed(context, AppRoutes.login);
 
               },
               child: const Text('Create Account'),
             ),
-            
-
-            // ElevatedButton(
-            //   onPressed: () {
-            //     // Navigate back to main screen and clear previous routes
-            //     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
-
-            //   },
-            //   child: const Text('Back to Main Screen'),
-            // ),
-
           ],
         ),
       ),

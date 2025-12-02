@@ -168,19 +168,6 @@ class FeedbackScreen extends StatelessWidget {
                         )
                       ],
                     ),
-                    // Legacy code for sentence playback
-                    // SizedBox(width: 50,),
-                    // Column(
-                    //   children: [
-                    //     Text("Sentence"),
-                    //     IconButton(
-                    //       onPressed: () async {
-                    //         await flutterTts.speak(attempts[0].word);
-                    //       }, 
-                    //       icon: Icon(Icons.volume_up)
-                    //     )
-                    //   ],
-                    // ),
                   ],
                 )
               ],
@@ -287,14 +274,6 @@ class FeedbackScreen extends StatelessWidget {
             },
             child: Text(score > 80 ? "Practice Next Word" : "Retry Word")
           ),
-
-          // -------------------------------------------------------------
-          // Legacy/Commented Buttons
-          // -------------------------------------------------------------
-          // ElevatedButton(...)
-          // const SizedBox(height: 20),
-          // ElevatedButton(...)
-          // const SizedBox(height: 20),
         ],
       ),
     );

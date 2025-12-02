@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
-import 'package:read_right_project/utils/routes.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
 import '../providers/session_provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
@@ -99,10 +98,6 @@ class _ProgressScreenState extends State<ProgressScreen> {
         currentUser is StudentUserData ? currentUser : null;
 
     final List<Attempt> attempts =
-        // Legacy storage system:
-        // student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
-
-        // Current progression structure:
         student?.word_list_progression_data[sessionProvider.word_list_name]?.attempts ?? [];
 
     // ------------------------------------------------------------
