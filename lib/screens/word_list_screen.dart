@@ -19,6 +19,8 @@ class _WordListScreenState extends State<WordListScreen> {
   // This Future will hold the loading operation and ensure it only runs once per screen visit.
   Future<void>? _loadWordsFuture;
 
+  String currentWordListPath = "seed_words.csv";
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -28,7 +30,7 @@ class _WordListScreenState extends State<WordListScreen> {
       final sessionProvider = Provider.of<SessionProvider>(context, listen: false);
       // If the list is already loaded, complete immediately. Otherwise, load it.
       if (sessionProvider.word_list.isEmpty) {
-        _loadWordsFuture = sessionProvider.loadWordList('assets/seed_words.csv');
+        _loadWordsFuture = sessionProvider.loadWordList('assets/$currentWordListPath');
       } else {
         _loadWordsFuture = Future.value(); // Already loaded, create a completed future.
       }
@@ -57,100 +59,152 @@ class _WordListScreenState extends State<WordListScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            Column(
+            Container(
+              padding: EdgeInsets.all(30),
+              child: Column(
+                children: [
+                  const Text(
+                    "Welcome Back",
+                    style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    fullName, // Use the safe variable
+                    style: const TextStyle(
+                      fontSize: 60,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            Row(
               children: [
-                const Text(
-                  "Welcome Back",
-                  style: TextStyle(
-                    fontSize: 30,
-                    color: Colors.white,
+                Expanded(
+                  child: Container(
+                    height: 45,
+                    padding: EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      // borderRadius: BorderRadius.circular(10)
+                    ),
+                    child: Text(
+                      "CURRENT WORD LIST: $currentWordListPath",
+                      style: TextStyle(
+                        fontSize: 15,
+                        // fontWeight: FontWeight.bold
+                      ),
+                    ),
                   ),
                 ),
-                Text(
-                  fullName, // Use the safe variable
-                  style: const TextStyle(
-                    fontSize: 60,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
+                Column(
+                  children: [
+                    SizedBox(
+                      height: 45,
+                      child: TextButton(
+                        style: TextButton.styleFrom(
+                          backgroundColor: Colors.blue[200],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.zero
+                          )
+                        ),
+                        onPressed: () {
+                          Navigator.pushNamed(context, AppRoutes.progress);
+                        }, 
+                        child: Text("PROGRESS")
+                      ),
+                    ),
+                  ],
+                )
               ],
             ),
 
             // --- FIX: WRAP THE WORD DISPLAY IN A FUTUREBUILDER ---
-            SizedBox(
-              width: 800,
-              height: 350, // Give it a fixed height to prevent layout jumps
-              child: FutureBuilder<void>(
-                future: _loadWordsFuture,
-                builder: (context, snapshot) {
-                  // While the future is waiting, show a loading spinner.
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(color: Colors.white),
-                    );
-                  }
-
-                  // If an error occurred during loading, display an error message.
-                  if (snapshot.hasError) {
-                    return const Center(
-                      child: Text(
-                        'Error: Failed to load words.',
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    );
-                  }
-
-                  int currWordInWordListIndex = allUsersProvider.getWordListCurrIndex(sessionProvider.word_list_name);
-
-                  // Once the data is loaded, build the main UI.
-                  // final wordObject = sessionProvider.word_list.isEmpty
-                  //     ? null
-                  //     : sessionProvider.word_list[sessionProvider.index];
-                  final wordObject = sessionProvider.word_list.isEmpty
-                      ? null
-                      : sessionProvider.word_list[currWordInWordListIndex];
-
-                  return Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.blue[300],
-                      border: Border.all(color: Colors.blue, width: 2),
-                      borderRadius: BorderRadius.circular(8),
+            // SizedBox(
+            //   width: 800,
+            //   height: 350, // Give it a fixed height to prevent layout jumps
+            Expanded(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: FutureBuilder<void>(
+                      future: _loadWordsFuture,
+                      builder: (context, snapshot) {
+                        // While the future is waiting, show a loading spinner.
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(color: Colors.white),
+                          );
+                        }
+                  
+                        // If an error occurred during loading, display an error message.
+                        if (snapshot.hasError) {
+                          return const Center(
+                            child: Text(
+                              'Error: Failed to load words.',
+                              style: TextStyle(color: Colors.white, fontSize: 18),
+                            ),
+                          );
+                        }
+                  
+                        int currWordInWordListIndex = allUsersProvider.getWordListCurrIndex(sessionProvider.word_list_name);
+                  
+                        // Once the data is loaded, build the main UI.
+                        // final wordObject = sessionProvider.word_list.isEmpty
+                        //     ? null
+                        //     : sessionProvider.word_list[sessionProvider.index];
+                        final wordObject = sessionProvider.word_list.isEmpty
+                            ? null
+                            : sessionProvider.word_list[currWordInWordListIndex];
+                  
+                        return Container(
+                          padding: const EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                            color: Colors.blue[300],
+                            // border: Border.all(color: Colors.blue, width: 2),
+                            // borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                // 'Word #${sessionProvider.index + 1}',
+                                'Word #${currWordInWordListIndex + 1}',
+                  
+                                style: const TextStyle(fontSize: 30),
+                              ),
+                              Text(
+                                'WORD GRADE: ${wordObject?.grade}',
+                                style: const TextStyle(fontSize: 22),
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 5),
+                              Text(
+                                wordObject?.text ?? 'N/A',
+                                style: const TextStyle(fontSize: 100),
+                              ),
+                              const SizedBox(height: 10),
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, AppRoutes.practice);
+                                },
+                                child: const Text('Go Practice!'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
                     ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          // 'Word #${sessionProvider.index + 1}',
-                          'Word #${currWordInWordListIndex + 1}',
-
-                          style: const TextStyle(fontSize: 30),
-                        ),
-                        Text(
-                          'This is the word you must practice\n'
-                              'Current grade: ${wordObject?.grade}',
-                          style: const TextStyle(fontSize: 22),
-                          textAlign: TextAlign.center,
-                        ),
-                        const SizedBox(height: 5),
-                        Text(
-                          wordObject?.text ?? 'N/A',
-                          style: const TextStyle(fontSize: 100),
-                        ),
-                        const SizedBox(height: 10),
-                        ElevatedButton(
-                          onPressed: () {
-                            Navigator.pushNamed(context, AppRoutes.practice);
-                          },
-                          child: const Text('Go Practice!'),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                  ),
+                ],
               ),
             ),
+
+            SizedBox(height: 20,),
 
             ElevatedButton(
               onPressed: () {
@@ -158,7 +212,10 @@ class _WordListScreenState extends State<WordListScreen> {
                 Navigator.pushReplacementNamed(context, AppRoutes.role);
               },
               child: const Text('Sign Out'),
-            )
+            ),
+
+            SizedBox(height: 20,),
+
           ],
         ),
       ),

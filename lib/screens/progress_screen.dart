@@ -94,7 +94,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Your Progress Summary')),
+      appBar: AppBar(title: const Text('PROGRESS REPORT')),
       body: Column(
         children: [
           // --- 3. Display Statistics in a Summary Card ---
