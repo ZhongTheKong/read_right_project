@@ -10,7 +10,6 @@ import 'package:read_right_project/utils/word_list_progression_data.dart';
 
 class AllUsersProvider extends ChangeNotifier{
 
-  // AllUserData allUserData = AllUserData(lastLoggedInUser: null, studentUserDataList: [], teacherUserDataList: []);
   AllUserData allUserData = AllUserData(lastLoggedInUserUsername: null, lastLoggedInUserIsTeacher: null, studentUserDataList: [], teacherUserDataList: []);
   bool isSynced = false;
 
@@ -41,10 +40,6 @@ class AllUsersProvider extends ChangeNotifier{
   }
 
   Future<void> loadUserData(String filePath) async {
-    // // Temporary code to clear json
-    // saveCurrentUserData();
-    // return;
-
     final file = File(filePath);
 
     if (!file.existsSync()) {
@@ -71,7 +66,6 @@ class AllUsersProvider extends ChangeNotifier{
       // Catch-all (e.g. fromJson exceptions)
       print("Unexpected error loading user data: $e\n$stack");
       rethrow;
-      // throw Exception("Unexpected error loading user data: $e");
     }
     isSynced = true;
     notifyListeners();
@@ -111,7 +105,6 @@ class AllUsersProvider extends ChangeNotifier{
 
     if (!file.existsSync()) {
       print("File does not exist");
-      // throw Exception("User data file does not exist.");
       return;
     }
     final corruptPath = file.path + ".corrupt_${DateTime.now().millisecondsSinceEpoch}";
@@ -169,7 +162,6 @@ class AllUsersProvider extends ChangeNotifier{
     final currentUser = allUserData.lastLoggedInUser;
     final StudentUserData? student = currentUser is StudentUserData ? currentUser : null;
     final WordListProgressionData? wordListProgressionData =
-        // student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
         student?.word_list_progression_data[wordListFileName];
     if (wordListProgressionData != null) {
       wordListProgressionData.currIndex++;

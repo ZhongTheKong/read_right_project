@@ -1,14 +1,9 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutter/widgets.dart';
-// import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
-// REMOVED: No longer needs a direct reference to SessionProvider
-// import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/utils/attempt.dart';
-// import 'package:record/record.dart';
 
 import 'package:mocktail/mocktail.dart';
 import 'package:read_right_project/utils/pronunciation_analysis.dart';
@@ -19,11 +14,6 @@ class MockAudioRecorder extends Mock implements AudioRecorder {}
 class MockAudioPlayer extends Mock implements AudioPlayer {}
 
 class RecordingProvider extends ChangeNotifier {
-
-  // --- REMOVED: Direct dependency on SessionProvider ---
-  // SessionProvider? generalProvider;
-  // RecordingProvider(this.generalProvider);
-
   AudioRecorder recorder;
   AudioPlayer player;
 
@@ -38,10 +28,6 @@ class RecordingProvider extends ChangeNotifier {
 
   bool isAudioRetentionEnabled = true;
 
-  // --- REMOVED: Redundant index properties that belong in SessionProvider ---
-  // int index = 0;
-  // int selectedIndex = 0;
-
   static const int kMaxRecordMs = 3000;
   Timer? recordTimer;
   int elapsedMs = 0;
@@ -49,11 +35,6 @@ class RecordingProvider extends ChangeNotifier {
   static const int intervalMs = 50;
 
   double progress = 0;
-
-  // --- REMOVED: This anti-pattern is no longer needed ---
-  // void updateStudent(SessionProvider newGeneralProvider) {
-  //   generalProvider = newGeneralProvider;
-  // }
 
   /// Initializes the audio recorder. Should only be called once.
   Future<void> initAudio() async {
@@ -157,24 +138,16 @@ class RecordingProvider extends ChangeNotifier {
         print("Error getting recording duration: $e");
       }
 
-      // print("Attempting to save file to: $path");
-      // print("Before save: $attempts");
-
       // Save the attempt to the list passed from the UI
       attempts.insert(
         0,
         Attempt(
           word: word,
-          // A more realistic score could be based on other metrics,
-          // but for now, this placeholder is fine.
-          // score: (elapsedMs / kMaxRecordMs).clamp(0.0, 1.0),
-          // score: Random().nextDouble(),
           score: await getAzureResult(path, word),
           filePath: path,
           durationMs: (dur ?? Duration.zero).inMilliseconds,
         ),
       );
-      // print("After save: $attempts");
     } catch (e) {
       print("Error stopping recording: $e");
       // Ensure state is clean even on error
@@ -214,25 +187,6 @@ class RecordingProvider extends ChangeNotifier {
       );
       await player.play();
 
-      // _uiTimer?.cancel(); // Cancel any existing timer
-      // _uiTimer = Timer.periodic(
-      
-
-
-      // Timer.periodic(
-      //   const Duration(milliseconds: intervalMs),
-      //       (timer) {
-      //     elapsedMs = timer.tick * intervalMs;
-      //     if (elapsedMs >= kMaxRecordMs) {
-      //       elapsedMs = kMaxRecordMs;
-      //       timer.cancel(); // Stop this timer when max time is reached
-      //     }
-      //     notifyListeners();
-      //   },
-      // );
-
-      
-
       // The stream subscription should be managed carefully.
       // A simple `await player.play()` completes when the audio finishes.
       // After it finishes, update the state.
@@ -248,8 +202,6 @@ class RecordingProvider extends ChangeNotifier {
 
   void deleteAudioFile(String path) async {
     try {
-      // final directory = await getApplicationDocumentsDirectory();
-      // final saveDir = Directory('${directory.path}/read_right/save_data');
       final file = File(path);
 
       if (!await file.exists()) {

@@ -132,7 +132,6 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 final firstName = firstNameTextEditingController.text;
                 final lastName = lastNameTextEditingController.text;
 
-                // TODO: Check for unique username
                 AllUserData allUserData = allUsersProvider.allUserData;
                 if (sessionProvider.isTeacher)
                 {

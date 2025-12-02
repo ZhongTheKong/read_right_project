@@ -2,26 +2,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle; // Import rootBundle
 import 'package:csv/csv.dart'; // Import the CSV package
-import 'package:just_audio/just_audio.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:read_right_project/providers/all_users_provider.dart';
-import 'package:read_right_project/utils/attempt.dart';
-import 'package:read_right_project/utils/student_user_data.dart';
-import 'package:read_right_project/utils/word_list_progression_data.dart';
-import 'package:record/record.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:read_right_project/utils/word.dart';
 
 
 class SessionProvider extends ChangeNotifier {
-  // final recorder = AudioRecorder();
-  // final player = AudioPlayer();
   late stt.SpeechToText _speech; // STT instance
 
-  // bool recorderReady = false;
-  // bool isRecording = false;
-  // bool isPlaying = false;
   bool isTranscribing = false;
 
   bool isTeacher = false;
@@ -35,29 +24,8 @@ class SessionProvider extends ChangeNotifier {
 
   String word_list_name = '';
 
-  // final List<Attempt> attempts = [];
-  // static const int kMaxRecordMs = 7000;
-  // Timer? recordTimer;
-  // int elapsedMs = 0;
   // To keep track of the current logged in user
   String _username = 'Guest';
-
-
-  // static const int intervalMs = 50;
-
-  // Calculate average score
-  // double get averageScore {
-  //   if (attempts.isEmpty) return 0.0;
-  //   final totalScore = attempts.fold(0.0, (sum, attempt) => sum + attempt.score);
-  //   return totalScore / attempts.length;
-  // }
-
-  // int get numberOfAttempts => attempts.length;
-
-  // String get currentUser => _username;
-
-  // String get word => word_list[index].text;
-  // String get grade_level => word_list[index].grade;
 
   /// Currently needed to get progress screen to persist
   SessionProvider() {
@@ -78,9 +46,6 @@ class SessionProvider extends ChangeNotifier {
     await prefs.setInt('lastIndex', index);
   }
 
-  /// Index saving was added. Likely will be replaced once attempt persistence
-  /// is added.
-  // TODO: loadUsername and ready speech to text need to be initialized somewhere else
   Future<void> loadWordList(String path) async {
     if (_wordsLoaded) return;
     await loadIndex();
@@ -129,14 +94,12 @@ class SessionProvider extends ChangeNotifier {
 
   /// Moves to the next word to practice. Also keeps track of if a list has been
   /// completed.
-  // void nextWord(String isCorrect, bool updateList) {
     void nextWord(bool updateList) {
     if (word_list.isEmpty) return;
     if (!updateList) {
       listComplete = false;
       notifyListeners();
     }
-    // if (isCorrect != 'Needs work') {
       String prev = word_list[index].grade;
       incrementIndex(1);
 
@@ -150,11 +113,6 @@ class SessionProvider extends ChangeNotifier {
         listComplete = false;
         notifyListeners();
       }
-    // }
-    // else {
-    //   listComplete = false;
-    //   notifyListeners();
-    // }
   }
 
   // Load the username from local storage
@@ -179,16 +137,7 @@ class SessionProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // @override
-  // void dispose() {
-  //   recordTimer?.cancel();
-  //   player.dispose();
-  //   recorder.cancel();
-  //   super.dispose();
-  // }
-
   Future<String> _nextPath() async {
-    // TODO: Change this to not save to OneDrive/Documents
     final dir = await getApplicationDocumentsDirectory();
     final ts = DateTime.now().millisecondsSinceEpoch;
     return '${dir.path}/read_right/recordings/readright_${word_list[index]}_$ts.wav';
@@ -214,7 +163,6 @@ class SessionProvider extends ChangeNotifier {
         onResult: (result) {
           print('Transcription: ${result.recognizedWords}');
           /// Compare result.recognizedWords with the word_list[index]
-
         },
         listenFor: Duration(seconds: 10),
       );
