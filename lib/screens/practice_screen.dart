@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
@@ -11,6 +10,23 @@ import 'package:read_right_project/utils/word.dart';
 import 'package:read_right_project/utils/word_list_progression_data.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
+// -------------------------------------------------------------
+// PracticeScreen
+//
+// PRE:
+//   • Must have a loaded student in AllUsersProvider
+//   • SessionProvider must be initialized with a word list
+//   • Assets/seed_words.csv must exist for loading default word list
+//
+// Displays:
+//   • Current word from the list with grade
+//   • Record / Stop recording controls
+//   • Linear progress indicator for recording
+//   • Connectivity and sync status indicators
+//   • Navigation buttons to Word List and Progress
+//
+// POST: Returns a fully interactive practice screen with recording functionality
+// -------------------------------------------------------------
 class PracticeScreen extends StatefulWidget {
   const PracticeScreen({super.key});
 
@@ -19,40 +35,29 @@ class PracticeScreen extends StatefulWidget {
 }
 
 class _PracticeScreenState extends State<PracticeScreen> {
-  // This Future will hold the loading operation and ensure it only runs once.
-  Future<void>? _loadWordsFuture;
-  bool _isAudioInitialized = false;
-  bool isOnline = false;
+  Future<void>? _loadWordsFuture;       // Tracks async word list loading
+  bool _isAudioInitialized = false;     // Ensures recording initialized once
+  bool isOnline = false;                // Connectivity status indicator
 
+  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
+
+  // -------------------------------------------------------------
+  // PRE: Widget dependencies available
+  // POST: Initializes word list loading future
+  // -------------------------------------------------------------
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // We initialize the future here because it has access to the provider context
-    // and runs before the first build. This prevents the future from being
-    // re-called on every rebuild.
     if (_loadWordsFuture == null) {
       final sessionProvider = Provider.of<SessionProvider>(context, listen: false);
-      // Trigger the loading process.
       _loadWordsFuture = sessionProvider.loadWordList('assets/seed_words.csv');
     }
   }
 
-  Future<bool> isConnectedToWifi() async {
-    final connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult.contains(ConnectivityResult.wifi)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  // Connectivity().onConnectivityChanged.listen((status) {
-  //   final isOnline = status != ConnectivityResult.none;
-  //   print("Online? $online");
-  // });
-
-  late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
-
+  // -------------------------------------------------------------
+  // PRE: Called on widget creation
+  // POST: Starts connectivity listener for ONLINE/OFFLINE indicator
+  // -------------------------------------------------------------
   @override
   void initState() {
     super.initState();
@@ -61,7 +66,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
         isOnline = result.contains(ConnectivityResult.wifi);
       });
     });
-    // isOnline = await isConnectedToWifi();
   }
 
   @override
@@ -70,113 +74,109 @@ class _PracticeScreenState extends State<PracticeScreen> {
     super.dispose();
   }
 
+  // -------------------------------------------------------------
+  // Checks if the device is connected to WiFi
+  // -------------------------------------------------------------
+  Future<bool> isConnectedToWifi() async {
+    final connectivityResult = await Connectivity().checkConnectivity();
+    return connectivityResult.contains(ConnectivityResult.wifi);
+  }
+
   @override
   Widget build(BuildContext context) {
-
     AllUsersProvider allUsersProvider = context.watch<AllUsersProvider>();
-    RecordingProvider recordingProvider1 = context.read<RecordingProvider>();
+    RecordingProvider recordingProvider = context.read<RecordingProvider>();
 
+    // -------------------------------------------------------------
+    // POST: Main Scaffold with app bar and practice UI
+    // -------------------------------------------------------------
     return Scaffold(
       backgroundColor: Colors.blue[800],
       appBar: AppBar(
-        
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            // Connectivity / Sync indicators
             Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text("PRACTICE"),
                 Row(
                   children: [
-
-
+                    // Online status
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
                           width: 15,
                           height: 15,
                           decoration: BoxDecoration(
                             color: isOnline ? Colors.green : Colors.red,
-                            shape: BoxShape.circle, // Makes the container circular
+                            shape: BoxShape.circle,
                           ),
                         ),
-                        SizedBox(width: 10,),
+                        const SizedBox(width: 10),
                         Text(
                           isOnline ? "ONLINE" : "OFFLINE",
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold
-                          ),
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-
-                    SizedBox(width: 10,),
-
+                    const SizedBox(width: 10),
+                    // Sync status
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
                           width: 15,
                           height: 15,
                           decoration: BoxDecoration(
                             color: allUsersProvider.isSynced ? Colors.green : Colors.red,
-                            shape: BoxShape.circle, // Makes the container circular
+                            shape: BoxShape.circle,
                           ),
                         ),
-                        SizedBox(width: 10,),
+                        const SizedBox(width: 10),
                         Text(
                           allUsersProvider.isSynced ? "SYNC" : "NOT SYNC",
-                          style: TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold
-                          ),
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
                   ],
-                )
+                ),
               ],
             ),
-            SizedBox(width: 20,),
+            // Save Audio toggle
             Row(
               children: [
-                Text(
+                const Text(
                   "Save\nAudio",
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                 ),
                 Switch(
-                  value: recordingProvider1.isAudioRetentionEnabled,
+                  value: recordingProvider.isAudioRetentionEnabled,
                   onChanged: (value) {
                     setState(() {
-                      recordingProvider1.isAudioRetentionEnabled = value;
-                    }); 
-                  }
+                      recordingProvider.isAudioRetentionEnabled = value;
+                    });
+                  },
                 ),
               ],
-            )
+            ),
           ],
-        )
-
+        ),
       ),
 
-      // Use FutureBuilder to handle the asynchronous loading of the word list.
+      // -------------------------------------------------------------
+      // Body: FutureBuilder ensures word list loaded asynchronously
+      // -------------------------------------------------------------
       body: FutureBuilder<void>(
         future: _loadWordsFuture,
         builder: (context, snapshot) {
-          // While the future is waiting, show a loading spinner.
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(color: Colors.white),
             );
           }
 
-          // If an error occurred during loading, display an error message.
           if (snapshot.hasError) {
             return const Center(
               child: Text(
@@ -186,19 +186,19 @@ class _PracticeScreenState extends State<PracticeScreen> {
             );
           }
 
-          // Once the data is loaded, build the main UI.
-          // We use a Consumer to ensure the UI rebuilds with the latest provider data.
+          // -------------------------------------------------------------
+          // POST: Word list loaded successfully
+          // -------------------------------------------------------------
           return Consumer2<SessionProvider, RecordingProvider>(
             builder: (context, sessionProvider, recordingProvider, child) {
+
+              // Initialize audio once
               if (!_isAudioInitialized) {
                 recordingProvider.initAudio();
                 _isAudioInitialized = true;
               }
-              // After a successful load, double-check that the list is not empty.
-              if (sessionProvider.word_list.isEmpty) {
-                
-                // print("End of word list reached");
 
+              if (sessionProvider.word_list.isEmpty) {
                 return const Center(
                   child: Text(
                     'No words found in the file.',
@@ -207,16 +207,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
                 );
               }
 
-              // Initialize the audio here, safely after loading.
-              // recordingProvider.initAudio(mounted);
-
-              // Safely get the current Word object from the list.
+              // Current word index & object
               int currWordInWordListIndex = allUsersProvider.getWordListCurrIndex(sessionProvider.word_list_name);
-
-              // final Word currentWord = sessionProvider.word_list[sessionProvider.index];
               final Word currentWord = sessionProvider.word_list[currWordInWordListIndex];
-              final listComplete = sessionProvider.listComplete;
+              final bool listComplete = sessionProvider.listComplete;
 
+              // -------------------------------------------------------------
+              // POST: List complete screen
+              // -------------------------------------------------------------
               if (listComplete) {
                 return Center(
                   child: Column(
@@ -224,7 +222,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                     children: [
                       Expanded(
                         child: Container(
-                          margin: EdgeInsets.all(10),
+                          margin: const EdgeInsets.all(10),
                           padding: const EdgeInsets.all(15),
                           decoration: BoxDecoration(
                             color: Colors.blue[300],
@@ -234,80 +232,50 @@ class _PracticeScreenState extends State<PracticeScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'List\nComplete!',
-                                style: const TextStyle(fontSize: 60),
-                              ),
+                              const Text('List\nComplete!', style: TextStyle(fontSize: 60)),
                               const SizedBox(height: 8),
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: ElevatedButton(
-                                      onPressed: () {
-                                        // sessionProvider.nextWord('Needs work', false);
-                                    
-                                        // AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
-                                        // final currentUser = allUsersProvider.allUserData.lastLoggedInUser;
-                                        // final StudentUserData? student = currentUser is StudentUserData ? currentUser : null;
-                                        // final WordListProgressionData? wordListProgressionData =
-                                        //     // student?.word_list_attempts[sessionProvider.word_list_name] ?? [];
-                                        //     student?.word_list_progression_data[sessionProvider.word_list_name];
-                                        // if (wordListProgressionData != null) {
-                                        //   wordListProgressionData.currIndex++;
-                                        // }
-                                        allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
-                                        sessionProvider.nextWord(false);
-                                        Navigator.pushNamed(context, '/practice');
-                                      },
-                                      child: const Text('Next List')
-                                    ),
-                                  ),
-                                ],
-                              )
+                              ElevatedButton(
+                                onPressed: () {
+                                  allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
+                                  sessionProvider.nextWord(false);
+                                  Navigator.pushNamed(context, '/practice');
+                                },
+                                child: const Text('Next List'),
+                              ),
                             ],
                           ),
                         ),
                       ),
                     ],
-                  )
+                  ),
                 );
               }
+
+              // -------------------------------------------------------------
+              // POST: Main practice UI with current word, record/stop, progress
+              // -------------------------------------------------------------
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-
+                    // Word number & grade display
                     Container(
-                      margin: const EdgeInsets.fromLTRB(10,10,10,5),
+                      margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
                       padding: const EdgeInsets.all(15),
                       decoration: BoxDecoration(
                         color: Colors.blue[300],
                         border: Border.all(color: Colors.blue, width: 2),
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                // 'Word #${sessionProvider.index + 1}\n'
-                                'Word #${currWordInWordListIndex + 1}\n'
-                                'Grade: ${currentWord.grade}', // Use the 'grade' property
-                                style: const TextStyle(fontSize: 20),
-                              ),
-                            ],
-                          ),
-                        ],
+                      child: Text(
+                        'Word #${currWordInWordListIndex + 1}\nGrade: ${currentWord.grade}',
+                        style: const TextStyle(fontSize: 20),
                       ),
                     ),
-
-                    // WORD DISPLAY
+                    // Current word text
                     Expanded(
                       child: Container(
-                        margin: const EdgeInsets.fromLTRB(10,5,10,10),
+                        margin: const EdgeInsets.fromLTRB(10, 5, 10, 10),
                         padding: const EdgeInsets.all(15),
                         decoration: BoxDecoration(
                           color: Colors.blue[300],
@@ -316,14 +284,13 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         ),
                         child: Center(
                           child: Text(
-                            currentWord.text, // Use the 'text' property
+                            currentWord.text,
                             style: const TextStyle(fontSize: 60),
                           ),
                         ),
                       ),
                     ),
-
-                    // LINEAR PROGRESS INDICATOR
+                    // Linear progress indicator for recording
                     Container(
                       width: 350,
                       height: 10,
@@ -334,7 +301,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: LinearProgressIndicator(
-                          // value: recordingProvider.progress,
                           value: recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
                           minHeight: 10,
                           backgroundColor: Colors.grey[300],
@@ -342,16 +308,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         ),
                       ),
                     ),
-
-                    // Slider(
-                    //   value: recordingProvider.currentPosition.inMilliseconds.toDouble(),
-                    //   max: recordingProvider.totalDuration.inMilliseconds.toDouble(),
-                    //   onChanged: (value) {
-                    //     recordingProvider.player.seek(Duration(milliseconds: value.toInt()));
-                    //   },
-                    // ),
-
-                    // RECORDING CONTROLS
+                    // Record / Stop / Next buttons
                     Container(
                       padding: const EdgeInsets.all(10),
                       margin: const EdgeInsets.all(10),
@@ -363,52 +320,42 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          // Record button
                           Flexible(
                             child: ElevatedButton.icon(
                               onPressed: () async {
-
-                                print("start recording button pressed");
-                            
                                 final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
                                 final wordListName = sessionProvider.word_list_name;
-                                // Ensure the key exists
-                                // studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
-                                studentData.word_list_progression_data.putIfAbsent(wordListName, () => WordListProgressionData(
-                                  wordListName: wordListName, 
-                                  wordListPath: wordListName, 
-                                  currIndex: 0, 
-                                  attempts: []
-                                ));
-                                // Now it's safe to access
-                                // final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
-                                final attempts = studentData.word_list_progression_data[wordListName]!.attempts; // non-nullable
-
-                            
+                                studentData.word_list_progression_data.putIfAbsent(
+                                  wordListName,
+                                  () => WordListProgressionData(
+                                    wordListName: wordListName,
+                                    wordListPath: wordListName,
+                                    currIndex: 0,
+                                    attempts: [],
+                                  ),
+                                );
+                                final attempts = studentData.word_list_progression_data[wordListName]!.attempts;
                                 try {
                                   await recordingProvider.startRecording(
-                                    currentWord.text, // Pass the word text
+                                    currentWord.text,
                                     attempts,
-                                    () { 
-                                      Navigator.pushReplacementNamed(context, AppRoutes.feedback); 
-                                    }
+                                    () { Navigator.pushReplacementNamed(context, AppRoutes.feedback); },
                                   );
                                   allUsersProvider.saveCurrentUserData();
-                            
                                 } catch (e) {
                                   showDialog(
-                                    context: context, 
+                                    context: context,
                                     builder: (context) => AlertDialog(
-                                      title: Text("App Missing Microphone Permissions"),
-                                      content: Text("Microphone is disabled for this app. To utilize recording functionality, please enable microphone permissions for this app in device settings."),
+                                      title: const Text("App Missing Microphone Permissions"),
+                                      content: const Text("Microphone is disabled for this app. Please enable microphone permissions in device settings."),
                                       actions: [
                                         TextButton(
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          }, 
-                                          child: Text("Close")
+                                          onPressed: () { Navigator.pop(context); },
+                                          child: const Text("Close"),
                                         ),
                                       ],
-                                    )
+                                    ),
                                   );
                                 }
                               },
@@ -416,89 +363,50 @@ class _PracticeScreenState extends State<PracticeScreen> {
                               label: const Text('Record'),
                             ),
                           ),
-
+                          // Stop button
                           Flexible(
                             child: ElevatedButton.icon(
                               onPressed: () async {
-                            
                                 final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
                                 final wordListName = sessionProvider.word_list_name;
-                                // Ensure the key exists
-                                // studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
-                                studentData.word_list_progression_data.putIfAbsent(wordListName, () => WordListProgressionData(
-                                  wordListName: wordListName, 
-                                  wordListPath: wordListName, 
-                                  currIndex: 0, 
-                                  attempts: []
-                                ));
-                                // Now it's safe to access
-                                // final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
-                                final attempts = studentData.word_list_progression_data[wordListName]!.attempts; // non-nullable
-
-                            
-                                // print("Before stop recording: $attempts");
-                                await recordingProvider.stopRecording(
-                                  currentWord.text, // Pass the word text
-                                  // sessionProvider.attempts,
-                                  attempts,
-                                  () { 
-                                    Navigator.pushReplacementNamed(context, AppRoutes.feedback); 
-                                  }
+                                studentData.word_list_progression_data.putIfAbsent(
+                                  wordListName,
+                                  () => WordListProgressionData(
+                                    wordListName: wordListName,
+                                    wordListPath: wordListName,
+                                    currIndex: 0,
+                                    attempts: [],
+                                  ),
                                 );
-                                // print("After stop recording: $attempts");
-                                // sessionProvider.selectedIndex = sessionProvider.index;
+                                final attempts = studentData.word_list_progression_data[wordListName]!.attempts;
+                                await recordingProvider.stopRecording(
+                                  currentWord.text,
+                                  attempts,
+                                  () { Navigator.pushReplacementNamed(context, AppRoutes.feedback); },
+                                );
                                 sessionProvider.selectedIndex = currWordInWordListIndex;
-
                                 allUsersProvider.saveCurrentUserData();
-                            
                                 setState(() {});
                               },
                               icon: const Icon(Icons.stop_circle_outlined),
                               label: const Text('Stop'),
                             ),
                           ),
-
+                          // Next word button (temporary)
                           Flexible(
                             child: ElevatedButton.icon(
                               onPressed: () {
                                 allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
                                 sessionProvider.nextWord(true);
-                              }, 
-                              icon: Icon(Icons.play_arrow),
-                              label: Text("Next (TEMP)")
+                              },
+                              icon: const Icon(Icons.play_arrow),
+                              label: const Text("Next (TEMP)"),
                             ),
-                          )
-
-                          // const SizedBox(width: 20),
-                          // ElevatedButton.icon(
-                          //   onPressed: () async {
-                              
-                          //     final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
-                          //     final wordListName = sessionProvider.word_list_name;
-                          //     // Ensure the key exists
-                          //     studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
-                          //     // Now it's safe to access
-                          //     final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
-                              
-                          //     // Playback logic
-                          //     // if (sessionProvider.attempts.length > sessionProvider.index) {
-                          //     if (attempts.isNotEmpty) {
-                          //       // recordingProvider.play(sessionProvider.attempts[sessionProvider.index].filePath);
-                          //       print("Attempting to play file at location: ${attempts[0].filePath}");
-                          //       allUsersProvider.saveUserData(allUsersProvider.allUserData);
-                          //       await recordingProvider.play(attempts[0].filePath);
-
-                          //     }
-                          //   },
-                          //   icon: const Icon(Icons.play_arrow),
-                          //   label: const Text('Playback'),
-                          // ),
-
+                          ),
                         ],
                       ),
                     ),
-
-                    // FEEDBACK CONTROLS
+                    // Navigation buttons
                     Container(
                       padding: const EdgeInsets.all(10),
                       margin: const EdgeInsets.all(10),
@@ -510,26 +418,15 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          // ElevatedButton(
-                          //   onPressed: () {
-                          //     sessionProvider.selectedIndex = sessionProvider.index;
-                          //     Navigator.pushNamed(context, AppRoutes.feedback);
-                          //   },
-                          //   child: const Text('Review Feedback'),
-                          // ),
                           Flexible(
                             child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, AppRoutes.wordList);
-                              },
+                              onPressed: () { Navigator.pushNamed(context, AppRoutes.wordList); },
                               child: const Text('Go to Word List'),
                             ),
                           ),
                           Flexible(
                             child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.pushNamed(context, AppRoutes.progress);
-                              },
+                              onPressed: () { Navigator.pushNamed(context, AppRoutes.progress); },
                               child: const Text('View Progress'),
                             ),
                           ),
