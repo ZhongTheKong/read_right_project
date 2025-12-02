@@ -304,7 +304,6 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                 final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
                                 final wordListName = sessionProvider.word_list_name;
 
-
                                 final attempts = studentData.word_list_progression_data[wordListName]!.attempts;
 
                                 // await FlutterTts.speak(attempts[0].word);

@@ -73,12 +73,12 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               child: Text(sessionProvider.isTeacher ? 'Teacher Login Screen' : 'Student Login Screen')
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.role);
-              },
-              child: Text("Change Roles"),
-            )
+            // ElevatedButton(
+            //   onPressed: () {
+            //     Navigator.pushReplacementNamed(context, AppRoutes.role);
+            //   },
+            //   child: Text("BACK"),
+            // )
           ],
         )
       ),

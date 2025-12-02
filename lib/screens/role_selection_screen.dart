@@ -171,7 +171,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                           }
                           else {
                             print("Last logged in user not recognized as a student");
-                            Navigator.pushReplacementNamed(context, AppRoutes.login);
+                            Navigator.pushNamed(context, AppRoutes.login);
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -208,9 +208,9 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                             Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
                           }
                           else {
-                            Navigator.pushReplacementNamed(context, AppRoutes.login);
+                            Navigator.pushNamed(context, AppRoutes.login);
                           }
-                          Navigator.pushReplacementNamed(context, AppRoutes.login);
+                          // Navigator.pushNamed(context, AppRoutes.login);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
