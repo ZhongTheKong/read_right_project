@@ -54,7 +54,37 @@ class _WordListScreenState extends State<WordListScreen> {
 
     return Scaffold(
       backgroundColor: Colors.blue[800],
-      appBar: AppBar(centerTitle: true, title: const Text('Word List')),
+      appBar: AppBar(
+        centerTitle: true, 
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              // color: Colors.white,
+              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+              decoration: BoxDecoration(
+                // shape: BoxShape.circle,
+                color: Colors.black,
+                borderRadius: BorderRadius.circular(10)
+              ),
+              child: Text(
+                "WORD LIST",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold
+                ),
+              )
+            ),
+            ElevatedButton(
+              onPressed: () {
+                allUsersProvider.clearLastUser();
+                Navigator.pushReplacementNamed(context, AppRoutes.role);
+              },
+              child: const Text('Sign Out'),
+            ),
+          ],
+        )
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -89,14 +119,15 @@ class _WordListScreenState extends State<WordListScreen> {
                     height: 45,
                     padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Colors.blue[900],
                       // borderRadius: BorderRadius.circular(10)
                     ),
                     child: Text(
                       "CURRENT WORD LIST: $currentWordListPath",
                       style: TextStyle(
                         fontSize: 15,
-                        // fontWeight: FontWeight.bold
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold
                       ),
                     ),
                   ),
@@ -171,28 +202,40 @@ class _WordListScreenState extends State<WordListScreen> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(
-                                // 'Word #${sessionProvider.index + 1}',
-                                'Word #${currWordInWordListIndex + 1}',
-                  
-                                style: const TextStyle(fontSize: 30),
+                              Column(
+                                children: [
+                                  Text(
+                                    // 'Word #${sessionProvider.index + 1}',
+                                    'Word #${currWordInWordListIndex + 1}',
+                                                    
+                                    style: const TextStyle(fontSize: 30),
+                                  ),
+                                  Text(
+                                    'WORD GRADE: ${wordObject?.grade}',
+                                    style: const TextStyle(fontSize: 22),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
                               ),
-                              Text(
-                                'WORD GRADE: ${wordObject?.grade}',
-                                style: const TextStyle(fontSize: 22),
-                                textAlign: TextAlign.center,
+                              Expanded(
+                                child: Center(
+                                  child: Text(
+                                    wordObject?.text ?? 'N/A',
+                                    style: const TextStyle(fontSize: 100),
+                                  ),
+                                ),
                               ),
-                              const SizedBox(height: 5),
-                              Text(
-                                wordObject?.text ?? 'N/A',
-                                style: const TextStyle(fontSize: 100),
-                              ),
-                              const SizedBox(height: 10),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pushNamed(context, AppRoutes.practice);
-                                },
-                                child: const Text('Go Practice!'),
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: ElevatedButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(context, AppRoutes.practice);
+                                      },
+                                      child: const Text('Go Practice!'),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ],
                           ),
@@ -203,19 +246,6 @@ class _WordListScreenState extends State<WordListScreen> {
                 ],
               ),
             ),
-
-            SizedBox(height: 20,),
-
-            ElevatedButton(
-              onPressed: () {
-                allUsersProvider.clearLastUser();
-                Navigator.pushReplacementNamed(context, AppRoutes.role);
-              },
-              child: const Text('Sign Out'),
-            ),
-
-            SizedBox(height: 20,),
-
           ],
         ),
       ),
