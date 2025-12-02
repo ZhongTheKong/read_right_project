@@ -54,8 +54,7 @@ void main() {
       AllUserData(
         lastLoggedInUserIsTeacher: null, 
         lastLoggedInUserUsername: null, 
-        // studentUserDataList: [StudentUserData(firstName: '', lastName: '', username: '', password: '', isTeacher: false, word_list_attempts: {})], 
-        studentUserDataList: [StudentUserData(firstName: '', lastName: '', username: '', password: '', isTeacher: false, word_list_progression_data: {})], 
+        studentUserDataList: [StudentUserData(firstName: '', lastName: '', username: '', password: '', isTeacher: false, word_list_progression_data: {})],
 
         teacherUserDataList: []
       )
@@ -83,8 +82,6 @@ void main() {
 
     // Wait for FutureBuilders to complete
     await tester.pumpAndSettle();
-    // await Future.delayed(const Duration(seconds: 1));
-
     final recordButton = find.widgetWithText(ElevatedButton, 'Record');
     expect(recordButton, findsOneWidget);
 
@@ -93,53 +90,4 @@ void main() {
 
     verify(() => mockRecordingProvider.startRecording(any(), any(), any())).called(1);
   });
-
-  // testWidgets('Stop button triggers stopRecording', (tester) async {
-  //   await tester.pumpWidget(
-  //     MultiProvider(
-  //       providers: [
-  //         ChangeNotifierProvider<RecordingProvider>.value(value: mockRecordingProvider),
-  //         ChangeNotifierProvider<SessionProvider>.value(value: mockSessionProvider),
-  //         ChangeNotifierProvider<AllUsersProvider>.value(value: mockAllUsersProvider),
-  //       ],
-  //       child: MaterialApp(home: PracticeScreen()),
-  //     ),
-  //   );
-
-  //   await tester.pumpAndSettle();
-
-  //   final stopButton = find.widgetWithText(ElevatedButton, 'Stop');
-  //   expect(stopButton, findsOneWidget);
-
-  //   await tester.tap(stopButton);
-  //   await tester.pump();
-
-  //   verify(() => mockRecordingProvider.stopRecording(any(), any(), any())).called(1);
-  // });
-
-  // testWidgets('Progress button navigates to progress screen', (tester) async {
-  //   await tester.pumpWidget(
-  //     MultiProvider(
-  //       providers: [
-  //         ChangeNotifierProvider<RecordingProvider>.value(value: mockRecordingProvider),
-  //         ChangeNotifierProvider<SessionProvider>.value(value: mockSessionProvider),
-  //         ChangeNotifierProvider<AllUsersProvider>.value(value: mockAllUsersProvider),
-  //       ],
-  //       child: MaterialApp(
-  //         routes: {'/progress': (_) => const Scaffold(body: Text('Progress Screen'))},
-  //         home: PracticeScreen(),
-  //       ),
-  //     ),
-  //   );
-
-  //   await tester.pumpAndSettle();
-
-  //   final progressButton = find.widgetWithText(ElevatedButton, 'View Progress');
-  //   expect(progressButton, findsOneWidget);
-
-  //   await tester.tap(progressButton);
-  //   await tester.pumpAndSettle();
-
-  //   expect(find.text('Progress Screen'), findsOneWidget);
-  // });
 }
