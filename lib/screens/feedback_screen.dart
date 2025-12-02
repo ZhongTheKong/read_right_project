@@ -8,32 +8,60 @@ import 'package:read_right_project/utils/routes.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/word_list_progression_data.dart';
 
+
+// -------------------------------------------------------------
+// FeedbackScreen
+//
+// PRE: 
+//   • Must have a logged-in student in AllUsersProvider
+//   • SessionProvider.word_list_name must be set
+//
+// Displays feedback for the most recent attempt of the current word:
+//   • Word, date, scores (current, previous, highest)
+//   • Feedback label (e.g., "Perfect!", "Good!")
+//   • Play buttons for word audio
+//   • Option to proceed to next word or retry
+//
+// POST: Returns a fully functional feedback UI with optional TTS and audio playback
+// -------------------------------------------------------------
 class FeedbackScreen extends StatelessWidget {
   const FeedbackScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
 
+    // -----------------------------------------------------------------
+    // Providers used:
+    //   • SessionProvider: current word list and selected word
+    //   • AllUsersProvider: access logged-in student data
+    //   • RecordingProvider: play back recorded attempts
+    //
+    // POST: Providers ready for use in UI
+    // -----------------------------------------------------------------
     SessionProvider sessionProvider = context.watch<SessionProvider>();
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
 
-
     final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
     final wordListName = sessionProvider.word_list_name;
-    // Ensure the key exists
-    // studentData.word_list_attempts.putIfAbsent(wordListName, () => []);
-    studentData.word_list_progression_data.putIfAbsent(wordListName, () => WordListProgressionData(
-      wordListName: wordListName, 
-      wordListPath: wordListName, 
-      currIndex: 0, 
-      attempts: []
-    ));
 
-    // Now it's safe to access
-    // final attempts = studentData.word_list_attempts[wordListName]!; // non-nullable
-    final attempts = studentData.word_list_progression_data[wordListName]!.attempts; // non-nullable
+    // Ensure progression data exists for the current word list
+    studentData.word_list_progression_data.putIfAbsent(
+      wordListName, 
+      () => WordListProgressionData(
+        wordListName: wordListName, 
+        wordListPath: wordListName, 
+        currIndex: 0, 
+        attempts: []
+      )
+    );
 
-    /// Catch empty attempts list
+    // Access attempts safely
+    final attempts = studentData.word_list_progression_data[wordListName]!.attempts;
+
+    // -------------------------------------------------------------
+    // PRE: Handle case where no attempts exist
+    // POST: Show message and navigation button back to main screen
+    // -------------------------------------------------------------
     if (attempts.isEmpty) {
       return Scaffold(
         body: Center(
@@ -47,7 +75,6 @@ class FeedbackScreen extends StatelessWidget {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  // Navigate back to main screen and clear previous routes
                   Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
                 },
                 child: const Text('Back to Main Screen'),
@@ -58,24 +85,20 @@ class FeedbackScreen extends StatelessWidget {
       );
     }
 
-    // if(sessionProvider.selectedIndex == null ||
-    //     sessionProvider.selectedIndex < 0 ||
-    //     sessionProvider.selectedIndex >= sessionProvider.attempts.length) {
-    //   context.watch<SessionProvider>().selectedIndex = 0;
-    // }
-    // double score = sessionProvider.attempts[sessionProvider.selectedIndex].score;
-
+    // -----------------------------------------------------------------
+    // PRE: Compute scores and feedback
+    // POST: Variables ready for UI display
+    // -----------------------------------------------------------------
     double score = attempts[0].score;
     double previousScore = -1;
-    if (attempts.length > 1)
-    {
+    if (attempts.length > 1) {
       previousScore = attempts[1].score;
     }
-    final highestScore = attempts.fold<double>(
-      -1, // initial value, or double.negativeInfinity if you prefer
-          (prev, attempt) => attempt.score > prev ? attempt.score : prev,
-    );
 
+    final highestScore = attempts.fold<double>(
+      -1,
+      (prev, attempt) => attempt.score > prev ? attempt.score : prev,
+    );
 
     String feedback;
     if (score == 100) {
@@ -90,37 +113,38 @@ class FeedbackScreen extends StatelessWidget {
       feedback = "Needs work";
     }
 
+    // Initialize audio and TTS
     RecordingProvider recordingProvider = context.watch<RecordingProvider>();
-    // SessionProvider sessionProvider = context.watch<SessionProvider>();
     recordingProvider.initAudio();
-
     FlutterTts flutterTts = FlutterTts();
 
+    // -----------------------------------------------------------------
+    // POST: Main Scaffold with feedback content
+    // -----------------------------------------------------------------
     return Scaffold(
       appBar: AppBar(
-          centerTitle: true,
-          title: const Text('Feedback')
+        centerTitle: true,
+        title: const Text('Feedback')
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+
+          // -------------------------------------------------------------
+          // Word Display & TTS
+          //
+          // PRE: attempts[0] exists
+          // POST: Shows current word, date, and play button for TTS
+          // -------------------------------------------------------------
           Container(
-            // color: Colors.green[50],
             padding: EdgeInsets.all(15),
             child: Column(
               children: [
-                Text(
-                  'Word',
-                  style: TextStyle(fontSize: 30),
-                ),
+                Text('Word', style: TextStyle(fontSize: 30)),
                 const SizedBox(height: 10),
-
                 Text(
                   attempts[0].word,
-                  style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.bold
-                  ),
+                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 10),
                 Text(
@@ -128,14 +152,14 @@ class FeedbackScreen extends StatelessWidget {
                   style: TextStyle(fontSize: 12),
                 ),
                 const SizedBox(height: 10),
+
+                // TTS Playback Buttons
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Column(
                       children: [
-                        Text(
-                            "Word"
-                        ),
+                        Text("Word"),
                         IconButton(
                           onPressed: () async {
                             await flutterTts.speak(attempts[0].word);
@@ -144,12 +168,11 @@ class FeedbackScreen extends StatelessWidget {
                         )
                       ],
                     ),
+                    // Legacy code for sentence playback
                     // SizedBox(width: 50,),
                     // Column(
                     //   children: [
-                    //     Text(
-                    //         "Sentence"
-                    //     ),
+                    //     Text("Sentence"),
                     //     IconButton(
                     //       onPressed: () async {
                     //         await flutterTts.speak(attempts[0].word);
@@ -166,72 +189,45 @@ class FeedbackScreen extends StatelessWidget {
 
           const SizedBox(height: 10),
 
+          // -------------------------------------------------------------
+          // Table of Scores & Feedback
+          //
+          // PRE: Scores computed above
+          // POST: Displays score, previous, highest, and textual feedback
+          // -------------------------------------------------------------
           Table(
             columnWidths: {
-              0: IntrinsicColumnWidth(), // first column auto-sizes to fit text
-              1: IntrinsicColumnWidth(),      // second column takes remaining space
+              0: IntrinsicColumnWidth(),
+              1: IntrinsicColumnWidth(),
             },
             children: [
               TableRow(children: [
-                Text(
-                  "Score:  ",
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold
-                  ),
-                ),
-                Text(
-                  attempts[0].score.toString(),
-                  style: TextStyle(fontSize: 18),
-                ),
-                // const SizedBox(height: 20),
+                Text("Score:  ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(attempts[0].score.toString(), style: TextStyle(fontSize: 18)),
               ]),
               TableRow(children: [
-                Text(
-                  "Previous Score:  ",
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold
-                  ),
-                ),
-                Text(
-                  previousScore == -1 ? "N/A" : previousScore.toString(),
-                  style: TextStyle(fontSize: 18),
-                ),
-                // const SizedBox(height: 20),
+                Text("Previous Score:  ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(previousScore == -1 ? "N/A" : previousScore.toString(), style: TextStyle(fontSize: 18)),
               ]),
               TableRow(children: [
-                Text(
-                  "Highest Score:  ",
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold
-                  ),
-                ),
-                Text(
-                  highestScore == -1 ? "N/A" : highestScore.toString(),
-                  style: TextStyle(fontSize: 18),
-                ),
-                // const SizedBox(height: 20),
+                Text("Highest Score:  ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(highestScore == -1 ? "N/A" : highestScore.toString(), style: TextStyle(fontSize: 18)),
               ]),
               TableRow(children: [
-                Text(
-                  "Feedback:  ",
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold
-                  ),
-                ),
-                Text(
-                  feedback,
-                  style: TextStyle(fontSize: 18),
-                ),
+                Text("Feedback:  ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                Text(feedback, style: TextStyle(fontSize: 18)),
               ]),
             ],
           ),
 
           const SizedBox(height: 40),
 
+          // -------------------------------------------------------------
+          // Audio Playback Controls
+          //
+          // PRE: RecordingProvider initialized
+          // POST: Plays recorded attempt and shows progress
+          // -------------------------------------------------------------
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -242,14 +238,6 @@ class FeedbackScreen extends StatelessWidget {
                 icon: Icon(Icons.play_arrow),
               ),
               const SizedBox(width: 15),
-
-              // Slider(
-              //   value: recordingProvider.currentPosition.inMilliseconds.toDouble(),
-              //   max: recordingProvider.totalDuration.inMilliseconds.toDouble(),
-              //   onChanged: (value) {
-              //     recordingProvider.player.seek(Duration(milliseconds: value.toInt()));
-              //   },
-              // )
 
               Container(
                 width: 200,
@@ -271,85 +259,42 @@ class FeedbackScreen extends StatelessWidget {
             ],
           ),
 
-          // TODO: Store transcribed text in attempt
-          // const SizedBox(height: 40),
-          // Text(
-          //   "Transcript",
-          //   style: TextStyle(
-          //       fontSize: 18,
-          //       fontWeight: FontWeight.bold
-          //   ),
-          // ),
-          // Expanded(
-          //   child: Container(
-          //     decoration: BoxDecoration(
-          //       border: Border.all(
-          //         color: Colors.black
-          //       )
-          //     ),
-          //     child: Text("data"),
-          //   )
-          // ),
-
+          // -------------------------------------------------------------
+          // Next / Retry Button
+          //
+          // PRE: score available
+          // POST: Advances to next word or allows retry. Deletes audio if retention disabled.
+          // -------------------------------------------------------------
           const SizedBox(height: 20),
           TextButton(
-              onPressed: () {
-                if (score > 80)
-                {
-                  allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
-                  sessionProvider.nextWord(true);
+            onPressed: () {
+              if (score > 80) {
+                allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
+                sessionProvider.nextWord(true);
+              }
+              if (!recordingProvider.isAudioRetentionEnabled) {
+                print("Removing current attempt from ${sessionProvider.word_list_name}");
+                String? lastFilePath = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData)
+                    .word_list_progression_data[sessionProvider.word_list_name]?.attempts.last.filePath;
+                allUsersProvider.saveCurrentUserData();
+                if (lastFilePath != null) {
+                  recordingProvider.deleteAudioFile(lastFilePath);
                 }
-                if (!recordingProvider.isAudioRetentionEnabled)
-                {
-                  print("Removing current attempt from ${sessionProvider.word_list_name}");
-                  // String? lastFilePath = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]?.last.filePath;
-                  String? lastFilePath = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.word_list_name]?.attempts.last.filePath;
+              } else {
+                print("Keeping current attempt");
+              }
+              Navigator.pushReplacementNamed(context, AppRoutes.practice);
+            },
+            child: Text(score > 80 ? "Practice Next Word" : "Retry Word")
+          ),
 
-                  // (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_attempts[sessionProvider.word_list_name]?.removeLast();
-                  // (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.word_list_name]?.attempts.removeLast();
-
-                  allUsersProvider.saveCurrentUserData();
-                  if (lastFilePath != null)
-                  {
-                    recordingProvider.deleteAudioFile(lastFilePath);
-                  }
-                }
-                else {
-                  print("Keeping current attempt");
-                }
-                Navigator.pushReplacementNamed(context, AppRoutes.practice);
-              },
-              child: Text(
-                  score > 80 ? "Practice Next Word" : "Retry Word"
-              )
-          )
-
-          // ElevatedButton(
-          //   onPressed: () {
-          //     sessionProvider.nextWord('Perfect!', true);
-          //     Navigator.pushNamed(context, '/practice');
-          //   },
-          //   child: const Text('Simulate Perfect Score'),
-          // ),
+          // -------------------------------------------------------------
+          // Legacy/Commented Buttons
+          // -------------------------------------------------------------
+          // ElevatedButton(...)
           // const SizedBox(height: 20),
-
-          // ElevatedButton(
-          //   onPressed: () {
-          //     sessionProvider.nextWord('Needs work', true);
-          //     Navigator.pushNamed(context, '/practice');
-          //   },
-          //   child: const Text('Simulate Failing Score'),
-          // ),
+          // ElevatedButton(...)
           // const SizedBox(height: 20),
-
-          // ElevatedButton(
-          //   onPressed: () {
-          //     // Navigate back to main screen and clear previous routes
-          //     Navigator.pushNamedAndRemoveUntil(
-          //         context, '/', (route) => false);
-          //   },
-          //   child: const Text('Back to Main Screen'),
-          // ),
         ],
       ),
     );
