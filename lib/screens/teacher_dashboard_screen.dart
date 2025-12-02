@@ -145,16 +145,27 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
             Text('Teacher Dashboard'),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.create_account);
+                setState(() {
+                  selectedStudent = null;
+                  selectedList = null;
+                  selectedDate = null;
+                });
+                Navigator.pushNamed(context, AppRoutes.role);
               },
-              child: Text(
-                "Add Student",
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
+              child: Text("Sign Out"),
             ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     Navigator.pushReplacementNamed(context, AppRoutes.create_account);
+            //   },
+            //   child: Text(
+            //     "Add Student",
+            //     style: TextStyle(
+            //       fontSize: 14,
+            //       fontWeight: FontWeight.bold
+            //     ),
+            //   ),
+            // ),
           ],
         ),
       ),
@@ -210,15 +221,27 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                   alignment: Alignment.centerLeft,
                   child: TextButton(
                     onPressed: () {
-                      setState(() {
-                        selectedStudent = null;
-                        selectedList = null;
-                        selectedDate = null;
-                      });
-                      Navigator.pushNamed(context, AppRoutes.role);
+                      Navigator.pushNamed(context, AppRoutes.create_account);
                     },
-                    child: Text("Sign Out"),
+                    child: Text(
+                      "Add Student",
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold
+                      ),
+                    ),
                   ),
+                  // child: TextButton(
+                  //   onPressed: () {
+                  //     setState(() {
+                  //       selectedStudent = null;
+                  //       selectedList = null;
+                  //       selectedDate = null;
+                  //     });
+                  //     Navigator.pushNamed(context, AppRoutes.role);
+                  //   },
+                  //   child: Text("Sign Out"),
+                  // ),
                 ),
 
                 Align(

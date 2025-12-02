@@ -162,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          Navigator.pushReplacementNamed(context, AppRoutes.create_account);
+                          Navigator.pushNamed(context, AppRoutes.create_account);
                         },
                         child: Text(
                           "CREATE ACCOUNT",

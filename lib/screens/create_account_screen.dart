@@ -50,12 +50,12 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
               ),
               child: Text('Create Account')
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.login);
-              }, 
-              child: Text("EXIT")
-            )
+            // ElevatedButton(
+            //   onPressed: () {
+            //     Navigator.pushReplacementNamed(context, AppRoutes.login);
+            //   }, 
+            //   child: Text("EXIT")
+            // )
           ],
         ),
       ),
@@ -158,7 +158,8 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                   ));
                 }
                 allUsersProvider.saveCurrentUserData();
-                Navigator.pushReplacementNamed(context, AppRoutes.login);
+                // Navigator.pushReplacementNamed(context, AppRoutes.login);
+                Navigator.pop(context);
 
               },
               child: const Text('Create Account'),
