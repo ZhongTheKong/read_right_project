@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
@@ -259,18 +260,24 @@ class _PracticeScreenState extends State<PracticeScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     // Word number & grade display
-                    Container(
-                      margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
-                      padding: const EdgeInsets.all(15),
-                      decoration: BoxDecoration(
-                        color: Colors.blue[300],
-                        border: Border.all(color: Colors.blue, width: 2),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        'Word #${currWordInWordListIndex + 1}\nGrade: ${currentWord.grade}',
-                        style: const TextStyle(fontSize: 20),
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                            padding: const EdgeInsets.all(15),
+                            decoration: BoxDecoration(
+                              color: Colors.blue[300],
+                              border: Border.all(color: Colors.blue, width: 2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              'Word #${currWordInWordListIndex + 1}\nGrade: ${currentWord.grade}',
+                              style: const TextStyle(fontSize: 20),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     // Current word text
                     Expanded(
@@ -282,11 +289,32 @@ class _PracticeScreenState extends State<PracticeScreen> {
                           border: Border.all(color: Colors.blue, width: 2),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: Center(
-                          child: Text(
-                            currentWord.text,
-                            style: const TextStyle(fontSize: 60),
-                          ),
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Center(
+                                child: Text(
+                                  currentWord.text,
+                                  style: const TextStyle(fontSize: 60),
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () async {
+                                final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
+                                final wordListName = sessionProvider.word_list_name;
+
+
+                                final attempts = studentData.word_list_progression_data[wordListName]!.attempts;
+
+                                // await FlutterTts.speak(attempts[0].word);
+                              }, 
+                              icon: Icon(
+                                Icons.volume_up,
+                                size: 80,
+                              )
+                            )
+                          ],
                         ),
                       ),
                     ),
