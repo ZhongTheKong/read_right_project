@@ -1,6 +1,18 @@
 import 'dart:math';
 
-/// Computes similarity between two strings using Levenshtein distance
+/// -------------------------------------------------------------
+/// similarity
+///
+/// Computes similarity between two strings using Levenshtein distance.
+///
+/// PRE:
+///   • s1 and s2 are non-null strings
+///
+/// POST:
+///   • Returns a double between 0.0 and 1.0
+///     - 1.0 if strings are identical
+///     - 0.0 if completely different
+/// -------------------------------------------------------------
 double similarity(String s1, String s2) {
   final len1 = s1.length;
   final len2 = s2.length;
@@ -8,7 +20,7 @@ double similarity(String s1, String s2) {
   if (len1 == 0) return len2 == 0 ? 1.0 : 0.0;
   if (len2 == 0) return 0.0;
 
-  // Initialize DP table
+  // Initialize DP table for Levenshtein distance
   List<List<int>> dp = List.generate(
     len1 + 1,
     (_) => List.filled(len2 + 1, 0),
@@ -41,7 +53,20 @@ double similarity(String s1, String s2) {
   return 1.0 - (distance / max(len1, len2));
 }
 
-/// Example result object
+/// -------------------------------------------------------------
+/// Result
+///
+/// Example result object for pronunciation assessment.
+///
+/// PRE:
+///   • ok: whether the assessment was successful
+///   • accuracy: numeric accuracy score (0.0 to 1.0 or percentage)
+///   • text: text of the word or phrase assessed
+///   • wavPath: path to the recorded audio file
+///
+/// POST:
+///   • Creates an immutable object storing assessment result
+/// -------------------------------------------------------------
 class Result {
   final bool ok;
   final double accuracy;
