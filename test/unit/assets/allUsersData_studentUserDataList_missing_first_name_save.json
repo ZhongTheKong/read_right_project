@@ -7,7 +7,7 @@
       "password": "1234",
       "lastName": "Doe",
       "isTeacher": false,
-      "word_list_attempts": {
+      "word_list_progression_data": {
         "assets/seed_words.csv": []
       }
     }

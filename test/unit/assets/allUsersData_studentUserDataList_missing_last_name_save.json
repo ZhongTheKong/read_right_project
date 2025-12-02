@@ -7,8 +7,21 @@
       "password": "1234",
       "firstName": "John",
       "isTeacher": false,
-      "word_list_attempts": {
-        "assets/seed_words.csv": []
+      "word_list_progression_data": {
+        "assets/seed_words.csv":  {
+          "wordListName": "assets/seed_words.csv",
+          "wordListPath": "assets/seed_words.csv",
+          "currIndex": 0,
+          "attempts": [
+            {
+            "word": "a",
+            "score": 88.0,
+            "filePath": "/data/user/0/com.example.read_right_project/app_flutter/readright_a_1764626806987.wav",
+            "durationMs": 2554,
+            "createdAt": "2025-12-01T17:06:50.505625"
+            }
+          ]
+        }
       }
     }
   ],
