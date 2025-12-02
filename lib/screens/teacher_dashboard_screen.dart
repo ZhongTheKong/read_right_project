@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
+import 'package:read_right_project/utils/save_file_to_folder.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/attempt.dart';
 import 'package:read_right_project/utils/routes.dart';
@@ -291,6 +292,22 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                       );
                     },
                   ),
+            ),
+
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton.icon(
+                    onPressed: () async {
+                      await saveExistingJsonToUserLocation(context, await allUsersProvider.getUserDataFilePath(), 'saveFileCopy.json');
+                    }, 
+                    label: Text(
+                      "SAVE CLASS DATA"
+                    ),
+                    icon: Icon(Icons.save)
+                  ),
+                ),
+              ],
             ),
           ],
         ),
