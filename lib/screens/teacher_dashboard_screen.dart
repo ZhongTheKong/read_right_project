@@ -138,7 +138,24 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Teacher Dashboard'),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Teacher Dashboard'),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, AppRoutes.create_account);
+              },
+              child: Text(
+                "Add Student",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
 
       body: Padding(

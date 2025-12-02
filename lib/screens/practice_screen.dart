@@ -393,16 +393,16 @@ class _PracticeScreenState extends State<PracticeScreen> {
                             ),
                           ),
                           // Next word button (temporary)
-                          Flexible(
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
-                                sessionProvider.nextWord(true);
-                              },
-                              icon: const Icon(Icons.play_arrow),
-                              label: const Text("Next (TEMP)"),
-                            ),
-                          ),
+                          // Flexible(
+                          //   child: ElevatedButton.icon(
+                          //     onPressed: () {
+                          //       allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
+                          //       sessionProvider.nextWord(true);
+                          //     },
+                          //     icon: const Icon(Icons.play_arrow),
+                          //     label: const Text("Next (TEMP)"),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

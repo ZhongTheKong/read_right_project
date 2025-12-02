@@ -245,19 +245,19 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      ElevatedButton.icon(
-                        onPressed: () async {
-                          await replaceSaveFileWithSample();
-                          setState(() {
+                      // ElevatedButton.icon(
+                      //   onPressed: () async {
+                      //     await replaceSaveFileWithSample();
+                      //     setState(() {
                             
-                          });
-                        }, 
-                        label: Text(
-                          "SAMPLE"
-                        ),
-                        icon: Icon(Icons.check_box_outline_blank)
-                      ),
-                      SizedBox(width: 20,),
+                      //     });
+                      //   }, 
+                      //   label: Text(
+                      //     "SAMPLE"
+                      //   ),
+                      //   icon: Icon(Icons.check_box_outline_blank)
+                      // ),
+                      // SizedBox(width: 20,),
                       ElevatedButton.icon(
                         onPressed: () async {
                           await saveExistingJsonToUserLocation(context, await allUsersProvider.getUserDataFilePath(), 'saveFileCopy.json');
