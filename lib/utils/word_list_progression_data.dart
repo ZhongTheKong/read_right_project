@@ -13,10 +13,6 @@ class WordListProgressionData {
   int currIndex = 0;
   final List<Attempt> attempts;
 
-  // bool isWordListComplete() {
-  //   return currIndex == 
-  // }
-
   factory WordListProgressionData.fromJson(Map<String, dynamic> json) {
     try {
       return WordListProgressionData(
@@ -45,7 +41,6 @@ class WordListProgressionData {
       'wordListName': wordListName,
       'wordListPath': wordListPath,
       'currIndex': currIndex,
-      // 'attempts': attempts.map((a) => a.toJson()).toList(),
       'attempts': attempts.map((e) => e.toJson()).toList(),
     };
   }

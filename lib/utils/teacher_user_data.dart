@@ -26,22 +26,6 @@ class TeacherUserData extends UserData {
               .map((e) => e.toString())
               .toList()
           : (throw Exception("TeacherUserData | Missing student usernames"))
-
-        // username: json['username'] ?? "",
-        // password: json['password'] ?? "",
-        // firstName: json['firstName'] ?? "",
-        // lastName: json['lastName'] ?? "",
-        // isTeacher: json['isTeacher'] ?? true,
-        // studentUsernames: json['studentUsernames'] != null ? 
-        //   (json['studentUsernames'] as List<dynamic>)
-        //       .map((e) => e.toString())
-        //       .toList()
-        //   : []
-
-        // studentUsernames: (json['studentUsernames'] as List<dynamic>)
-        //       .map((e) => e.toString())
-        //       .toList()
-
       );
     }
     on FormatException catch (e) {
@@ -62,7 +46,6 @@ class TeacherUserData extends UserData {
       'lastName': lastName,
       'isTeacher': isTeacher,
       'studentUsernames': studentUsernames,
-      // 'attempts': attempts.map((a) => a.toJson()).toList(),
     };
   }
 }

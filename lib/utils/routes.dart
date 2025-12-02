@@ -9,7 +9,6 @@ import '../screens/teacher_dashboard_screen.dart';
 import '../screens/word_list_screen.dart';
 import '../screens/feedback_screen.dart';
 import '../screens/pronunciation_screen.dart';
-import '../main.dart';
 
 class AppRoutes {
   static const main = '/';
