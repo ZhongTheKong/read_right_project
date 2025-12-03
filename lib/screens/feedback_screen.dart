@@ -125,8 +125,29 @@ class FeedbackScreen extends StatelessWidget {
     // -----------------------------------------------------------------
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.greenAccent,
         centerTitle: true,
-        title: const Text('Feedback')
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Text(
+                  "FEEDBACK",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                  ),
+                )
+              ),
+            ),
+          ],
+        )
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -138,116 +159,125 @@ class FeedbackScreen extends StatelessWidget {
           // PRE: attempts[0] exists
           // POST: Shows current word, date, and play button for TTS
           // -------------------------------------------------------------
-          Container(
-            padding: EdgeInsets.all(15),
+          Expanded(
             child: Column(
               children: [
-                Text('Word', style: TextStyle(fontSize: 30)),
-                const SizedBox(height: 10),
-                Text(
-                  attempts[0].word,
-                  style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                Container(
+                  padding: EdgeInsets.all(15),
+                  child: Column(
+                    children: [
+                      Text('Word', style: TextStyle(fontSize: 30)),
+                      const SizedBox(height: 10),
+                      Text(
+                        attempts[0].word,
+                        style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Date: ${attempts[0].createdAt.toString()}',
+                        style: TextStyle(fontSize: 12),
+                      ),
+                      const SizedBox(height: 10),
+                
+                      // TTS Playback Buttons
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Column(
+                            children: [
+                              Text("Play Word"),
+                              IconButton(
+                                onPressed: () async {
+                                  // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
+                                  // await flutterTts.speak(attempts[0].word);
+                                }, 
+                                icon: Icon(Icons.volume_up)
+                              )
+                            ],
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
+            
                 const SizedBox(height: 10),
-                Text(
-                  'Date: ${attempts[0].createdAt.toString()}',
-                  style: TextStyle(fontSize: 12),
+            
+                // -------------------------------------------------------------
+                // Table of Scores & Feedback
+                //
+                // PRE: Scores computed above
+                // POST: Displays score, previous, highest, and textual feedback
+                // -------------------------------------------------------------
+                Table(
+                  columnWidths: {
+                    0: IntrinsicColumnWidth(),
+                    1: IntrinsicColumnWidth(),
+                  },
+                  children: [
+                    TableRow(children: [
+                      Text("Score:  ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(attempts[0].score.toString(), style: TextStyle(fontSize: 18)),
+                    ]),
+                    TableRow(children: [
+                      Text("Previous Score:  ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(previousScore == -1 ? "N/A" : previousScore.toString(), style: TextStyle(fontSize: 18)),
+                    ]),
+                    TableRow(children: [
+                      Text("Highest Score:  ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(highestScore == -1 ? "N/A" : highestScore.toString(), style: TextStyle(fontSize: 18)),
+                    ]),
+                    TableRow(children: [
+                      Text("Feedback:  ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(feedback, style: TextStyle(fontSize: 18)),
+                    ]),
+                  ],
                 ),
-                const SizedBox(height: 10),
-
-                // TTS Playback Buttons
+            
+                const SizedBox(height: 40),
+            
+                // -------------------------------------------------------------
+                // Audio Playback Controls
+                //
+                // PRE: RecordingProvider initialized
+                // POST: Plays recorded attempt and shows progress
+                // -------------------------------------------------------------
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Column(
-                      children: [
-                        Text("Word"),
-                        IconButton(
-                          onPressed: () async {
-                            // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
-                            // await flutterTts.speak(attempts[0].word);
-                          }, 
-                          icon: Icon(Icons.volume_up)
-                        )
-                      ],
+                    IconButton(
+                      onPressed: () async {
+                        await recordingProvider.play(attempts[0].filePath);
+                      },
+                      icon: Icon(Icons.play_arrow),
+                    ),
+                    const SizedBox(width: 15),
+            
+                    Container(
+                      width: 200,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: Colors.grey[300],
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: LinearProgressIndicator(
+                          value: recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
+                          minHeight: 10,
+                          backgroundColor: Colors.grey[300],
+                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.redAccent),
+                        ),
+                      ),
                     ),
                   ],
-                )
+                ),
+
               ],
             ),
           ),
 
-          const SizedBox(height: 10),
-
-          // -------------------------------------------------------------
-          // Table of Scores & Feedback
-          //
-          // PRE: Scores computed above
-          // POST: Displays score, previous, highest, and textual feedback
-          // -------------------------------------------------------------
-          Table(
-            columnWidths: {
-              0: IntrinsicColumnWidth(),
-              1: IntrinsicColumnWidth(),
-            },
-            children: [
-              TableRow(children: [
-                Text("Score:  ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                Text(attempts[0].score.toString(), style: TextStyle(fontSize: 18)),
-              ]),
-              TableRow(children: [
-                Text("Previous Score:  ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                Text(previousScore == -1 ? "N/A" : previousScore.toString(), style: TextStyle(fontSize: 18)),
-              ]),
-              TableRow(children: [
-                Text("Highest Score:  ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                Text(highestScore == -1 ? "N/A" : highestScore.toString(), style: TextStyle(fontSize: 18)),
-              ]),
-              TableRow(children: [
-                Text("Feedback:  ", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                Text(feedback, style: TextStyle(fontSize: 18)),
-              ]),
-            ],
-          ),
-
-          const SizedBox(height: 40),
-
-          // -------------------------------------------------------------
-          // Audio Playback Controls
-          //
-          // PRE: RecordingProvider initialized
-          // POST: Plays recorded attempt and shows progress
-          // -------------------------------------------------------------
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              IconButton(
-                onPressed: () async {
-                  await recordingProvider.play(attempts[0].filePath);
-                },
-                icon: Icon(Icons.play_arrow),
-              ),
-              const SizedBox(width: 15),
-
-              Container(
-                width: 200,
-                height: 10,
-                decoration: BoxDecoration(
-                  color: Colors.grey[300],
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: LinearProgressIndicator(
-                    value: recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
-                    minHeight: 10,
-                    backgroundColor: Colors.grey[300],
-                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.redAccent),
-                  ),
-                ),
-              ),
-            ],
-          ),
+          
 
           // -------------------------------------------------------------
           // Next / Retry Button
@@ -256,27 +286,42 @@ class FeedbackScreen extends StatelessWidget {
           // POST: Advances to next word or allows retry. Deletes audio if retention disabled.
           // -------------------------------------------------------------
           const SizedBox(height: 20),
-          TextButton(
-            onPressed: () {
-              if (score > 80) {
-                allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
-                sessionProvider.nextWord(true);
-              }
-              if (!recordingProvider.isAudioRetentionEnabled) {
-                print("Removing current attempt from ${sessionProvider.word_list_name}");
-                String? lastFilePath = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData)
-                    .word_list_progression_data[sessionProvider.word_list_name]?.attempts.last.filePath;
-                allUsersProvider.saveCurrentUserData();
-                if (lastFilePath != null) {
-                  recordingProvider.deleteAudioFile(lastFilePath);
-                }
-              } else {
-                print("Keeping current attempt");
-              }
-              Navigator.pushReplacementNamed(context, AppRoutes.practice);
-            },
-            child: Text(score > 80 ? "Practice Next Word" : "Retry Word")
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () {
+                    if (score > 80) {
+                      allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
+                      sessionProvider.nextWord(true);
+                    }
+                    if (!recordingProvider.isAudioRetentionEnabled) {
+                      print("Removing current attempt from ${sessionProvider.word_list_name}");
+                      String? lastFilePath = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData)
+                          .word_list_progression_data[sessionProvider.word_list_name]?.attempts.last.filePath;
+                      allUsersProvider.saveCurrentUserData();
+                      if (lastFilePath != null) {
+                        recordingProvider.deleteAudioFile(lastFilePath);
+                      }
+                    } else {
+                      print("Keeping current attempt");
+                    }
+                    Navigator.pushReplacementNamed(context, AppRoutes.practice);
+                  },
+                  child: Text(
+                    score > 80 ? "Practice Next Word" : "Retry Word",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20
+                    ),
+                  )
+                ),
+              ),
+            ],
           ),
+
+          const SizedBox(height: 10),
+
         ],
       ),
     );
