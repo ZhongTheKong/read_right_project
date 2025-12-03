@@ -94,6 +94,8 @@ in the same way as the current file in our assets folder before adding it to the
     AZURE_SPEECH_KEY="AZURE SPEECH SERVICE KEY"
     AZURE_SPEECH_REGION="REGION"
 
+-When running the app for the first time, the app needs to set up a save file. You may have to open the app again if
+this is the case. If the app shows an error, please select the option to create a new save file.
 -When running the app, sign in as a student. Make an account and enter the required information.
 -Log in with your new account. 
 -Click Go Practice to go to the practice screen. Or, you can sign out from here.

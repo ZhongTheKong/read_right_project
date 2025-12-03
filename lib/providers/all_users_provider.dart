@@ -44,29 +44,37 @@ class AllUsersProvider extends ChangeNotifier{
     final file = File(filePath);
 
     if (!file.existsSync()) {
-      print("File does not exist");
-      throw Exception("User data file does not exist.");
-    }
+      print("File does not exist at $filePath. Initializing with default data.");
+      // Initialize with a fresh, empty AllUserData object
+      allUserData = AllUserData(
+        lastLoggedInUserUsername: null,
+        lastLoggedInUserIsTeacher: null,
+        studentUserDataList: [],
+        teacherUserDataList: [],
+      );
+      // Immediately save this new empty file so it exists for the next time.
+      await saveCurrentUserData();
+    } else {
+      try
+      {
+        final content = await file.readAsString();
+        print("Loaded json:\n$content");
+        final data = jsonDecode(content);
 
-    try
-    {
-      final content = await file.readAsString();
-      print("Loaded json:\n$content");
-      final data = jsonDecode(content);
+        allUserData = AllUserData.fromJson(data);
+        // return UserData.fromJson(jsonDecode(content));
+      } on FormatException catch (e) {
+        // Happens when JSON is malformed
+        print("JSON format error: $e");
 
-      allUserData = AllUserData.fromJson(data);
-      // return UserData.fromJson(jsonDecode(content));
-    } on FormatException catch (e) {
-      // Happens when JSON is malformed
-      print("JSON format error: $e");
-
-      // Optionally: rename the bad file so user doesn't get stuck
-      await _quarantineCorruptFile(file);
-      throw Exception("Saved data file is corrupted. ($e)");
-    } catch (e, stack) {
-      // Catch-all (e.g. fromJson exceptions)
-      print("Unexpected error loading user data: $e\n$stack");
-      rethrow;
+        // Optionally: rename the bad file so user doesn't get stuck
+        await _quarantineCorruptFile(file);
+        throw Exception("Saved data file is corrupted. ($e)");
+      } catch (e, stack) {
+        // Catch-all (e.g. fromJson exceptions)
+        print("Unexpected error loading user data: $e\n$stack");
+        rethrow;
+      }
     }
     isSynced = true;
     notifyListeners();
