@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
@@ -7,6 +6,9 @@ import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/word_list_progression_data.dart';
+
+// flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
+// import 'package:flutter_tts/flutter_tts.dart';
 
 
 // -------------------------------------------------------------
@@ -116,7 +118,7 @@ class FeedbackScreen extends StatelessWidget {
     // Initialize audio and TTS
     RecordingProvider recordingProvider = context.watch<RecordingProvider>();
     recordingProvider.initAudio();
-    FlutterTts flutterTts = FlutterTts();
+    // FlutterTts flutterTts = FlutterTts();
 
     // -----------------------------------------------------------------
     // POST: Main Scaffold with feedback content
@@ -162,7 +164,8 @@ class FeedbackScreen extends StatelessWidget {
                         Text("Word"),
                         IconButton(
                           onPressed: () async {
-                            await flutterTts.speak(attempts[0].word);
+                            // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
+                            // await flutterTts.speak(attempts[0].word);
                           }, 
                           icon: Icon(Icons.volume_up)
                         )

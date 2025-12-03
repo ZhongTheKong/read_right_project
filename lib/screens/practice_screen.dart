@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
@@ -10,6 +9,10 @@ import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/word.dart';
 import 'package:read_right_project/utils/word_list_progression_data.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+
+// flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
+// import 'package:flutter_tts/flutter_tts.dart';
+
 
 // -------------------------------------------------------------
 // PracticeScreen
@@ -41,6 +44,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
   bool isOnline = false;                // Connectivity status indicator
 
   late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
+  // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
+  // FlutterTts flutterTts = FlutterTts();
+
 
   // -------------------------------------------------------------
   // PRE: Widget dependencies available
@@ -299,8 +305,10 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                 ),
                               ),
                             ),
+
                             IconButton(
                               onPressed: () async {
+
                                 final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
                                 final wordListName = sessionProvider.word_list_name;
 
@@ -313,6 +321,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                 size: 80,
                               )
                             )
+                            
                           ],
                         ),
                       ),
