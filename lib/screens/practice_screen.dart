@@ -317,6 +317,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
                                 final attempts = studentData.word_list_progression_data[wordListName]!.attempts;
 
+                                // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
                                 await flutterTts.speak(attempts[0].word);
                               }, 
                               icon: Icon(
