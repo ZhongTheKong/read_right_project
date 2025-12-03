@@ -50,26 +50,30 @@ class _WordListScreenState extends State<WordListScreen> {
     }
 
     return Scaffold(
-      backgroundColor: Colors.blue[800],
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.blue[800],
         centerTitle: true, 
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-              decoration: BoxDecoration(
-                color: Colors.black,
-                borderRadius: BorderRadius.circular(10)
-              ),
-              child: Text(
-                "WORD LIST",
-                style: TextStyle(
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                decoration: BoxDecoration(
                   color: Colors.white,
-                  fontWeight: FontWeight.bold
+                  borderRadius: BorderRadius.circular(10)
                 ),
-              )
+                child: Text(
+                  "WORD LIST",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                  ),
+                )
+              ),
             ),
+            SizedBox(width: 10,),
             ElevatedButton(
               onPressed: () {
                 allUsersProvider.clearLastUser();
@@ -88,19 +92,19 @@ class _WordListScreenState extends State<WordListScreen> {
               padding: EdgeInsets.all(30),
               child: Column(
                 children: [
-                  const Text(
+                  Text(
                     "Welcome Back",
                     style: TextStyle(
                       fontSize: 30,
-                      color: Colors.white,
+                      color: Colors.blue[800],
                     ),
                   ),
                   Text(
                     fullName, // Use the safe variable
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 60,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Colors.blue[800],
                     ),
                   ),
                 ],

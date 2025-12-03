@@ -40,15 +40,23 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              // color: Colors.white,
-              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-              decoration: BoxDecoration(
-                // shape: BoxShape.circle,
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10)
+            Expanded(
+              child: Container(
+                // color: Colors.white,
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                decoration: BoxDecoration(
+                  // shape: BoxShape.circle,
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Text(
+                  'Create Account',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                  ),
+                )
               ),
-              child: Text('Create Account')
             ),
             // ElevatedButton(
             //   onPressed: () {
@@ -63,105 +71,153 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
-              'Personal Information',
-              style: TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 20),
 
-            LabelledLoginTextField(
-                textEditingController: firstNameTextEditingController,
-                fieldIcon: Icons.face,
-                labelText: "First Name"
+            Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 5,
+                  color: Colors.blue
+                ),
+                borderRadius: BorderRadius.circular(8)
+              ),
+              child: Column(
+                children: [
+                  const Text(
+                    'Personal Information',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+              
+                  LabelledLoginTextField(
+                      textEditingController: firstNameTextEditingController,
+                      fieldIcon: Icons.abc,
+                      labelText: "First Name"
+                  ),
+                  const SizedBox(height: 20),
+              
+                  LabelledLoginTextField(
+                      textEditingController: lastNameTextEditingController,
+                      fieldIcon: Icons.abc,
+                      labelText: "Last Name"
+                  ),
+                  const SizedBox(height: 20),
+              
+                  LabelledLoginTextField(
+                      textEditingController: emailTextEditingController,
+                      fieldIcon: Icons.mail_outline,
+                      labelText: "Email"
+                  ),
+                  const SizedBox(height: 20),
+              
+                  SizedBox(
+                    width: 250,
+                    child: DropdownButton(
+                      isExpanded: true,
+                      hint: Text("Instructor"),
+                      items: allUsersProvider.allUserData.teacherUserDataList.map((teacherUserData) {
+                        return DropdownMenuItem<TeacherUserData>(
+                          value: teacherUserData,
+                          child: Text('${teacherUserData.firstName} ${teacherUserData.lastName}'),
+                        );
+                      }).toList(),
+                      onChanged: (value) { selectedTeacher = value; }
+                    ),
+                  ),
+                ],
+              ),
             ),
-            const SizedBox(height: 20),
+            
+            SizedBox(height: 10,),
 
-            LabelledLoginTextField(
-                textEditingController: lastNameTextEditingController,
-                fieldIcon: Icons.key,
-                labelText: "Last Name"
-            ),
-            const SizedBox(height: 20),
-
-            LabelledLoginTextField(
-                textEditingController: emailTextEditingController,
-                fieldIcon: Icons.key,
-                labelText: "Email"
-            ),
-            const SizedBox(height: 20),
-
-            SizedBox(
-              width: 250,
-              child: DropdownButton(
-                isExpanded: true,
-                hint: Text("Instructor"),
-                items: allUsersProvider.allUserData.teacherUserDataList.map((teacherUserData) {
-                  return DropdownMenuItem<TeacherUserData>(
-                    value: teacherUserData,
-                    child: Text('${teacherUserData.firstName} ${teacherUserData.lastName}'),
-                  );
-                }).toList(),
-                onChanged: (value) { selectedTeacher = value; }
+            Container(
+              padding: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                border: Border.all(
+                  width: 5,
+                  color: Colors.red
+                ),
+                borderRadius: BorderRadius.circular(8)
+              ),
+              child: Column(
+                children: [
+                  const Text(
+                    'Credentials',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+              
+                  LabelledLoginTextField(
+                      textEditingController: usernameTextEditingController,
+                      fieldIcon: Icons.face,
+                      labelText: "Username"
+                  ),
+                  const SizedBox(height: 20),
+              
+                  LabelledLoginTextField(
+                      textEditingController: passwordTextEditingController,
+                      fieldIcon: Icons.key,
+                      labelText: "Password"
+                  ),
+                  const SizedBox(height: 20),
+                ],
               ),
             ),
 
-            const Text(
-              'Credentials',
-              style: TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 20),
+            SizedBox(height: 10,),
 
-            LabelledLoginTextField(
-                textEditingController: usernameTextEditingController,
-                fieldIcon: Icons.face,
-                labelText: "Username"
-            ),
-            const SizedBox(height: 20),
-
-            LabelledLoginTextField(
-                textEditingController: passwordTextEditingController,
-                fieldIcon: Icons.key,
-                labelText: "Password"
-            ),
-            const SizedBox(height: 20),
-
-            ElevatedButton(
-              onPressed: () async {
-                final username = usernameTextEditingController.text;
-                final password = passwordTextEditingController.text;
-                final firstName = firstNameTextEditingController.text;
-                final lastName = lastNameTextEditingController.text;
-
-                if (sessionProvider.isCreateAccountTeacher)
-                {
-                  allUsersProvider.addTeacher(TeacherUserData(
-                    username: username, 
-                    password: password, 
-                    firstName: firstName,
-                    lastName: lastName,
-                    isTeacher: true, 
-                    studentUsernames: []
-                  ));
-                }
-                else
-                {
-                  allUsersProvider.addStudent(StudentUserData(
-                    username: username, 
-                    password: password, 
-                    firstName: firstName,
-                    lastName: lastName,
-                    isTeacher: false, 
-                    // attempts: [],
-                    // word_list_attempts: {},
-                    word_list_progression_data: {}
-                  ));
-                }
-                allUsersProvider.saveCurrentUserData();
-                // Navigator.pushReplacementNamed(context, AppRoutes.login);
-                Navigator.pop(context);
-
-              },
-              child: const Text('Create Account'),
+            Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final username = usernameTextEditingController.text;
+                        final password = passwordTextEditingController.text;
+                        final firstName = firstNameTextEditingController.text;
+                        final lastName = lastNameTextEditingController.text;
+                    
+                        if (sessionProvider.isCreateAccountTeacher)
+                        {
+                          allUsersProvider.addTeacher(TeacherUserData(
+                            username: username, 
+                            password: password, 
+                            firstName: firstName,
+                            lastName: lastName,
+                            isTeacher: true, 
+                            studentUsernames: []
+                          ));
+                        }
+                        else
+                        {
+                          allUsersProvider.addStudent(StudentUserData(
+                            username: username, 
+                            password: password, 
+                            firstName: firstName,
+                            lastName: lastName,
+                            isTeacher: false, 
+                            // attempts: [],
+                            // word_list_attempts: {},
+                            word_list_progression_data: {}
+                          ));
+                        }
+                        allUsersProvider.saveCurrentUserData();
+                        // Navigator.pushReplacementNamed(context, AppRoutes.login);
+                        Navigator.pop(context);
+                    
+                      },
+                      child: const Text('Create Account'),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

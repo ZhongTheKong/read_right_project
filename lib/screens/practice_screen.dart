@@ -263,14 +263,15 @@ class _PracticeScreenState extends State<PracticeScreen> {
               // -------------------------------------------------------------
               return Center(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
+                  // mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    SizedBox(height: 10,),
                     // Word number & grade display
                     Row(
                       children: [
                         Expanded(
                           child: Container(
-                            margin: const EdgeInsets.fromLTRB(10, 10, 10, 5),
+                            margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                             padding: const EdgeInsets.all(15),
                             decoration: BoxDecoration(
                               color: Colors.blue[300],
@@ -285,10 +286,12 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         ),
                       ],
                     ),
+                    SizedBox(height: 10,),
+                    
                     // Current word text
                     Expanded(
                       child: Container(
-                        margin: const EdgeInsets.fromLTRB(10, 5, 10, 10),
+                        margin: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                         padding: const EdgeInsets.all(15),
                         decoration: BoxDecoration(
                           color: Colors.blue[300],
@@ -326,28 +329,38 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 10,),
+                    
                     // Linear progress indicator for recording
-                    Container(
-                      width: 350,
-                      height: 10,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: LinearProgressIndicator(
-                          value: recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
-                          minHeight: 10,
-                          backgroundColor: Colors.grey[300],
-                          valueColor: const AlwaysStoppedAnimation<Color>(Colors.redAccent),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: Colors.grey[300],
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: LinearProgressIndicator(
+                                value: recordingProvider.elapsedMs / RecordingProvider.kMaxRecordMs,
+                                minHeight: 10,
+                                backgroundColor: Colors.grey[300],
+                                valueColor: const AlwaysStoppedAnimation<Color>(Colors.redAccent),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
+                      ],
                     ),
+                    SizedBox(height: 10,),
+                    
                     // Record / Stop / Next buttons
                     Container(
                       padding: const EdgeInsets.all(10),
-                      margin: const EdgeInsets.all(10),
+                      margin: const EdgeInsets.fromLTRB(10,0,10,0),
                       decoration: BoxDecoration(
                         color: Colors.blue[300],
                         border: Border.all(color: Colors.blue, width: 2),
@@ -357,7 +370,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           // Record button
-                          Flexible(
+                          Expanded(
                             child: ElevatedButton.icon(
                               onPressed: () async {
                                 final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
@@ -399,8 +412,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
                               label: const Text('Record'),
                             ),
                           ),
+                          SizedBox(width: 10,),
                           // Stop button
-                          Flexible(
+                          Expanded(
                             child: ElevatedButton.icon(
                               onPressed: () async {
                                 final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
@@ -442,10 +456,12 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         ],
                       ),
                     ),
+                    SizedBox(height: 10,),
+                    
                     // Navigation buttons
                     Container(
                       padding: const EdgeInsets.all(10),
-                      margin: const EdgeInsets.all(10),
+                      margin: const EdgeInsets.fromLTRB(10,0,10,0),
                       decoration: BoxDecoration(
                         color: Colors.blue[300],
                         border: Border.all(color: Colors.blue, width: 2),
@@ -454,13 +470,14 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          Flexible(
+                          Expanded(
                             child: ElevatedButton(
                               onPressed: () { Navigator.pushNamed(context, AppRoutes.wordList); },
                               child: const Text('Go to Word List'),
                             ),
                           ),
-                          Flexible(
+                          SizedBox(width: 10,),
+                          Expanded(
                             child: ElevatedButton(
                               onPressed: () { Navigator.pushNamed(context, AppRoutes.progress); },
                               child: const Text('View Progress'),
@@ -469,6 +486,8 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         ],
                       ),
                     ),
+                    SizedBox(height: 10,),
+
                   ],
                 ),
               );

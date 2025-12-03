@@ -65,13 +65,21 @@ class _LoginScreenState extends State<LoginScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Container(
-              padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10)
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Text(
+                  sessionProvider.isTeacher ? 'Teacher Login Screen' : 'Student Login Screen',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                  ),
+                )
               ),
-              child: Text(sessionProvider.isTeacher ? 'Teacher Login Screen' : 'Student Login Screen')
             ),
             // ElevatedButton(
             //   onPressed: () {
