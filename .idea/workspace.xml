@@ -5,8 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="bd7d6f0a-e023-4736-87d9-8c0140b94b28" name="Changes" comment="Merge branch 'main' of https://github.com/ZhongTheKong/read_right_project&#10;&#10;# Conflicts:&#10;#&#9;lib/main.dart&#10;#&#9;lib/screens/practice_screen.dart&#10;#&#9;pubspec.yaml">
-      <change beforePath="$PROJECT_DIR$/lib/screens/login_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/login_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/feedback_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/feedback_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/practice_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/practice_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/screens/teacher_dashboard_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/teacher_dashboard_screen.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/screens/word_list_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/screens/word_list_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

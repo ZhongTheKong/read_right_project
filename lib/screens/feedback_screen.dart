@@ -8,7 +8,7 @@ import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/word_list_progression_data.dart';
 
 // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
-// import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 
 // -------------------------------------------------------------
@@ -118,7 +118,9 @@ class FeedbackScreen extends StatelessWidget {
     // Initialize audio and TTS
     RecordingProvider recordingProvider = context.watch<RecordingProvider>();
     recordingProvider.initAudio();
-    // FlutterTts flutterTts = FlutterTts();
+    
+    // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
+    FlutterTts flutterTts = FlutterTts();
 
     // -----------------------------------------------------------------
     // POST: Main Scaffold with feedback content
@@ -189,7 +191,7 @@ class FeedbackScreen extends StatelessWidget {
                               IconButton(
                                 onPressed: () async {
                                   // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
-                                  // await flutterTts.speak(attempts[0].word);
+                                  await flutterTts.speak(attempts[0].word);
                                 }, 
                                 icon: Icon(Icons.volume_up)
                               )

@@ -111,83 +111,89 @@ class _WordListScreenState extends State<WordListScreen> {
               ),
             ),
 
-            Row(
+            Column(
               children: [
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                    height: 45,
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        width: 5,
-                        color: Colors.white
-                      ),
-                      color: Colors.blue[900],
-                    ),
-                    child: Center(
-                      child: Text(
-                        "CURRENT WORD LIST: $currentWordListPath",
-                        style: TextStyle(
-                          fontSize: 15,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 45,
-                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      width: 5,
-                      color: Colors.white
-                    ),
-                    color: Colors.blue[500],
-                  ),
-                  child: Center(
-                    child: Text(
-                      "NEXT WORD LIST: N/A",
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold
-                      ),
-                    ),
-                  ),
-                ),
-                Column(
+                Row(
                   children: [
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 5,
-                          color: Colors.white
-                        )
-                      ),
-                      height: 45,
-                      child: TextButton(
-                        style: TextButton.styleFrom(
-                          backgroundColor: Colors.blue[200],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero
-                          )
-                        ),
-                        onPressed: () {
-                          Navigator.pushNamed(context, AppRoutes.progress);
-                        }, 
-                        child: Text(
-                          "VIEW PROGRESS",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white
+                    Expanded(
+                      child: Container(
+                        color: Colors.blue[900],
+
+                        padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                        height: 45,
+                        child: Center(
+                          child: Text(
+                            "CURRENT WORD LIST: $currentWordListPath",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold
+                            ),
                           ),
-                        )
+                        ),
                       ),
                     ),
                   ],
-                )
+                ),
+                SizedBox(height: 5,),
+
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        color: Colors.blue[500],
+                        height: 45,
+                        padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+
+                        child: Center(
+                          child: Text(
+                            "NEXT WORD LIST: N/A",
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 5,),
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                        // padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+
+                        height: 45,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.blue[200],
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.zero
+                            )
+                          ),
+                          onPressed: () {
+                            Navigator.pushNamed(context, AppRoutes.progress);
+                          }, 
+                          child: Text(
+                            "VIEW PROGRESS",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white
+                            ),
+                          )
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 5,),
+
               ],
             ),
             Expanded(

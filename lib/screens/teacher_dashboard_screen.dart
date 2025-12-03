@@ -232,22 +232,6 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                   },
                 ),
 
-                // Conditionally show a button
-                if (selectedStudent != null)
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.progress);
-                    },
-                    child: Text(
-                      "VIEW STUDENT PROGRESS",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 15
-                        // color: Colors.black
-                      ),
-                    ),
-                  ),
-
                 // Date Picker Button
                 ElevatedButton(
                   onPressed: () => _pickDate(context),
@@ -367,6 +351,28 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                   ),
             ),
 
+            // Conditionally show a button
+            if (selectedStudent != null)
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.progress);
+                      },
+                      child: Text(
+                        "VIEW STUDENT PROGRESS",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15
+                          // color: Colors.black
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
             Row(
               children: [
                 Expanded(
@@ -375,7 +381,12 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                       await saveExistingJsonToUserLocation(context, await allUsersProvider.getUserDataFilePath(), 'saveFileCopy.json');
                     }, 
                     label: Text(
-                      "SAVE CLASS DATA"
+                      "SAVE CLASS DATA",                        
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15
+                        // color: Colors.black
+                      ),
                     ),
                     icon: Icon(Icons.save)
                   ),

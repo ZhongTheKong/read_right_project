@@ -11,7 +11,7 @@ import 'package:read_right_project/utils/word_list_progression_data.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
-// import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 
 // -------------------------------------------------------------
@@ -45,7 +45,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
   late StreamSubscription<List<ConnectivityResult>> _connectivitySubscription;
   // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
-  // FlutterTts flutterTts = FlutterTts();
+  FlutterTts flutterTts = FlutterTts();
 
 
   // -------------------------------------------------------------
@@ -317,7 +317,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
                                 final attempts = studentData.word_list_progression_data[wordListName]!.attempts;
 
-                                // await FlutterTts.speak(attempts[0].word);
+                                await flutterTts.speak(attempts[0].word);
                               }, 
                               icon: Icon(
                                 Icons.volume_up,
