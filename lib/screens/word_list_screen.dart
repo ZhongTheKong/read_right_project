@@ -115,13 +115,40 @@ class _WordListScreenState extends State<WordListScreen> {
               children: [
                 Expanded(
                   child: Container(
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
                     height: 45,
-                    padding: EdgeInsets.all(12),
                     decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 5,
+                        color: Colors.white
+                      ),
                       color: Colors.blue[900],
                     ),
+                    child: Center(
+                      child: Text(
+                        "CURRENT WORD LIST: $currentWordListPath",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  height: 45,
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 5,
+                      color: Colors.white
+                    ),
+                    color: Colors.blue[500],
+                  ),
+                  child: Center(
                     child: Text(
-                      "CURRENT WORD LIST: $currentWordListPath",
+                      "NEXT WORD LIST: N/A",
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.white,
@@ -132,7 +159,13 @@ class _WordListScreenState extends State<WordListScreen> {
                 ),
                 Column(
                   children: [
-                    SizedBox(
+                    Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 5,
+                          color: Colors.white
+                        )
+                      ),
                       height: 45,
                       child: TextButton(
                         style: TextButton.styleFrom(
@@ -144,7 +177,13 @@ class _WordListScreenState extends State<WordListScreen> {
                         onPressed: () {
                           Navigator.pushNamed(context, AppRoutes.progress);
                         }, 
-                        child: Text("PROGRESS")
+                        child: Text(
+                          "VIEW PROGRESS",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white
+                          ),
+                        )
                       ),
                     ),
                   ],
@@ -230,6 +269,49 @@ class _WordListScreenState extends State<WordListScreen> {
                       },
                     ),
                   ),
+
+                  // TODO: FUTURE SAMPLE SENTENCES DISPLAY
+                  // SizedBox(width: 10,),
+                  // Column(
+                  //   children: [
+                  //     Expanded(
+                  //       child: Container(
+                  //         padding: const EdgeInsets.all(10),
+                  //         decoration: BoxDecoration(
+                  //           color: Colors.blue[300],
+                  //         ),
+                  //         // child: Column(
+                  //         //   children: [
+                  //         //     ListTile(
+                  //         //       leading: Icon(Icons.person),
+                  //         //       title: Text('John Doe'),
+                  //         //       subtitle: Text('Software Engineer'),
+                  //         //       trailing: Icon(Icons.arrow_forward),
+                  //         //       onTap: () {
+                  //         //         print('Tapped John Doe');
+                  //         //       },
+                  //         //     ),
+                  //         //   ]
+                  //         // ),
+                  //         // child: ListView(
+                  //         //   children: [
+                  //         //     // ListTile(
+                  //         //     //   leading: Icon(Icons.person),
+                  //         //     //   title: Text('John Doe'),
+                  //         //     //   subtitle: Text('Software Engineer'),
+                  //         //     //   trailing: Icon(Icons.arrow_forward),
+                  //         //     //   onTap: () {
+                  //         //     //     print('Tapped John Doe');
+                  //         //     //   },
+                  //         //     // ),
+                  //         //   ],
+                  //         // ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // )
+
+
                 ],
               ),
             ),

@@ -140,7 +140,38 @@ class _ProgressScreenState extends State<ProgressScreen> {
     // POST: Returns UI layout including summary card + attempt history list.
     // --------------------------------------------------------------------
     return Scaffold(
-      appBar: AppBar(title: const Text('PROGRESS REPORT')),
+      appBar: AppBar(
+        backgroundColor: Colors.amber[600],
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Text(
+                  "PROGRESS",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                  ),
+                )
+              ),
+            ),
+            // SizedBox(width: 10,),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     allUsersProvider.clearLastUser();
+            //     Navigator.pushReplacementNamed(context, AppRoutes.role);
+            //   },
+            //   child: const Text('Sign Out'),
+            // ),
+          ],
+        )
+      ),
       body: Column(
         children: [
 
@@ -160,7 +191,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     Text(
-                      'Hi, ${student?.firstName ?? "Student"}!',
+                      '${student?.firstName ?? "Student"} ${student?.lastName ?? "Student"} Analytics',
                       style: const TextStyle(
                           fontSize: 22, fontWeight: FontWeight.bold),
                     ),

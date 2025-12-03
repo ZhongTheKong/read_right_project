@@ -111,80 +111,83 @@ class _LoginScreenState extends State<LoginScreen> {
                     fieldIcon: Icons.key,
                     labelText: "Password"
                   ),
+
+                  SizedBox(height: 20,),
+
+                  SizedBox(
+                    width: 250,
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final username = usernameTextEditingController.text;
+                        final password = passwordTextEditingController.text;
+                    
+                        try
+                        {
+                          UserData matchingUser = await getMatchingUserData(context, sessionProvider.isTeacher, username, password);
+                          allUsersProvider.saveLastUser(matchingUser);
+                          if (sessionProvider.isTeacher)
+                          {
+                            Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
+                          }
+                          else
+                          {
+                            Navigator.pushReplacementNamed(context, AppRoutes.wordList);
+                          }
+                        }
+                        on UserNotFoundException catch(e)
+                        {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Username not recognized')),
+                          );
+                          print("User not found: $e");
+                        }
+                        on PasswordIncorrectException catch(e)
+                        {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Incorrect password')),
+                          );
+                          print("Incorrect password: $e");
+                        }
+                      },
+                      child: const Text(
+                        'LOGIN',
+                        style: TextStyle(
+                          fontSize: 20,
+                                  
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
-            Column(
+            SizedBox(height: 10,),
+            
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          final username = usernameTextEditingController.text;
-                          final password = passwordTextEditingController.text;
-                      
-                          try
-                          {
-                            UserData matchingUser = await getMatchingUserData(context, sessionProvider.isTeacher, username, password);
-                            allUsersProvider.saveLastUser(matchingUser);
-                            if (sessionProvider.isTeacher)
-                            {
-                              Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
-                            }
-                            else
-                            {
-                              Navigator.pushReplacementNamed(context, AppRoutes.wordList);
-                            }
-                          }
-                          on UserNotFoundException catch(e)
-                          {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Username not recognized')),
-                            );
-                            print("User not found: $e");
-                          }
-                          on PasswordIncorrectException catch(e)
-                          {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('Incorrect password')),
-                            );
-                            print("Incorrect password: $e");
-                          }
-                        },
-                        child: const Text(
-                          'LOGIN',
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold
-                
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
+                Text(
+                  "New User?",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
                 ),
-
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushNamed(context, AppRoutes.create_account);
-                        },
-                        child: Text(
-                          "CREATE ACCOUNT",
-                          style: TextStyle(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold
-                          ),
-                        ),
-                      ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.create_account);
+                  },
+                  child: Text(
+                    "CREATE ACCOUNT",
+                    style: TextStyle(
+                      fontSize: 20,
                     ),
-                  ],
+                  ),
                 ),
               ],
             ),
+
+            SizedBox(height: 10,),
+
           ],
         ),
       ),

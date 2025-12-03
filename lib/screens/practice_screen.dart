@@ -472,7 +472,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         children: [
                           Expanded(
                             child: ElevatedButton(
-                              onPressed: () { Navigator.pushNamed(context, AppRoutes.wordList); },
+                              onPressed: () { Navigator.pop(context); },
                               child: const Text('Go to Word List'),
                             ),
                           ),
