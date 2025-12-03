@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/recording_provider.dart';
+import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/utils/save_file_to_folder.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:read_right_project/utils/attempt.dart';
@@ -128,6 +129,8 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
 
     // Access all users from provider
     AllUsersProvider allUsersProvider = context.watch<AllUsersProvider>();
+    SessionProvider sessionProvider = context.read<SessionProvider>();
+
     studentUsers = allUsersProvider.allUserData.studentUserDataList;
 
     // Extract usernames for dropdown
@@ -221,6 +224,7 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                   alignment: Alignment.centerLeft,
                   child: TextButton(
                     onPressed: () {
+                      sessionProvider.isCreateAccountTeacher = false;
                       Navigator.pushNamed(context, AppRoutes.create_account);
                     },
                     child: Text(

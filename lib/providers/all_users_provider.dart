@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:read_right_project/utils/all_users_data.dart';
 import 'package:read_right_project/utils/student_user_data.dart';
+import 'package:read_right_project/utils/teacher_user_data.dart';
 import 'package:read_right_project/utils/user_data.dart';
 import 'package:read_right_project/utils/word_list_progression_data.dart';
 
@@ -110,6 +111,16 @@ class AllUsersProvider extends ChangeNotifier{
     final corruptPath = file.path + ".corrupt_${DateTime.now().millisecondsSinceEpoch}";
     await file.rename(corruptPath);
     print("Corrupt JSON moved to: $corruptPath");
+  }
+
+  void addStudent(StudentUserData newStudentUserData) {
+    allUserData.studentUserDataList.add(newStudentUserData);
+    notifyListeners();
+  }
+
+  void addTeacher(TeacherUserData newTeacherUserData) {
+    allUserData.teacherUserDataList.add(newTeacherUserData);
+    notifyListeners();
   }
 
   Future<void> deleteUserData() async {

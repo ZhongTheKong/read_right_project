@@ -14,6 +14,7 @@ class SessionProvider extends ChangeNotifier {
   bool isTranscribing = false;
 
   bool isTeacher = false;
+  bool isCreateAccountTeacher = false;
 
   List<Word> word_list = [];
   int index = 0;

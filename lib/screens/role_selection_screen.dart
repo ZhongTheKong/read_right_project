@@ -170,6 +170,8 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                             Navigator.pushReplacementNamed(context, AppRoutes.wordList);
                           }
                           else {
+                            sessionProvider.isCreateAccountTeacher = false;
+
                             print("Last logged in user not recognized as a student");
                             Navigator.pushNamed(context, AppRoutes.login);
                           }
@@ -208,6 +210,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                             Navigator.pushReplacementNamed(context, AppRoutes.teacherDashboard);
                           }
                           else {
+                            sessionProvider.isCreateAccountTeacher = true;
                             Navigator.pushNamed(context, AppRoutes.login);
                           }
                           // Navigator.pushNamed(context, AppRoutes.login);
@@ -245,19 +248,19 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // ElevatedButton.icon(
-                      //   onPressed: () async {
-                      //     await replaceSaveFileWithSample();
-                      //     setState(() {
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          await replaceSaveFileWithSample();
+                          setState(() {
                             
-                      //     });
-                      //   }, 
-                      //   label: Text(
-                      //     "SAMPLE"
-                      //   ),
-                      //   icon: Icon(Icons.check_box_outline_blank)
-                      // ),
-                      // SizedBox(width: 20,),
+                          });
+                        }, 
+                        label: Text(
+                          "SAMPLE"
+                        ),
+                        icon: Icon(Icons.check_box_outline_blank)
+                      ),
+                      SizedBox(width: 20,),
                       ElevatedButton.icon(
                         onPressed: () async {
                           await saveExistingJsonToUserLocation(context, await allUsersProvider.getUserDataFilePath(), 'saveFileCopy.json');

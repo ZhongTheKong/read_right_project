@@ -132,10 +132,9 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 final firstName = firstNameTextEditingController.text;
                 final lastName = lastNameTextEditingController.text;
 
-                AllUserData allUserData = allUsersProvider.allUserData;
-                if (sessionProvider.isTeacher)
+                if (sessionProvider.isCreateAccountTeacher)
                 {
-                  allUserData.teacherUserDataList.add(TeacherUserData(
+                  allUsersProvider.addTeacher(TeacherUserData(
                     username: username, 
                     password: password, 
                     firstName: firstName,
@@ -146,7 +145,7 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
                 }
                 else
                 {
-                  allUserData.studentUserDataList.add(StudentUserData(
+                  allUsersProvider.addStudent(StudentUserData(
                     username: username, 
                     password: password, 
                     firstName: firstName,
