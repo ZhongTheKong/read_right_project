@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle; // Import rootBundle
 import 'package:csv/csv.dart'; // Import the CSV package
 import 'package:path_provider/path_provider.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:read_right_project/utils/word.dart';
@@ -27,6 +28,8 @@ class SessionProvider extends ChangeNotifier {
 
   // To keep track of the current logged in user
   String _username = 'Guest';
+
+  StudentUserData? teacherDashboardSelectedStudent = null;
 
   /// Currently needed to get progress screen to persist
   SessionProvider() {

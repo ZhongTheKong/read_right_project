@@ -94,8 +94,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
     SessionProvider sessionProvider = context.watch<SessionProvider>();
 
     final currentUser = allUsersProvider.allUserData.lastLoggedInUser;
-    final StudentUserData? student =
-        currentUser is StudentUserData ? currentUser : null;
+    final StudentUserData? student = currentUser is StudentUserData ? currentUser : sessionProvider.teacherDashboardSelectedStudent;
 
     final List<Attempt> attempts =
         student?.word_list_progression_data[sessionProvider.word_list_name]?.attempts ?? [];

@@ -58,6 +58,7 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
     try {
       // Safely locate the selected student
       final student = studentUsers.firstWhere((s) => s.username == selectedStudent);
+      
 
       // Extract all attempts across word list progression datasets
       List<Attempt> allAttempts =
@@ -142,10 +143,29 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.pink[100],
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text('Teacher Dashboard'),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 5),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10)
+                ),
+                child: Text(
+                  "TEACHER DASHBOARD",
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                  ),
+                )
+              ),
+            ),
+
+            SizedBox(width: 10,),
+
             ElevatedButton(
               onPressed: () {
                 setState(() {
@@ -156,7 +176,18 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                 Navigator.pushNamed(context, AppRoutes.role);
               },
               child: Text("Sign Out"),
-            ),
+            )
+            // SizedBox(width: 10,),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     allUsersProvider.clearLastUser();
+            //     Navigator.pushReplacementNamed(context, AppRoutes.role);
+            //   },
+            //   child: const Text('Sign Out'),
+            // ),
+          ],
+        )
+
             // ElevatedButton(
             //   onPressed: () {
             //     Navigator.pushReplacementNamed(context, AppRoutes.create_account);
@@ -169,8 +200,6 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
             //     ),
             //   ),
             // ),
-          ],
-        ),
       ),
 
       body: Padding(
@@ -198,9 +227,26 @@ class _TeacherDashboardScreenState extends State<TeacherDashboardScreen> {
                   onChanged: (value) {
                     setState(() {
                       selectedStudent = value;
+                      sessionProvider.teacherDashboardSelectedStudent = studentUsers.firstWhere((s) => s.username == selectedStudent);
                     });
                   },
                 ),
+
+                // Conditionally show a button
+                if (selectedStudent != null)
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRoutes.progress);
+                    },
+                    child: Text(
+                      "VIEW STUDENT PROGRESS",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15
+                        // color: Colors.black
+                      ),
+                    ),
+                  ),
 
                 // Date Picker Button
                 ElevatedButton(
