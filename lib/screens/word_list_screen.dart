@@ -34,7 +34,7 @@ class _WordListScreenState extends State<WordListScreen> {
       if (sessionProvider.word_list.isEmpty) {
         _loadWordsFuture = sessionProvider.loadWordList(
           sessionProvider.currWordListPath, 
-          ( (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.currWordListPath]?.currIndex ) ?? 0
+          (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.currWordListPath]!.currIndex
         );
       } else {
         _loadWordsFuture = Future.value(); // Already loaded, create a completed future.
@@ -228,14 +228,14 @@ class _WordListScreenState extends State<WordListScreen> {
                           );
                         }
                   
-                        int currWordInWordListIndex = allUsersProvider.getWordListCurrIndex(sessionProvider.word_list_name);
+                        int wordListWordIndex = allUsersProvider.getWordListCurrIndex(sessionProvider.currWordListPath);
                   
                         // Once the data is loaded, build the main UI.
-                        final wordObject = sessionProvider.word_list.isEmpty || currWordInWordListIndex > sessionProvider.word_list.length - 1
+                        final wordObject = sessionProvider.word_list.isEmpty || wordListWordIndex > sessionProvider.word_list.length - 1
                             ? null
-                            : sessionProvider.word_list[currWordInWordListIndex];
+                            : sessionProvider.word_list[wordListWordIndex];
 
-                        if (sessionProvider.word_list.isEmpty || currWordInWordListIndex > sessionProvider.word_list.length - 1) {
+                        if (sessionProvider.word_list.isEmpty || wordListWordIndex > sessionProvider.word_list.length - 1) {
                           return Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -273,7 +273,7 @@ class _WordListScreenState extends State<WordListScreen> {
                                       child: ElevatedButton(
                                         onPressed: () {
                                           sessionProvider.currWordListIndex = 0;
-                                          (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.currWordListPath]?.currIndex = 0;
+                                          (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.currWordListPath]!.currIndex = 0;
                                           sessionProvider.updateIndex(allUsersProvider.getWordListCurrIndex(sessionProvider.currWordListPath));
                                           // Navigator.pushNamed(context, AppRoutes.practice);
                                         },
@@ -298,7 +298,7 @@ class _WordListScreenState extends State<WordListScreen> {
                               Column(
                                 children: [
                                   Text(
-                                    'Word #${currWordInWordListIndex + 1}',
+                                    'Word #${wordListWordIndex + 1}',
                                                     
                                     style: const TextStyle(fontSize: 30),
                                   ),

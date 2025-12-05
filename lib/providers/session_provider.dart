@@ -26,7 +26,7 @@ class SessionProvider extends ChangeNotifier {
   bool _wordsLoaded = false;
   bool listComplete = false;
 
-  String word_list_name = '';
+  // String word_list_name = '';
 
   // To keep track of the current logged in user
   String _username = 'Guest';
@@ -137,7 +137,7 @@ class SessionProvider extends ChangeNotifier {
       // word_list = loadedWords;
       word_list = new_word_list;
 
-      word_list_name = path;
+      // word_list_name = path;
       // await saveIndex();
 
       // Notify listeners to rebuild widgets that use this provider.

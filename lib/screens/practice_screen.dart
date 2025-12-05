@@ -63,7 +63,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
       _loadWordsFuture = sessionProvider.loadWordList(
         sessionProvider.currWordListPath, 
-        ( (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.currWordListPath]?.currIndex ) ?? 0
+        (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.currWordListPath]!.currIndex
       );
     }
   }
@@ -223,7 +223,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
           // }
 
           // Current word index & object
-          int currWordInWordListIndex = allUsersProvider.getWordListCurrIndex(sessionProvider.word_list_name);
+          int currWordInWordListIndex = allUsersProvider.getWordListCurrIndex(sessionProvider.currWordListPath);
           // final Word currentWord = sessionProvider.word_list[currWordInWordListIndex];
           // print("Word at index: $currWordInWordListIndex for word list ${sessionProvider.word_list_name} is $currentWord");
 
@@ -346,7 +346,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                           onPressed: () async {
 
                             final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
-                            final wordListName = sessionProvider.word_list_name;
+                            final wordListName = sessionProvider.currWordListPath;
 
                             final attempts = studentData.word_list_progression_data[wordListName]!.attempts;
 
@@ -408,7 +408,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         child: ElevatedButton.icon(
                           onPressed: () async {
                             final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
-                            final wordListName = sessionProvider.word_list_name;
+                            final wordListName = sessionProvider.currWordListPath;
                             studentData.word_list_progression_data.putIfAbsent(
                               wordListName,
                               () => WordListProgressionData(
@@ -453,7 +453,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                         child: ElevatedButton.icon(
                           onPressed: () async {
                             final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
-                            final wordListName = sessionProvider.word_list_name;
+                            final wordListName = sessionProvider.currWordListPath;
                             studentData.word_list_progression_data.putIfAbsent(
                               wordListName,
                               () => WordListProgressionData(
@@ -483,9 +483,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
                       Expanded(
                         child: ElevatedButton.icon(
                           onPressed: () {
-                            allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
+                            allUsersProvider.incrementCurrIndex(sessionProvider.currWordListPath);
                             // sessionProvider.nextWord(true);
-                            sessionProvider.updateIndex(allUsersProvider.getWordListCurrIndex(sessionProvider.word_list_name));
+                            sessionProvider.updateIndex(allUsersProvider.getWordListCurrIndex(sessionProvider.currWordListPath));
 
                           },
                           icon: const Icon(Icons.play_arrow),

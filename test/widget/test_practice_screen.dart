@@ -48,7 +48,7 @@ void main() {
       ('hello', ['hello'])
     ]);
     when(() => mockSessionProvider.index).thenReturn(0);
-    when(() => mockSessionProvider.word_list_name).thenReturn("Test List");
+    when(() => mockSessionProvider.currWordListPath).thenReturn("Test List");
     when(() => mockSessionProvider.listComplete).thenReturn(false);
 
     when(() => mockAllUsersProvider.allUserData).thenReturn(

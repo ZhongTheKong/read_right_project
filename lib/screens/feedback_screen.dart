@@ -44,7 +44,7 @@ class FeedbackScreen extends StatelessWidget {
     AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
 
     final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
-    final wordListName = sessionProvider.word_list_name;
+    final wordListName = sessionProvider.currWordListPath;
 
     // Ensure progression data exists for the current word list
     studentData.word_list_progression_data.putIfAbsent(
@@ -294,14 +294,14 @@ class FeedbackScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     if (score > 80) {
-                      allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
+                      allUsersProvider.incrementCurrIndex(sessionProvider.currWordListPath);
                       // sessionProvider.nextWord(true);
-                      sessionProvider.updateIndex(allUsersProvider.getWordListCurrIndex(sessionProvider.word_list_name));
+                      sessionProvider.updateIndex(allUsersProvider.getWordListCurrIndex(sessionProvider.currWordListPath));
                     }
                     if (!recordingProvider.isAudioRetentionEnabled) {
-                      print("Removing current attempt from ${sessionProvider.word_list_name}");
+                      print("Removing current attempt from ${sessionProvider.currWordListPath}");
                       String? lastFilePath = (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData)
-                          .word_list_progression_data[sessionProvider.word_list_name]?.attempts.last.filePath;
+                          .word_list_progression_data[sessionProvider.currWordListPath]!.attempts.last.filePath;
                       allUsersProvider.saveCurrentUserData();
                       if (lastFilePath != null) {
                         recordingProvider.deleteAudioFile(lastFilePath);

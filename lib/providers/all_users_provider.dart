@@ -180,6 +180,17 @@ class AllUsersProvider extends ChangeNotifier{
   void incrementCurrIndex(String wordListFileName) {
     final currentUser = allUserData.lastLoggedInUser;
     final StudentUserData? student = currentUser is StudentUserData ? currentUser : null;
+    if (student == null) {
+      return;
+    }
+    if (!student.word_list_progression_data.containsKey(wordListFileName)) {
+      student.word_list_progression_data[wordListFileName] = WordListProgressionData(
+        wordListName: wordListFileName, 
+        wordListPath: wordListFileName, 
+        currIndex: 0, 
+        attempts: []
+      );
+    }
     final WordListProgressionData? wordListProgressionData =
         student?.word_list_progression_data[wordListFileName];
     if (wordListProgressionData != null) {

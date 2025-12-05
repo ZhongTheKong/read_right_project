@@ -97,7 +97,7 @@ class _ProgressScreenState extends State<ProgressScreen> {
     final StudentUserData? student = currentUser is StudentUserData ? currentUser : sessionProvider.teacherDashboardSelectedStudent;
 
     final List<Attempt> attempts =
-        student?.word_list_progression_data[sessionProvider.word_list_name]?.attempts ?? [];
+        student?.word_list_progression_data[sessionProvider.currWordListPath]!.attempts ?? [];
 
     // ------------------------------------------------------------
     // PRE: attempts must be populated to compute stats.
