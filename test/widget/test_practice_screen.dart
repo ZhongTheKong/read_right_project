@@ -44,7 +44,8 @@ void main() {
 
     when(() => mockSessionProvider.word_list).thenReturn([
       // Minimal dummy Word object
-      Word(grade: 'Great', text: "Bob")
+      // Word(grade: 'Great', text: "Bob")
+      ('hello', ['hello'])
     ]);
     when(() => mockSessionProvider.index).thenReturn(0);
     when(() => mockSessionProvider.word_list_name).thenReturn("Test List");

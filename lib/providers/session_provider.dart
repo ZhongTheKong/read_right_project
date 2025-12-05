@@ -17,7 +17,9 @@ class SessionProvider extends ChangeNotifier {
   bool isTeacher = false;
   bool isCreateAccountTeacher = false;
 
-  List<Word> word_list = [];
+  // List<Word> word_list = [];
+  List<(String, List<String>)> word_list = [];
+
   int index = 0;
   int selectedIndex = 0;
   String grade = "Pre-Primer";
@@ -30,6 +32,14 @@ class SessionProvider extends ChangeNotifier {
   String _username = 'Guest';
 
   StudentUserData? teacherDashboardSelectedStudent = null;
+
+  List<String> wordListFilePaths = [
+    'assets/pre_primer_dolch.csv',
+    'assets/primer_dolch.csv'
+  ];
+  int currWordListIndex = 0;
+  String get currWordListPath => wordListFilePaths[currWordListIndex];
+
 
   // /// Currently needed to get progress screen to persist
   // SessionProvider() {
@@ -47,7 +57,47 @@ class SessionProvider extends ChangeNotifier {
 
   // Future<void> saveIndex() async {
   //   final prefs = await SharedPreferences.getInstance();
-  //   await prefs.setInt('lastIndex', index);
+  //  
+  // await prefs.setInt('lastIndex', index);
+  // }
+
+  // Future<void> loadWordList(String path, int currIndex) async {
+  //   if (_wordsLoaded) return;
+  //   index = currIndex;
+  //   // await loadIndex();
+  //   try {
+  //     final fileData = await rootBundle.loadString(path);
+  //     // Use CsvToListConverter to parse the CSV string.
+  //     List<List<dynamic>> csvTable = const CsvToListConverter(eol: '\n').convert(fileData);
+
+  //     final List<Word> loadedWords = [];
+  //     // Start from index 1 to skip the header row.
+  //     for (var i = 1; i < csvTable.length; i++) {
+  //       final row = csvTable[i];
+  //       // Ensure the row has at least two columns.
+  //       if (row.length > 1) {
+  //         final grade = row[0].toString().trim(); // Grade is in the first column (index 0)
+  //         final wordText = row[1].toString().trim(); // Word is in the second column (index 1)
+  //         if (grade.isNotEmpty && wordText.isNotEmpty) {
+  //           // Create a Word object and add it to the list.
+  //           loadedWords.add(Word(grade: grade, text: wordText));
+  //         }
+  //       }
+  //     }
+
+  //     // Update the state with the new list of Word objects.
+  //     word_list = loadedWords;
+  //     word_list_name = path;
+  //     // await saveIndex();
+
+  //     // Notify listeners to rebuild widgets that use this provider.
+  //     notifyListeners();
+  //   } catch (e) {
+  //     print('Error loading or parsing CSV file: $e');
+  //     // In case of an error, ensure the word list is empty.
+  //     word_list = [];
+  //     notifyListeners();
+  //   }
   // }
 
   Future<void> loadWordList(String path, int currIndex) async {
@@ -59,23 +109,30 @@ class SessionProvider extends ChangeNotifier {
       // Use CsvToListConverter to parse the CSV string.
       List<List<dynamic>> csvTable = const CsvToListConverter(eol: '\n').convert(fileData);
 
-      final List<Word> loadedWords = [];
+      final String trueWordListName = csvTable[0][1];
+      // final List<Word> loadedWords = [];
+      // List<(String, List<String>)> loadedWords = [];
+      List<(String, List<String>)> new_word_list = [];
+
       // Start from index 1 to skip the header row.
-      for (var i = 1; i < csvTable.length; i++) {
+      for (var i = 2; i < csvTable.length; i++) {
         final row = csvTable[i];
         // Ensure the row has at least two columns.
         if (row.length > 1) {
-          final grade = row[0].toString().trim(); // Grade is in the first column (index 0)
-          final wordText = row[1].toString().trim(); // Word is in the second column (index 1)
+          // final grade = row[0].toString().trim(); // Grade is in the first column (index 0)
+          final wordText = row[0].toString().trim(); // Word is in the second column (index 1)
+          final sentencesText = row[1].toString().trim();
           if (grade.isNotEmpty && wordText.isNotEmpty) {
             // Create a Word object and add it to the list.
-            loadedWords.add(Word(grade: grade, text: wordText));
+            new_word_list.add( (wordText, sentencesText.split(r'\')) );
           }
         }
       }
 
       // Update the state with the new list of Word objects.
-      word_list = loadedWords;
+      // word_list = loadedWords;
+      word_list = new_word_list;
+
       word_list_name = path;
       // await saveIndex();
 
@@ -89,35 +146,48 @@ class SessionProvider extends ChangeNotifier {
     }
   }
 
-  void incrementIndex(int increment) {
-    if (word_list.isEmpty) return;
-    index = (index + increment) % word_list.length;
-    // saveIndex();
-    print('Grade: ${word_list[index].grade} ${listComplete}');
-    notifyListeners();
-  }
+  // void incrementIndex(int increment) {
+  //   if (word_list.isEmpty) return;
+  //   print("$index = ($index + $increment) % ${word_list.length}");
+  //   index = (index + increment) % word_list.length;
+  //   print("Index: $index");
+
+  //   // saveIndex();
+  //   // print('Grade: ${word_list[index].grade} ${listComplete}');
+  //   notifyListeners();
+  // }
 
   /// Moves to the next word to practice. Also keeps track of if a list has been
   /// completed.
-  void nextWord(bool updateList) {
-    if (word_list.isEmpty) return;
-    if (!updateList) {
-      listComplete = false;
-      notifyListeners();
-    }
-      String prev = word_list[index].grade;
-      incrementIndex(1);
+  // void nextWord(bool updateList) {
+  void updateIndex(int newIndex) {
+  
+    // if (word_list.isEmpty) {
+    //   print("Word list is empty. Cannot move onto next word.");
+    //   return;
+    // }
+    // if (!updateList) {
+    //   print("Not set to update the list. List is not complete");
+    //   listComplete = false;
+    //   notifyListeners();
+    // }
+      // String prev = word_list[index].grade;
+      // incrementIndex(1);
 
-          
-      print('Next word: ${word_list[index].text}');
-      if (prev != word_list[index].grade) {
+      index = newIndex;
+
+      // print('Next word: ${word_list[index].text}');
+      // if (prev != word_list[index].grade) {
+      if (index > word_list.length - 1) {
+        print("End of list reached");
         listComplete = true;
-        notifyListeners();
       }
       else {
+        print("End of list not reached");
         listComplete = false;
-        notifyListeners();
       }
+      notifyListeners();
+
   }
 
   // // Load the username from local storage

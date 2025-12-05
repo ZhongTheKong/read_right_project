@@ -295,7 +295,8 @@ class FeedbackScreen extends StatelessWidget {
                   onPressed: () {
                     if (score > 80) {
                       allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
-                      sessionProvider.nextWord(true);
+                      // sessionProvider.nextWord(true);
+                      sessionProvider.updateIndex(allUsersProvider.getWordListCurrIndex(sessionProvider.word_list_name));
                     }
                     if (!recordingProvider.isAudioRetentionEnabled) {
                       print("Removing current attempt from ${sessionProvider.word_list_name}");

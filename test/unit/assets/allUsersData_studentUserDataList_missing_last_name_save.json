@@ -8,9 +8,9 @@
       "firstName": "John",
       "isTeacher": false,
       "word_list_progression_data": {
-        "assets/seed_words.csv":  {
-          "wordListName": "assets/seed_words.csv",
-          "wordListPath": "assets/seed_words.csv",
+        "assets/pre_primer_dolch.csv":  {
+          "wordListName": "assets/pre_primer_dolch.csv",
+          "wordListPath": "assets/pre_primer_dolch.csv",
           "currIndex": 0,
           "attempts": [
             {

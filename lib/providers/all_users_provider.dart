@@ -184,6 +184,7 @@ class AllUsersProvider extends ChangeNotifier{
         student?.word_list_progression_data[wordListFileName];
     if (wordListProgressionData != null) {
       wordListProgressionData.currIndex++;
+      print("${wordListProgressionData.wordListName}'s index is now ${wordListProgressionData.currIndex}");
     }
     notifyListeners();
   }

@@ -18,7 +18,9 @@ class _WordListScreenState extends State<WordListScreen> {
   // This Future will hold the loading operation and ensure it only runs once per screen visit.
   Future<void>? _loadWordsFuture;
 
-  String currentWordListPath = "seed_words.csv";
+  // String currentWordListPath = "seed_words.csv";
+  // String currentWordListPath = "pre_primer_dolch.csv";
+
 
   @override
   void didChangeDependencies() {
@@ -31,8 +33,8 @@ class _WordListScreenState extends State<WordListScreen> {
       // If the list is already loaded, complete immediately. Otherwise, load it.
       if (sessionProvider.word_list.isEmpty) {
         _loadWordsFuture = sessionProvider.loadWordList(
-          'assets/$currentWordListPath',
-          ( (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data['assets/$currentWordListPath']?.currIndex ) ?? 0
+          sessionProvider.currWordListPath, 
+          ( (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.currWordListPath]?.currIndex ) ?? 0
         );
       } else {
         _loadWordsFuture = Future.value(); // Already loaded, create a completed future.
@@ -53,6 +55,7 @@ class _WordListScreenState extends State<WordListScreen> {
     {
       fullName = "${allUsersProvider.allUserData.lastLoggedInUser!.firstName} ${allUsersProvider.allUserData.lastLoggedInUser!.lastName}";
     }
+    print("${sessionProvider.currWordListIndex} + 1 <= ${sessionProvider.wordListFilePaths.length} - 1");
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -129,7 +132,7 @@ class _WordListScreenState extends State<WordListScreen> {
                         height: 45,
                         child: Center(
                           child: Text(
-                            "CURRENT WORD LIST: $currentWordListPath",
+                            "CURRENT WORD LIST: ${sessionProvider.currWordListPath}",
                             style: TextStyle(
                               fontSize: 15,
                               color: Colors.white,
@@ -154,7 +157,7 @@ class _WordListScreenState extends State<WordListScreen> {
 
                         child: Center(
                           child: Text(
-                            "NEXT WORD LIST: N/A",
+                            "NEXT WORD LIST: ${sessionProvider.currWordListIndex + 1 <= sessionProvider.wordListFilePaths.length - 1 ? sessionProvider.wordListFilePaths[sessionProvider.currWordListIndex + 1] : "N/A"}",
                             style: TextStyle(
                               fontSize: 15,
                               color: Colors.white,
@@ -228,9 +231,61 @@ class _WordListScreenState extends State<WordListScreen> {
                         int currWordInWordListIndex = allUsersProvider.getWordListCurrIndex(sessionProvider.word_list_name);
                   
                         // Once the data is loaded, build the main UI.
-                        final wordObject = sessionProvider.word_list.isEmpty
+                        final wordObject = sessionProvider.word_list.isEmpty || currWordInWordListIndex > sessionProvider.word_list.length - 1
                             ? null
                             : sessionProvider.word_list[currWordInWordListIndex];
+
+                        if (sessionProvider.word_list.isEmpty || currWordInWordListIndex > sessionProvider.word_list.length - 1) {
+                          return Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.blue[300],
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                // Column(
+                                //   children: [
+                                //     Text(
+                                //       'Word #${currWordInWordListIndex + 1}',
+                                                      
+                                //       style: const TextStyle(fontSize: 30),
+                                //     ),
+                                //     // Text(
+                                //     //   'WORD GRADE: ${wordObject?.grade}',
+                                //     //   style: const TextStyle(fontSize: 22),
+                                //     //   textAlign: TextAlign.center,
+                                //     // ),
+                                //   ],
+                                // ),
+                                Expanded(
+                                  child: Center(
+                                    child: Text(
+                                      // wordObject?.text ?? 'N/A',
+                                      "Congratulations!\nAll Word Lists Have Been Completed.\nAsk Your Instructor To Assign More Word Lists.",
+                                      style: const TextStyle(fontSize: 20),
+                                    ),
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          sessionProvider.currWordListIndex = 0;
+                                          (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.currWordListPath]?.currIndex = 0;
+                                          sessionProvider.updateIndex(allUsersProvider.getWordListCurrIndex(sessionProvider.currWordListPath));
+                                          // Navigator.pushNamed(context, AppRoutes.practice);
+                                        },
+                                        child: const Text('(TEMP) Reset Progress'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          );
+                        }
                   
                         return Container(
                           padding: const EdgeInsets.all(10),
@@ -247,17 +302,18 @@ class _WordListScreenState extends State<WordListScreen> {
                                                     
                                     style: const TextStyle(fontSize: 30),
                                   ),
-                                  Text(
-                                    'WORD GRADE: ${wordObject?.grade}',
-                                    style: const TextStyle(fontSize: 22),
-                                    textAlign: TextAlign.center,
-                                  ),
+                                  // Text(
+                                  //   'WORD GRADE: ${wordObject?.grade}',
+                                  //   style: const TextStyle(fontSize: 22),
+                                  //   textAlign: TextAlign.center,
+                                  // ),
                                 ],
                               ),
                               Expanded(
                                 child: Center(
                                   child: Text(
-                                    wordObject?.text ?? 'N/A',
+                                    // wordObject?.text ?? 'N/A',
+                                    wordObject?.$1 ?? "N/A",
                                     style: const TextStyle(fontSize: 100),
                                   ),
                                 ),
