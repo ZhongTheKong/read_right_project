@@ -35,7 +35,11 @@ class SessionProvider extends ChangeNotifier {
 
   List<String> wordListFilePaths = [
     'assets/pre_primer_dolch.csv',
-    'assets/primer_dolch.csv'
+    'assets/primer_dolch.csv',
+    'assets/first_dolch.csv',
+    'assets/second_dolch.csv',
+    'assets/third_dolch.csv',
+
   ];
   int currWordListIndex = 0;
   String get currWordListPath => wordListFilePaths[currWordListIndex];
