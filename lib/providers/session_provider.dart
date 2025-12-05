@@ -31,28 +31,29 @@ class SessionProvider extends ChangeNotifier {
 
   StudentUserData? teacherDashboardSelectedStudent = null;
 
-  /// Currently needed to get progress screen to persist
-  SessionProvider() {
-    loadUsername();
-    loadIndex();
-  }
+  // /// Currently needed to get progress screen to persist
+  // SessionProvider() {
+  //   // loadUsername();
+  //   loadIndex();
+  // }
 
-  /// Functions to load and save the index in the word list
-  /// Likely will be replaced once attempt persistence is implemented
-  Future<void> loadIndex() async {
-    final prefs = await SharedPreferences.getInstance();
-    index = prefs.getInt('lastIndex') ?? 0;
-    notifyListeners();
-  }
+  // /// Functions to load and save the index in the word list
+  // /// Likely will be replaced once attempt persistence is implemented
+  // Future<void> loadIndex() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   index = prefs.getInt('lastIndex') ?? 0;
+  //   notifyListeners();
+  // }
 
-  Future<void> saveIndex() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('lastIndex', index);
-  }
+  // Future<void> saveIndex() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setInt('lastIndex', index);
+  // }
 
-  Future<void> loadWordList(String path) async {
+  Future<void> loadWordList(String path, int currIndex) async {
     if (_wordsLoaded) return;
-    await loadIndex();
+    index = currIndex;
+    // await loadIndex();
     try {
       final fileData = await rootBundle.loadString(path);
       // Use CsvToListConverter to parse the CSV string.
@@ -76,7 +77,7 @@ class SessionProvider extends ChangeNotifier {
       // Update the state with the new list of Word objects.
       word_list = loadedWords;
       word_list_name = path;
-      await saveIndex();
+      // await saveIndex();
 
       // Notify listeners to rebuild widgets that use this provider.
       notifyListeners();
@@ -91,14 +92,14 @@ class SessionProvider extends ChangeNotifier {
   void incrementIndex(int increment) {
     if (word_list.isEmpty) return;
     index = (index + increment) % word_list.length;
-    saveIndex();
+    // saveIndex();
     print('Grade: ${word_list[index].grade} ${listComplete}');
     notifyListeners();
   }
 
   /// Moves to the next word to practice. Also keeps track of if a list has been
   /// completed.
-    void nextWord(bool updateList) {
+  void nextWord(bool updateList) {
     if (word_list.isEmpty) return;
     if (!updateList) {
       listComplete = false;
@@ -119,27 +120,27 @@ class SessionProvider extends ChangeNotifier {
       }
   }
 
-  // Load the username from local storage
-  Future<String> loadUsername() async {
-    final prefs = await SharedPreferences.getInstance();
-    _username = prefs.getString('lastUser') ?? 'Guest';
-    notifyListeners();
-    return _username;
-  }
+  // // Load the username from local storage
+  // Future<String> loadUsername() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   _username = prefs.getString('lastUser') ?? 'Guest';
+  //   notifyListeners();
+  //   return _username;
+  // }
 
-  void clearUsername() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.remove("lastUser");
-    notifyListeners();
-  }
+  // void clearUsername() async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   prefs.remove("lastUser");
+  //   notifyListeners();
+  // }
 
-  // Save the username to local storage
-  Future<void> saveUsername(String username) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('lastUser', username);
-    _username = username;
-    notifyListeners();
-  }
+  // // Save the username to local storage
+  // Future<void> saveUsername(String username) async {
+  //   final prefs = await SharedPreferences.getInstance();
+  //   await prefs.setString('lastUser', username);
+  //   _username = username;
+  //   notifyListeners();
+  // }
 
   Future<String> _nextPath() async {
     final dir = await getApplicationDocumentsDirectory();

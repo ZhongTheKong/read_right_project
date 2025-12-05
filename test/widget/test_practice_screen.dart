@@ -60,7 +60,7 @@ void main() {
       )
     );
 
-    when(() => mockSessionProvider.loadWordList(any()))
+    when(() => mockSessionProvider.loadWordList(any(), any()))
       .thenAnswer(
         (_) async { 
           await Future.delayed(const Duration(seconds: 1));

@@ -57,7 +57,13 @@ class _PracticeScreenState extends State<PracticeScreen> {
     super.didChangeDependencies();
     if (_loadWordsFuture == null) {
       final sessionProvider = Provider.of<SessionProvider>(context, listen: false);
-      _loadWordsFuture = sessionProvider.loadWordList('assets/seed_words.csv');
+      AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
+
+      String currWordListPath = 'assets/seed_words.csv';
+      _loadWordsFuture = sessionProvider.loadWordList(
+        currWordListPath, 
+        ( (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[currWordListPath]?.currIndex ) ?? 0
+      );
     }
   }
 

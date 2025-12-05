@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:read_right_project/providers/all_users_provider.dart';
 import 'package:read_right_project/providers/session_provider.dart';
 import 'package:read_right_project/utils/routes.dart';
+import 'package:read_right_project/utils/student_user_data.dart';
 
 class WordListScreen extends StatefulWidget {
   const WordListScreen({super.key});
@@ -26,9 +27,13 @@ class _WordListScreenState extends State<WordListScreen> {
     // It has access to the provider context and runs before the first build.
     if (_loadWordsFuture == null) {
       final sessionProvider = Provider.of<SessionProvider>(context, listen: false);
+      AllUsersProvider allUsersProvider = context.read<AllUsersProvider>();
       // If the list is already loaded, complete immediately. Otherwise, load it.
       if (sessionProvider.word_list.isEmpty) {
-        _loadWordsFuture = sessionProvider.loadWordList('assets/$currentWordListPath');
+        _loadWordsFuture = sessionProvider.loadWordList(
+          'assets/$currentWordListPath',
+          ( (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data['assets/$currentWordListPath']?.currIndex ) ?? 0
+        );
       } else {
         _loadWordsFuture = Future.value(); // Already loaded, create a completed future.
       }
