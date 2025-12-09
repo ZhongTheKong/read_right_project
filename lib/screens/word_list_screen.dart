@@ -34,7 +34,7 @@ class _WordListScreenState extends State<WordListScreen> {
       if (sessionProvider.word_list.isEmpty) {
         _loadWordsFuture = sessionProvider.loadWordList(
           sessionProvider.currWordListPath, 
-          (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.currWordListPath]!.currIndex
+          (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.currWordListPath]?.currIndex ?? 0
         );
       } else {
         _loadWordsFuture = Future.value(); // Already loaded, create a completed future.
@@ -273,7 +273,7 @@ class _WordListScreenState extends State<WordListScreen> {
                                       child: ElevatedButton(
                                         onPressed: () {
                                           sessionProvider.currWordListIndex = 0;
-                                          (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.currWordListPath]!.currIndex = 0;
+                                          (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.currWordListPath]?.currIndex = 0;
                                           sessionProvider.updateIndex(allUsersProvider.getWordListCurrIndex(sessionProvider.currWordListPath));
                                           // Navigator.pushNamed(context, AppRoutes.practice);
                                         },
