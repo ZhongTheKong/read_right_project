@@ -57,6 +57,8 @@ class FeedbackScreen extends StatelessWidget {
       )
     );
 
+    final currentWordData = sessionProvider.word_list[allUsersProvider.getWordListCurrIndex(sessionProvider.currWordListPath)];
+
     // Access attempts safely
     final attempts = studentData.word_list_progression_data[wordListName]!.attempts;
 
@@ -179,26 +181,7 @@ class FeedbackScreen extends StatelessWidget {
                         'Date: ${attempts[0].createdAt.toString()}',
                         style: TextStyle(fontSize: 12),
                       ),
-                      const SizedBox(height: 10),
-                
-                      // TTS Playback Buttons
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Column(
-                            children: [
-                              Text("Play Word"),
-                              IconButton(
-                                onPressed: () async {
-                                  // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
-                                  await flutterTts.speak(attempts[0].word);
-                                }, 
-                                icon: Icon(Icons.volume_up)
-                              )
-                            ],
-                          ),
-                        ],
-                      )
+                      
                     ],
                   ),
                 ),
@@ -277,6 +260,64 @@ class FeedbackScreen extends StatelessWidget {
 
               ],
             ),
+          ),
+
+                
+          // TTS Playback Buttons
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Text("Play Word"),
+                  IconButton(
+                    onPressed: () async {
+                      // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
+                      await flutterTts.speak(attempts[0].word);
+                    }, 
+                    icon: Icon(Icons.volume_up)
+                  )
+                ],
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 10),
+
+          ListView.builder(
+            shrinkWrap: true, // allows it to be inside another scrollable widget
+            physics: NeverScrollableScrollPhysics(), // disables inner scrolling if needed
+            itemCount: currentWordData.$2.length,
+            itemBuilder: (context, index) {
+              final word = currentWordData.$2[index];
+
+              return Row(
+                children: [
+                  IconButton(
+                    onPressed: () async {
+                      // Example: speak the word
+                      // flutter_tts.speak(word);
+
+                      // Example: access student data if needed
+                      final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
+                      final wordListName = sessionProvider.currWordListPath;
+                      final attempts = studentData.word_list_progression_data[wordListName]!.attempts;
+
+                      // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
+                      await flutterTts.speak(currentWordData.$2[index]);
+
+                      print('Speaking word: $word, attempts: $attempts');
+                    },
+                    icon: Icon(
+                      Icons.volume_up,
+                      size: 20,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Text(word, style: TextStyle(fontSize: 20)),
+                ],
+              );
+            },
           ),
 
           

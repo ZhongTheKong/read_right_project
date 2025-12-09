@@ -43,6 +43,7 @@ class SessionProvider extends ChangeNotifier {
   ];
   int currWordListIndex = 0;
   String get currWordListPath => wordListFilePaths[currWordListIndex];
+  // (String, List<String>) currentWordData = ('', []);
 
 
   // /// Currently needed to get progress screen to persist

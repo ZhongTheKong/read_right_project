@@ -289,7 +289,9 @@ class _PracticeScreenState extends State<PracticeScreen> {
           // -------------------------------------------------------------
           // POST: Main practice UI with current word, record/stop, progress
           // -------------------------------------------------------------
-          final String currentWord = sessionProvider.word_list[currWordInWordListIndex].$1;
+          // final String currentWord = sessionProvider.word_list[currWordInWordListIndex].$1;
+          final currentWordData = sessionProvider.word_list[currWordInWordListIndex];
+          final String currentWord = currentWordData.$1;
 
           return Center(
             child: Column(
@@ -357,7 +359,44 @@ class _PracticeScreenState extends State<PracticeScreen> {
                             Icons.volume_up,
                             size: 80,
                           )
+                        ),
+
+                        ListView.builder(
+                          shrinkWrap: true, // allows it to be inside another scrollable widget
+                          physics: NeverScrollableScrollPhysics(), // disables inner scrolling if needed
+                          itemCount: currentWordData.$2.length,
+                          itemBuilder: (context, index) {
+                            final word = currentWordData.$2[index];
+
+                            return Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () async {
+                                    // Example: speak the word
+                                    // flutter_tts.speak(word);
+
+                                    // Example: access student data if needed
+                                    final studentData = allUsersProvider.allUserData.lastLoggedInUser as StudentUserData;
+                                    final wordListName = sessionProvider.currWordListPath;
+                                    final attempts = studentData.word_list_progression_data[wordListName]!.attempts;
+
+                                    // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
+                                    await flutterTts.speak(currentWordData.$2[index]);
+
+                                    print('Speaking word: $word, attempts: $attempts');
+                                  },
+                                  icon: Icon(
+                                    Icons.volume_up,
+                                    size: 20,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Text(word, style: TextStyle(fontSize: 20)),
+                              ],
+                            );
+                          },
                         )
+
                         
                       ],
                     ),
