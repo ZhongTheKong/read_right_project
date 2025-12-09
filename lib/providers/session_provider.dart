@@ -118,6 +118,10 @@ class SessionProvider extends ChangeNotifier {
       // List<(String, List<String>)> loadedWords = [];
       List<(String, List<String>)> new_word_list = [];
 
+      // for (var i = 0; i < csvTable.length; i++) {
+      //   print('$i: ${csvTable[i]}');
+      // }
+
       // Start from index 1 to skip the header row.
       for (var i = 2; i < csvTable.length; i++) {
         final row = csvTable[i];
@@ -126,12 +130,16 @@ class SessionProvider extends ChangeNotifier {
           // final grade = row[0].toString().trim(); // Grade is in the first column (index 0)
           final wordText = row[0].toString().trim(); // Word is in the second column (index 1)
           final sentencesText = row[1].toString().trim();
-          if (grade.isNotEmpty && wordText.isNotEmpty) {
+          // if (grade.isNotEmpty && wordText.isNotEmpty) {
+          if (wordText.isNotEmpty) {
+          
             // Create a Word object and add it to the list.
-            new_word_list.add( (wordText, sentencesText.split(r'\')) );
+            // print(sentencesText);
+            new_word_list.add( (wordText, sentencesText.split('^')) );
           }
         }
       }
+      print(new_word_list);
 
       // Update the state with the new list of Word objects.
       // word_list = loadedWords;
