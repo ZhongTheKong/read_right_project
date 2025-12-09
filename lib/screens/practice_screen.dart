@@ -258,7 +258,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                   children: [
                                     Expanded(
                                       child: ElevatedButton(
-                                        onPressed: () {
+                                        onPressed: () async {
                                           // allUsersProvider.incrementCurrIndex(sessionProvider.word_list_name);
                                           // // sessionProvider.nextWord(false);
                                           // sessionProvider.updateIndex(allUsersProvider.getWordListCurrIndex(sessionProvider.word_list_name));
@@ -266,6 +266,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                           // sessionProvider.nextWord(false);
                                           sessionProvider.updateIndex(0);
                                           sessionProvider.currWordListIndex++;
+                                          await sessionProvider.loadWordList(sessionProvider.currWordListPath, sessionProvider.currWordListIndex);
                                           // Navigator.pushNamed(context, AppRoutes.wordList);
                                           Navigator.pop(context);
                                         },

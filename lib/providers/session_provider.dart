@@ -42,7 +42,11 @@ class SessionProvider extends ChangeNotifier {
 
   ];
   int currWordListIndex = 0;
-  String get currWordListPath => wordListFilePaths[currWordListIndex];
+  String get currWordListPath {
+    print("Word list at index $currWordListIndex is:");
+    print(wordListFilePaths[currWordListIndex]);
+    return wordListFilePaths[currWordListIndex];
+  }
   // (String, List<String>) currentWordData = ('', []);
 
 

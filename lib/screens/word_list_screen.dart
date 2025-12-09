@@ -55,7 +55,7 @@ class _WordListScreenState extends State<WordListScreen> {
     {
       fullName = "${allUsersProvider.allUserData.lastLoggedInUser!.firstName} ${allUsersProvider.allUserData.lastLoggedInUser!.lastName}";
     }
-    print("${sessionProvider.currWordListIndex} + 1 <= ${sessionProvider.wordListFilePaths.length} - 1");
+    // print("${sessionProvider.currWordListIndex} + 1 <= ${sessionProvider.wordListFilePaths.length} - 1");
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -228,14 +228,14 @@ class _WordListScreenState extends State<WordListScreen> {
                           );
                         }
                   
-                        int wordListWordIndex = allUsersProvider.getWordListCurrIndex(sessionProvider.currWordListPath);
+                        int currWordListIndex = allUsersProvider.getWordListCurrIndex(sessionProvider.currWordListPath);
                   
                         // Once the data is loaded, build the main UI.
-                        final wordObject = sessionProvider.word_list.isEmpty || wordListWordIndex > sessionProvider.word_list.length - 1
+                        final wordObject = sessionProvider.word_list.isEmpty || currWordListIndex > sessionProvider.word_list.length - 1
                             ? null
-                            : sessionProvider.word_list[wordListWordIndex];
+                            : sessionProvider.word_list[currWordListIndex];
 
-                        if (sessionProvider.word_list.isEmpty || wordListWordIndex > sessionProvider.word_list.length - 1) {
+                        if (sessionProvider.word_list.isEmpty || currWordListIndex > sessionProvider.word_list.length - 1) {
                           return Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
@@ -298,7 +298,7 @@ class _WordListScreenState extends State<WordListScreen> {
                               Column(
                                 children: [
                                   Text(
-                                    'Word #${wordListWordIndex + 1}',
+                                    'Word #${currWordListIndex + 1}',
                                                     
                                     style: const TextStyle(fontSize: 30),
                                   ),
