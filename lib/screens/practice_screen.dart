@@ -518,20 +518,24 @@ class _PracticeScreenState extends State<PracticeScreen> {
                           label: const Text('Stop'),
                         ),
                       ),
-                      // Next word button (temporary)
-                      SizedBox(width: 10,),
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          onPressed: () {
-                            allUsersProvider.incrementCurrIndex(sessionProvider.currWordListPath);
-                            // sessionProvider.nextWord(true);
-                            sessionProvider.updateIndex(allUsersProvider.getWordListCurrIndex(sessionProvider.currWordListPath));
 
-                          },
-                          icon: const Icon(Icons.play_arrow),
-                          label: const Text("Next (TEMP)"),
-                        ),
-                      ),
+
+                      // NEXT WORD BUTTON FOR TESTING (temporary)
+                      // SizedBox(width: 10,),
+                      // Expanded(
+                      //   child: ElevatedButton.icon(
+                      //     onPressed: () {
+                      //       allUsersProvider.incrementCurrIndex(sessionProvider.currWordListPath);
+                      //       // sessionProvider.nextWord(true);
+                      //       sessionProvider.updateIndex(allUsersProvider.getWordListCurrIndex(sessionProvider.currWordListPath));
+
+                      //     },
+                      //     icon: const Icon(Icons.play_arrow),
+                      //     label: const Text("Next (TEMP)"),
+                      //   ),
+                      // ),
+
+
                     ],
                   ),
                 ),
