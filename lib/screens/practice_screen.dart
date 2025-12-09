@@ -63,7 +63,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
 
       _loadWordsFuture = sessionProvider.loadWordList(
         sessionProvider.currWordListPath, 
-        (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.currWordListPath]!.currIndex
+        (allUsersProvider.allUserData.lastLoggedInUser as StudentUserData).word_list_progression_data[sessionProvider.currWordListPath]?.currIndex ?? 0
       );
     }
   }
@@ -384,7 +384,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                     // flutter_tts IS CURRENTLY BUGGED FOR WINDOWS. MUST BE COMMENTED OUT
                                     await flutterTts.speak(currentWordData.$2[index]);
 
-                                    print('Speaking word: $word, attempts: $attempts');
+                                    // print('Speaking word: $word, attempts: $attempts');
                                   },
                                   icon: Icon(
                                     Icons.volume_up,
@@ -392,7 +392,7 @@ class _PracticeScreenState extends State<PracticeScreen> {
                                   ),
                                 ),
                                 SizedBox(width: 8),
-                                Text(word, style: TextStyle(fontSize: 20)),
+                                Text(word, style: TextStyle(fontSize: 15)),
                               ],
                             );
                           },
